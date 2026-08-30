@@ -1,0 +1,44 @@
+---
+// src/pages/work/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import GitHubHeatmap from '../../components/GitHubHeatmap.astro';
+import TechStackGrid from '../../components/TechStackGrid.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+---
+
+<BaseLayout
+  title="Work, Projects & Tech Stack | Raashid Arquil"
+  description="Curated archive of software engineering projects, mobile architectures, edge ML pipelines, technical stack, and live GitHub activity by Raashid Arquil."
+>
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+    <!-- Header -->
+    <header class="max-w-reading space-y-4">
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-bg-elevated text-fg-muted border border-border-subtle">
+        Engineering Portfolio
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-fg tracking-tight">
+        Work & Case Studies
+      </h1>
+      <p class="text-base sm:text-lg text-fg-secondary leading-relaxed">
+        A chronological archive of systems, mobile applications, and web platforms I have built. Each project documents architectural trade-offs, engineering hurdles, and lessons learned.
+      </p>
+    </header>
+
+    <!-- Projects Grid -->
+    <section class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {sortedProjects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+
+    <!-- GitHub Activity Heatmap Section -->
+    <GitHubHeatmap username="raashidarq" />
+
+    <!-- Technical Stack Breakdown Section -->
+    <TechStackGrid />
+  </div>
+</BaseLayout>

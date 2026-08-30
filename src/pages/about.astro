@@ -1,0 +1,222 @@
+---
+// src/pages/about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const platforms = [
+  {
+    name: 'GitHub',
+    description: 'Repositories, open-source projects & commit activity',
+    href: 'https://github.com/raashidarq',
+    tag: '@raashidarq',
+  },
+  {
+    name: 'LinkedIn',
+    description: 'Professional experience, recommendations & networking',
+    href: 'https://linkedin.com/in/raashid-arquil',
+    tag: 'raashid-arquil',
+  },
+  {
+    name: 'Twitter / X',
+    description: 'Engineering notes, technical updates & discussions',
+    href: 'https://x.com/raashidarq',
+    tag: '@raashidarq',
+  },
+  {
+    name: 'LeetCode',
+    description: 'Data structures & algorithm problem-solving practice',
+    href: 'https://leetcode.com/u/raashidarq/',
+    tag: 'raashidarq',
+  },
+  {
+    name: 'HackerRank',
+    description: 'Problem-solving, Python & SQL assessment badges',
+    href: 'https://www.hackerrank.com/profile/raashid_arq',
+    tag: 'raashid_arq',
+  },
+];
+
+const certifications = [
+  {
+    title: 'Postman API Fundamentals Student Expert',
+    issuer: 'Postman',
+    date: '2025',
+    tag: 'REST API Testing & Architecture',
+  },
+];
+---
+
+<BaseLayout
+  title="About & Background | Raashid Arquil"
+  description="Background, education, engineering approach, and verified profiles of software developer Raashid Arquil."
+>
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-16 space-y-12">
+    <!-- Header -->
+    <header class="max-w-reading space-y-3">
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-bg-elevated text-purple-600 dark:text-purple-400 border border-purple-500/20">
+        Background & Direction
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-fg tracking-tight">
+        About Me
+      </h1>
+      <p class="text-base sm:text-lg text-fg-secondary leading-relaxed">
+        Software developer focused on building reliable mobile applications, applied on-device machine learning, and clean backend services.
+      </p>
+    </header>
+
+    <!-- Unified Profile & Key Facts Card -->
+    <section class="p-6 sm:p-8 rounded-2xl bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors shadow-sm">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8">
+        <!-- Portrait -->
+        <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden border border-border-strong flex-shrink-0 shadow-md">
+          <img
+            src="/images/profile.jpg"
+            alt="Portrait of Raashid Arquil"
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <!-- Bio & Actions -->
+        <div class="space-y-4 flex-1 text-center sm:text-left">
+          <div>
+            <h2 class="text-2xl font-bold text-fg tracking-tight">Raashid Arquil</h2>
+            <p class="text-sm font-medium text-purple-600 dark:text-purple-400">Software Developer · Kandy, Sri Lanka</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-fg-secondary font-mono">
+            <div class="p-2.5 rounded-lg bg-bg-elevated/50 border border-border-subtle/70">
+              <span class="text-fg-muted block text-[10px] uppercase">Degree</span>
+              <strong class="text-fg font-sans font-semibold">B.Sc. (Hons) in Computer Science</strong> (First-Class)
+            </div>
+            <div class="p-2.5 rounded-lg bg-bg-elevated/50 border border-border-subtle/70">
+              <span class="text-fg-muted block text-[10px] uppercase">Institution</span>
+              <strong class="text-fg font-sans font-semibold">Kingston University</strong> (2025)
+            </div>
+            <div class="p-2.5 rounded-lg bg-bg-elevated/50 border border-border-subtle/70">
+              <span class="text-fg-muted block text-[10px] uppercase">Marketing Qualification</span>
+              <strong class="text-fg font-sans font-semibold">Level 7 Postgraduate Diploma</strong> (CIM, Merit)
+            </div>
+            <div class="p-2.5 rounded-lg bg-bg-elevated/50 border border-border-subtle/70">
+              <span class="text-fg-muted block text-[10px] uppercase">Active Learning</span>
+              <strong class="text-fg font-sans font-semibold">Ascentic AI Launchpad</strong> (Mobile & Applied AI)
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-2">
+            <a
+              href="/resume.pdf"
+              download
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold bg-fg text-bg-surface hover:opacity-90 transition-all shadow-sm active:scale-95"
+            >
+              <span>Download Resume (PDF)</span>
+              <span>↓</span>
+            </a>
+            <a
+              href="mailto:raashid.arq@gmail.com"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium text-fg-secondary hover:text-fg hover:bg-bg-elevated border border-border-subtle transition-colors"
+            >
+              <span>raashid.arq@gmail.com</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Narrative Section -->
+    <section class="max-w-reading space-y-6 text-base text-fg-secondary leading-relaxed">
+      <h2 class="text-2xl font-bold text-fg tracking-tight border-b border-border-subtle pb-3">
+        Background & Approach
+      </h2>
+      <p>
+        I graduated with <strong class="text-fg font-semibold">First-Class Honors in Computer Science</strong> from <strong class="text-fg font-semibold">Kingston University</strong>. My background includes building full-stack web platforms covering role-based access control, authentication, and payments.
+      </p>
+      <p>
+        I am currently focused on mobile systems and applied machine learning. My primary project is <strong class="text-fg font-semibold">CropCare</strong> — an offline-first agricultural diagnostic application running on-device MobileNetV3 models via TensorFlow Lite, with local Drift SQLite storage and background synchronization with FastAPI and Gemini AI.
+      </p>
+      <p>
+        Holding a Level 7 Postgraduate Diploma in Professional Marketing from the Chartered Institute of Marketing (CIM), I combine technical architecture with user empathy, structured problem-solving, and clear communication.
+      </p>
+    </section>
+
+    <!-- Verified Platforms & Profiles -->
+    <section class="space-y-6">
+      <div class="border-b border-border-subtle pb-3">
+        <h2 class="text-2xl font-bold text-fg tracking-tight">
+          Verified Developer Profiles
+        </h2>
+        <p class="text-sm text-fg-secondary mt-1">
+          Platforms where I maintain code, practice algorithms, and share technical work.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {
+          platforms.map((p) => (
+            <a
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group p-5 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all duration-200 hover:shadow-sm flex flex-col justify-between space-y-3"
+            >
+              <div class="space-y-1">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-fg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    {p.name}
+                  </h3>
+                  <span class="text-fg-muted group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-sm">
+                    ↗
+                  </span>
+                </div>
+                <p class="text-xs text-fg-muted leading-relaxed">{p.description}</p>
+              </div>
+              <span class="text-[11px] font-mono text-purple-600 dark:text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded w-fit border border-purple-500/20">
+                {p.tag}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="space-y-4">
+      <div class="border-b border-border-subtle pb-3">
+        <h2 class="text-2xl font-bold text-fg tracking-tight">
+          Certifications & Credentials
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {
+          certifications.map((cert) => (
+            <div class="p-5 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-semibold text-purple-600 dark:text-purple-400">{cert.issuer}</span>
+                <span class="text-xs font-mono text-fg-muted">{cert.date}</span>
+              </div>
+              <h3 class="font-bold text-fg text-base">{cert.title}</h3>
+              <span class="inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-bg-elevated text-fg-muted border border-border-subtle">
+                {cert.tag}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Direct Contact Banner -->
+    <section class="p-6 sm:p-8 rounded-2xl bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="space-y-1 text-center sm:text-left">
+        <h3 class="text-lg font-bold text-fg">Looking for engineering collaboration?</h3>
+        <p class="text-xs text-fg-secondary">Open to full-time roles, software contracts, and discussions on mobile & AI systems.</p>
+      </div>
+      <a
+        href="mailto:raashid.arq@gmail.com"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold bg-accent text-white hover:bg-accent-hover transition-colors shadow-sm flex-shrink-0"
+      >
+        <span>Get in Touch</span>
+        <span>→</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>

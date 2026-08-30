@@ -1,0 +1,84 @@
+---
+// src/components/TechStackGrid.astro
+import TechPill from './TechPill.astro';
+
+const skillCategories = [
+  {
+    category: 'Programming Languages',
+    description: 'Core languages used for application logic, scripting, and database querying.',
+    skills: ['JavaScript (ES6+)', 'TypeScript', 'Python', 'Dart', 'Java', 'PHP', 'C#', 'SQL', 'HTML5 & CSS3'],
+  },
+  {
+    category: 'Mobile & Applied AI',
+    description: 'On-device machine learning inference, cross-platform mobile frameworks, and state architecture.',
+    skills: [
+      'Flutter',
+      'Dart BLoC / Cubit',
+      'TensorFlow Lite',
+      'MobileNetV3',
+      'On-Device ML',
+      'Google Gemini API',
+      'NVIDIA NIM',
+      'Text-to-Speech (TTS)',
+    ],
+  },
+  {
+    category: 'Frontend & UI Engineering',
+    description: 'Modern component architectures, styling systems, and client performance.',
+    skills: ['React', 'Tailwind CSS', 'Vite', 'Bootstrap', 'Axios', 'Responsive Design', 'Astro'],
+  },
+  {
+    category: 'Backend & APIs',
+    description: 'Asynchronous services, REST endpoints, authentication pipelines, and third-party integrations.',
+    skills: ['FastAPI', 'Node.js', 'Express.js', 'REST APIs', 'Supabase Auth (OTP)', 'PayPal SDK', 'Postman'],
+  },
+  {
+    category: 'Databases & Storage',
+    description: 'Relational data modeling, transactional queries, stored procedures, and offline embedded stores.',
+    skills: ['PostgreSQL', 'Supabase', 'SQLite (Drift)', 'MySQL', 'MS SQL Server', 'Oracle DB (PL/SQL)'],
+  },
+  {
+    category: 'DevOps & Tooling',
+    description: 'Version control, containerization, deployment platforms, and workflow tooling.',
+    skills: ['Git', 'GitHub', 'Docker', 'VS Code', 'NPM / Yarn', 'Vercel', 'Render', 'Excalidraw / Draw.io'],
+  },
+];
+---
+
+<section class="space-y-6">
+  <div class="space-y-1 border-b border-border-subtle pb-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-purple-500 inline-block"></span>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+        Technical Stack & Capabilities
+      </h2>
+    </div>
+    <p class="text-sm text-fg-secondary">
+      Tools, frameworks, languages, and systems I actively build and practice with.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {
+      skillCategories.map((group) => (
+        <div class="p-5 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all flex flex-col justify-between space-y-4">
+          <div class="space-y-1.5">
+            <h3 class="font-bold text-fg text-base flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span>
+              {group.category}
+            </h3>
+            <p class="text-xs text-fg-muted leading-relaxed">
+              {group.description}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-2 border-t border-border-subtle/50">
+            {group.skills.map((skill) => (
+              <TechPill name={skill} />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

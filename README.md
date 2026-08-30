@@ -1,28 +1,53 @@
-# Raashid's Developer Portfolio 🌐
+# Raashid Arquil — Personal Engineering Portfolio & Case Studies
 
-Welcome to the repository for my personal portfolio website. This project is a work-in-progress and will serve as a central place to present my skills, experience, and work as a software engineering and marketing enthusiast.
+A content-driven developer portfolio built with **Astro**, **TypeScript**, and **Tailwind CSS**. 
 
-## 🚧 Project Status
+Designed as an editorial technical showcase highlighting software engineering depth, on-device machine learning (CropCare), and practical systems architecture.
 
-**In Development** – Several features are in progress or using placeholder content. Expect active changes and updates.
+---
 
-## ✨ Features
+## 🚀 Key Features
 
-- **Home Page:** Includes a hero section to introduce myself and my work.
-- **About Section:** Contains a brief introduction and currently displays a sample portrait image.
-- **Projects Section:** Highlights featured projects with navigation to a dedicated Projects page.
-- **Blog Page:** Lists blog posts using sample data. Will be expanded with real content soon.
-- **Service Page:** List all the services I offer.
-- **CV Download:** Offers access to a downloadable version of my CV.
-- **Achievements, Qualifications, and Certifications:** These sections currently contain placeholder content.
-- **Contact Page:** Includes a working form (with some known issues). Users can also contact me via email directly.
+- **Static-First Architecture**: Fast page loads, zero unnecessary client JavaScript, optimal Core Web Vitals.
+- **Deep Technical Case Studies**: Markdown-based case studies detailing system architecture, trade-offs, and lessons learned.
+- **Flagship Project Showcase**: Dedicated launch presentation for **CropCare** (Mobile & Edge ML platform).
+- **Astro Content Collections**: Strongly typed frontmatter validated via Zod schemas.
+- **Authoritative Design Contract**: Governed by [`design.md`](./design.md) for visual consistency.
+- **Automatic RSS & Sitemap**: Full SEO metadata, OpenGraph cards, JSON-LD Schema, and RSS feed generation at `/rss.xml`.
+- **Zero-Shift Theme Switcher**: Semantic light and dark modes with zero flash of unstyled theme (FOUC).
 
-## 🛠️ Tech Stack
+---
 
-- **Frontend Framework:** Vite + React (with TypeScript)
-- **Styling:** Tailwind CSS
+## 🛠 Tech Stack
 
-## 📦 Deployment
+- **Framework**: [Astro 5](https://astro.build)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + Custom CSS Variables
+- **Typography**: Inter & JetBrains Mono
 
-This site is deployed using GitHub Pages at rvvshid04.github.io
+---
 
+## 💻 Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start local dev server
+npm run dev
+
+# Run Astro check (TypeScript & Content Collections validation)
+npm run check
+
+# Build production bundle
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+---
+
+## 📄 License & Attribution
+
+All portfolio content and case studies © Raashid Arquil.

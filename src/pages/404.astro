@@ -1,0 +1,36 @@
+---
+// src/pages/404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Page Not Found | Raashid Arquil"
+  description="The requested page could not be located."
+>
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center space-y-6">
+    <span class="inline-block px-3 py-1 rounded text-xs font-mono font-bold bg-accent-muted text-accent border border-accent/20">
+      404 Error
+    </span>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-fg tracking-tight">
+      Page Not Found
+    </h1>
+    <p class="text-base text-fg-secondary max-w-md mx-auto leading-relaxed">
+      The requested route does not exist or may have moved during our recent architecture upgrade.
+    </p>
+
+    <div class="pt-4 flex flex-wrap justify-center gap-4">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-fg text-bg-surface hover:opacity-90 transition-all shadow-sm"
+      >
+        <span>Return to Home</span>
+      </a>
+      <a
+        href="/work"
+        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-elevated border border-border-subtle transition-colors"
+      >
+        <span>Explore Work & Case Studies</span>
+      </a>
+    </div>
+  </div>
+</BaseLayout>

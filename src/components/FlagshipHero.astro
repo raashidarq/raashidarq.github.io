@@ -1,0 +1,106 @@
+---
+// src/components/FlagshipHero.astro
+import StatusBadge from './StatusBadge.astro';
+import TechPill from './TechPill.astro';
+
+interface Props {
+  project: {
+    id: string;
+    data: {
+      title: string;
+      shortDescription: string;
+      status: 'concept' | 'in-development' | 'beta' | 'live' | 'archived';
+      technologies: string[];
+      role: string;
+      category?: string;
+      githubUrl?: string;
+      liveUrl?: string;
+      thumbnail?: string;
+      architectureHighlights?: string[];
+      problemSummary?: string;
+      solutionSummary?: string;
+    };
+  };
+}
+
+const { project } = Astro.props;
+const {
+  title,
+  shortDescription,
+  status,
+  technologies,
+  architectureHighlights = [
+    'On-device quantized ML inference (offline diagnostic engine)',
+    'Flutter BLoC architecture for predictable state synchronization',
+    'FastAPI backend with asynchronous image processing & Supabase persistence',
+  ],
+} = project.data;
+---
+
+<section class="relative rounded-2xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 overflow-hidden shadow-md transition-colors">
+  <!-- Subtle top accent line with dark purple glow -->
+  <div class="h-1 w-full bg-gradient-to-r from-purple-500/80 via-emerald-500/80 to-purple-500/80"></div>
+
+  <div class="p-6 sm:p-10 lg:p-12">
+    <!-- Header Meta: Flagship badge + Status -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div class="flex items-center gap-2.5">
+        <span class="px-2.5 py-0.5 rounded text-xs font-mono font-bold uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+          Flagship Project
+        </span>
+        <StatusBadge status={status} />
+      </div>
+      <span class="text-xs font-mono text-fg-muted">July 2026 – Present · Personal Project</span>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="space-y-6 max-w-3xl">
+      <div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-fg tracking-tight">
+          {title}
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-fg-secondary leading-relaxed">
+          {shortDescription}
+        </p>
+      </div>
+
+      <!-- Architecture Highlights Box -->
+      <div class="p-5 rounded-xl bg-bg-elevated/70 border border-border-subtle space-y-3">
+        <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-fg-muted">
+          Key Engineering Highlights
+        </h3>
+        <ul class="space-y-2 text-sm text-fg-secondary">
+          {
+            architectureHighlights.map((highlight) => (
+              <li class="flex items-start gap-2.5">
+                <span class="text-accent mt-0.5 font-bold">✓</span>
+                <span>{highlight}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Tech Stack -->
+      <div>
+        <h4 class="text-xs font-mono uppercase tracking-wider text-fg-muted mb-2.5">Core Stack</h4>
+        <div class="flex flex-wrap gap-1.5">
+          {technologies.map((tech) => <TechPill name={tech} />)}
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="pt-2">
+        <a
+          href={`/work/${project.id}`}
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-accent text-white hover:bg-accent-hover shadow-sm transition-all hover:shadow hover:-translate-y-0.5 active:translate-y-0"
+        >
+          <span>View Full Technical Case Study</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

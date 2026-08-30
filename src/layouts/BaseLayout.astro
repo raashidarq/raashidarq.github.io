@@ -1,0 +1,113 @@
+---
+// src/layouts/BaseLayout.astro
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  articleDate?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title = 'Raashid Arquil | Software Developer',
+  description = 'Personal developer portfolio and technical case studies by Raashid Arquil. Focused on mobile systems, ML pipelines, backend architecture, and practical engineering.',
+  image = '/images/weather-app-dashboard.png',
+  canonicalUrl = Astro.url.href,
+  articleDate,
+  type = 'website',
+} = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://raashidarq.github.io';
+const fullImageUrl = new URL(image, siteUrl).toString();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': type === 'article' ? 'BlogPosting' : 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Raashid Arquil',
+    url: siteUrl,
+    jobTitle: 'Software Developer',
+    sameAs: [
+      'https://github.com/raashidarq',
+      'https://linkedin.com/in/raashid-arquil',
+      'https://x.com/raashidarq',
+    ],
+  },
+  ...(type === 'article' && {
+    headline: title,
+    description: description,
+    datePublished: articleDate,
+    author: {
+      '@type': 'Person',
+      name: 'Raashid Arquil',
+    },
+  }),
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="alternate" type="application/rss+xml" title="Raashid Arquil's Writing" href="/rss.xml" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Raashid Arquil" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImageUrl} />
+    <meta property="og:site_name" content="Raashid Arquil" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@raashidarq" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullImageUrl} />
+
+    <!-- Google Fonts Preconnect & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured Data JSON-LD -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Prevent FOUC Theme Script -->
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+  </head>
+  <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg">
+    <Navbar />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

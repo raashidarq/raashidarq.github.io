@@ -1,0 +1,170 @@
+---
+// src/components/ProjectCard.astro
+import StatusBadge from './StatusBadge.astro';
+import TechPill from './TechPill.astro';
+
+interface Props {
+  project: {
+    id: string;
+    data: {
+      title: string;
+      shortDescription: string;
+      status: 'concept' | 'in-development' | 'beta' | 'live' | 'archived';
+      technologies: string[];
+      category?: string;
+      githubUrl?: string;
+      liveUrl?: string;
+      thumbnail?: string;
+      pastelTheme?: 'green' | 'blue' | 'indigo' | 'purple' | 'amber' | 'slate';
+      featured?: boolean;
+    };
+  };
+}
+
+const { project } = Astro.props;
+const {
+  title,
+  shortDescription,
+  status,
+  technologies,
+  category,
+  githubUrl,
+  liveUrl,
+  pastelTheme = 'slate',
+} = project.data;
+
+const pastelConfig = {
+  green: {
+    bg: 'bg-emerald-500/10 dark:bg-emerald-950/30',
+    border: 'border-emerald-500/20 dark:border-emerald-800/40',
+    accent: 'text-emerald-700 dark:text-emerald-300',
+    iconBg: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+    tag: 'Mobile & ML Engine',
+  },
+  blue: {
+    bg: 'bg-blue-500/10 dark:bg-blue-950/30',
+    border: 'border-blue-500/20 dark:border-blue-800/40',
+    accent: 'text-blue-700 dark:text-blue-300',
+    iconBg: 'bg-blue-500/20 text-blue-600 dark:text-blue-400',
+    tag: 'Web Platform',
+  },
+  indigo: {
+    bg: 'bg-indigo-500/10 dark:bg-indigo-950/30',
+    border: 'border-indigo-500/20 dark:border-indigo-800/40',
+    accent: 'text-indigo-700 dark:text-indigo-300',
+    iconBg: 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400',
+    tag: 'Full-Stack & Security',
+  },
+  purple: {
+    bg: 'bg-purple-500/10 dark:bg-purple-950/30',
+    border: 'border-purple-500/20 dark:border-purple-800/40',
+    accent: 'text-purple-700 dark:text-purple-300',
+    iconBg: 'bg-purple-500/20 text-purple-600 dark:text-purple-400',
+    tag: 'Systems & DB',
+  },
+  amber: {
+    bg: 'bg-amber-500/10 dark:bg-amber-950/30',
+    border: 'border-amber-500/20 dark:border-amber-800/40',
+    accent: 'text-amber-700 dark:text-amber-300',
+    iconBg: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
+    tag: 'Client Web App',
+  },
+  slate: {
+    bg: 'bg-slate-500/10 dark:bg-slate-900/40',
+    border: 'border-slate-500/20 dark:border-slate-800/40',
+    accent: 'text-slate-700 dark:text-slate-300',
+    iconBg: 'bg-slate-500/20 text-slate-600 dark:text-slate-400',
+    tag: 'Software System',
+  },
+}[pastelTheme];
+---
+
+<article
+  class="group relative flex flex-col p-6 sm:p-7 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all duration-200 hover:shadow-md hover:shadow-purple-500/5"
+>
+  <!-- Card Header: Status & Category -->
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <StatusBadge status={status} />
+    {category && <span class="text-xs font-mono text-fg-muted truncate max-w-[200px]">{category}</span>}
+  </div>
+
+  <!-- Pastel Placeholder Card -->
+  <div
+    class={`relative w-full aspect-[16/9] mb-5 rounded-lg overflow-hidden border ${pastelConfig.bg} ${pastelConfig.border} flex flex-col items-center justify-center p-6 text-center transition-transform duration-300 group-hover:scale-[1.01]`}
+  >
+    <div class={`w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold text-sm mb-2 ${pastelConfig.iconBg}`}>
+      {title.slice(0, 2).toUpperCase()}
+    </div>
+    <span class={`text-xs font-mono font-medium ${pastelConfig.accent}`}>
+      {category || pastelConfig.tag}
+    </span>
+    <span class="text-[10px] font-mono text-fg-muted mt-1 opacity-70">
+      Interactive Case Study
+    </span>
+  </div>
+
+  <!-- Title & Description -->
+  <div class="space-y-2 flex-1">
+    <h3 class="text-xl font-bold tracking-tight text-fg group-hover:text-accent transition-colors">
+      <a href={`/work/${project.id}`} class="focus:outline-none">
+        <span class="absolute inset-0" aria-hidden="true"></span>
+        {title}
+      </a>
+    </h3>
+    <p class="text-sm text-fg-secondary leading-relaxed line-clamp-3">
+      {shortDescription}
+    </p>
+  </div>
+
+  <!-- Tech Stack Pills -->
+  <div class="flex flex-wrap gap-1.5 pt-5 mt-auto">
+    {technologies.slice(0, 5).map((tech) => <TechPill name={tech} />)}
+    {
+      technologies.length > 5 && (
+        <span class="text-[11px] font-mono text-fg-muted self-center ml-1">
+          +{technologies.length - 5} more
+        </span>
+      )
+    }
+  </div>
+
+  <!-- Card Action Footer -->
+  <div class="flex items-center justify-between pt-5 mt-4 border-t border-border-subtle text-xs font-medium text-fg-muted relative z-10">
+    <span class="group-hover:text-accent transition-colors inline-flex items-center gap-1">
+      Read Case Study <span class="transition-transform group-hover:translate-x-1">→</span>
+    </span>
+
+    <div class="flex items-center gap-3 relative z-20">
+      {
+        githubUrl && (
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-fg transition-colors p-1"
+            aria-label={`GitHub repository for ${title}`}
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+            </svg>
+          </a>
+        )
+      }
+      {
+        liveUrl && (
+          <a
+            href={liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-fg transition-colors p-1"
+            aria-label={`Live demo for ${title}`}
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </a>
+        )
+      }
+    </div>
+  </div>
+</article>

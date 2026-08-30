@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://raashidarq.github.io/sitemap-index.xml

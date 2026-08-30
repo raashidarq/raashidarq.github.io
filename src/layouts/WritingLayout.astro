@@ -1,0 +1,111 @@
+---
+// src/layouts/WritingLayout.astro
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  post: {
+    id: string;
+    data: {
+      title: string;
+      description: string;
+      date: string;
+      updatedDate?: string;
+      tags: string[];
+      readingTime: string;
+    };
+  };
+}
+
+const { post } = Astro.props;
+const { title, description, date, updatedDate, tags, readingTime } = post.data;
+---
+
+<BaseLayout
+  title={`${title} — Raashid Arquil`}
+  description={description}
+  type="article"
+  articleDate={date}
+>
+  <article class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <!-- Back Navigation -->
+    <div class="mb-8 max-w-reading mx-auto">
+      <a
+        href="/writing"
+        class="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-fg-muted hover:text-accent transition-colors"
+      >
+        <span>←</span>
+        <span>Back to all writing</span>
+      </a>
+    </div>
+
+    <!-- Article Header -->
+    <header class="max-w-reading mx-auto space-y-4 pb-8 border-b border-border-subtle">
+      <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-fg-muted">
+        <span class="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+          AI Generated Placeholder
+        </span>
+        <span>·</span>
+        <time datetime={date}>{date}</time>
+        <span>·</span>
+        <span>{readingTime}</span>
+        {
+          updatedDate && (
+            <>
+              <span>·</span>
+              <span class="text-accent">Updated {updatedDate}</span>
+            </>
+          )
+        }
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-fg tracking-tight text-balance">
+        {title}
+      </h1>
+
+      <p class="text-lg text-fg-secondary leading-relaxed text-pretty">
+        {description}
+      </p>
+
+      <div class="flex flex-wrap gap-1.5 pt-2">
+        {
+          tags.map((tag) => (
+            <span class="px-2 py-0.5 rounded text-xs font-mono bg-bg-elevated text-fg-muted border border-border-subtle">
+              #{tag}
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    <!-- Main Article Body -->
+    <div class="py-8 max-w-reading mx-auto">
+      <div class="prose prose-editorial dark:prose-invert">
+        <slot />
+      </div>
+    </div>
+
+    <!-- Article Footer -->
+    <footer class="max-w-reading mx-auto pt-10 mt-10 border-t border-border-subtle space-y-6">
+      <div class="p-6 rounded-xl bg-bg-surface border border-border-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <p class="text-sm font-semibold text-fg">Portfolio Content Sample</p>
+          <p class="text-xs text-fg-muted">
+            Placeholder article generated to showcase technical writing formatting, code syntax styling, and Markdown content collections.
+          </p>
+        </div>
+        <a
+          href="/rss.xml"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-bg-elevated text-fg border border-border-subtle hover:border-border-strong transition-colors flex-shrink-0"
+        >
+          <span>RSS Feed</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="flex justify-between items-center text-xs font-mono text-fg-muted">
+        <a href="/writing" class="hover:text-accent transition-colors">← All Articles</a>
+        <a href="https://x.com/raashidarq" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">Twitter / X (@raashidarq) ↗</a>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

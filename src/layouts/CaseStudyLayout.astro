@@ -1,0 +1,201 @@
+---
+// src/layouts/CaseStudyLayout.astro
+import BaseLayout from './BaseLayout.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import TechPill from '../components/TechPill.astro';
+import YouTubeEmbed from '../components/YouTubeEmbed.astro';
+
+interface Props {
+  project: {
+    id: string;
+    data: {
+      title: string;
+      shortDescription: string;
+      role: string;
+      date: string;
+      status: 'concept' | 'in-development' | 'beta' | 'live' | 'archived';
+      technologies: string[];
+      category?: string;
+      githubUrl?: string;
+      liveUrl?: string;
+      productUrl?: string;
+      demoUrl?: string;
+      youtubeId?: string;
+      thumbnail?: string;
+      heroImage?: string;
+    };
+  };
+}
+
+const { project } = Astro.props;
+const {
+  title,
+  shortDescription,
+  role,
+  date,
+  status,
+  technologies,
+  category,
+  githubUrl,
+  liveUrl,
+  productUrl,
+  demoUrl,
+  youtubeId,
+  heroImage,
+} = project.data;
+---
+
+<BaseLayout
+  title={`${title} — Technical Case Study | Raashid Arquil`}
+  description={shortDescription}
+  image={heroImage || '/images/weather-app-dashboard.png'}
+>
+  <article class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <!-- Back to Work Navigation -->
+    <div class="mb-8">
+      <a
+        href="/work"
+        class="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-fg-muted hover:text-accent transition-colors"
+      >
+        <span>←</span>
+        <span>Back to all projects</span>
+      </a>
+    </div>
+
+    <!-- Case Study Header -->
+    <header class="space-y-6 pb-10 border-b border-border-subtle">
+      <div class="flex flex-wrap items-center gap-3">
+        <StatusBadge status={status} />
+        {category && <span class="text-xs font-mono text-fg-muted">/ {category}</span>}
+      </div>
+
+      <div class="space-y-3">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-fg tracking-tight text-balance">
+          {title}
+        </h1>
+        <p class="text-lg sm:text-xl text-fg-secondary leading-relaxed max-w-reading text-pretty">
+          {shortDescription}
+        </p>
+      </div>
+
+      <!-- Metadata Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-xl bg-bg-surface border border-border-subtle text-xs">
+        <div>
+          <span class="block font-mono text-fg-muted uppercase tracking-wider mb-1">Role</span>
+          <span class="font-medium text-fg">{role}</span>
+        </div>
+        <div>
+          <span class="block font-mono text-fg-muted uppercase tracking-wider mb-1">Timeline</span>
+          <span class="font-medium text-fg">{date}</span>
+        </div>
+        <div>
+          <span class="block font-mono text-fg-muted uppercase tracking-wider mb-1">Status</span>
+          <span class="font-medium text-fg capitalize">{status.replace('-', ' ')}</span>
+        </div>
+        <div>
+          <span class="block font-mono text-fg-muted uppercase tracking-wider mb-1">Architecture</span>
+          <span class="font-medium text-fg">{category || 'Full Stack'}</span>
+        </div>
+      </div>
+
+      <!-- Links & Tech Stack -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-2">
+        <!-- Tech Stack -->
+        <div class="flex flex-wrap gap-1.5">
+          {technologies.map((tech) => <TechPill name={tech} />)}
+        </div>
+
+        <!-- Action Links -->
+        <div class="flex flex-wrap items-center gap-3 text-xs font-medium">
+          {
+            productUrl && (
+              <a
+                href={productUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent text-white hover:bg-accent-hover transition-colors"
+              >
+                <span>Product Website</span>
+                <span>↗</span>
+              </a>
+            )
+          }
+          {
+            demoUrl && (
+              <a
+                href={demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-bg-elevated text-fg border border-border-subtle hover:border-border-strong transition-colors"
+              >
+                <span>Interactive Demo</span>
+                <span>↗</span>
+              </a>
+            )
+          }
+          {
+            liveUrl && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-fg text-bg-surface hover:opacity-90 transition-opacity"
+              >
+                <span>Live Application</span>
+                <span>↗</span>
+              </a>
+            )
+          }
+          {
+            githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-bg-elevated text-fg border border-border-subtle hover:border-border-strong transition-colors"
+              >
+                <span>Source Code (GitHub)</span>
+                <span>↗</span>
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- Optional YouTube Lazy Embed -->
+    {
+      youtubeId && (
+        <div class="max-w-reading mx-auto my-8">
+          <YouTubeEmbed videoId={youtubeId} title={`${title} Video Walkthrough`} />
+        </div>
+      )
+    }
+
+    <!-- Main Editorial Content Body -->
+    <div class="py-12 max-w-reading mx-auto">
+      <div class="prose prose-editorial dark:prose-invert">
+        <slot />
+      </div>
+    </div>
+
+    <!-- Case Study Footer Navigation -->
+    <footer class="pt-12 mt-12 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-6">
+      <a
+        href="/work"
+        class="inline-flex items-center gap-2 text-sm font-medium text-fg-secondary hover:text-accent transition-colors"
+      >
+        <span>←</span>
+        <span>View all engineering projects</span>
+      </a>
+
+      <a
+        href="mailto:raashid.arq@gmail.com"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+      >
+        <span>Have questions about this architecture? Let's discuss</span>
+        <span>→</span>
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

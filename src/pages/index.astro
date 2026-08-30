@@ -1,0 +1,294 @@
+---
+// src/pages/index.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FlagshipHero from '../components/FlagshipHero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import NowWidget from '../components/NowWidget.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+
+const flagshipProject = sortedProjects.find((p) => p.id === 'cropcare') || sortedProjects[0];
+const selectedWork = sortedProjects.filter((p) => p.id !== flagshipProject?.id && p.data.featured);
+
+const allArticles = await getCollection('writing', ({ data }) => !data.draft);
+const recentArticles = allArticles
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Raashid Arquil — Software Developer"
+  description="Personal portfolio of software developer Raashid Arquil, focusing on mobile architectures, edge machine learning, and reliable backend systems."
+>
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 space-y-16">
+    <!-- ====================================================================
+         HERO SECTION
+         ==================================================================== -->
+    <section class="relative space-y-5 pt-0 max-w-reading">
+      <!-- Subtle Purple Ambient Glow Backdrop -->
+      <div class="absolute -top-12 -left-12 w-96 h-96 bg-purple-600/10 dark:bg-purple-900/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+      <!-- Status & Live Sri Lanka Time Bar -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bg-surface border border-border-subtle text-xs font-mono text-fg-secondary shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+          <span>Open to Software Engineering Opportunities</span>
+        </div>
+
+        <!-- Live Sri Lanka Time Badge -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-bg-surface/80 border border-purple-500/20 text-xs font-mono text-purple-700 dark:text-purple-300 shadow-sm">
+          <span class="text-[11px]">🕒</span>
+          <span id="sl-time-display">Currently loading time in Sri Lanka...</span>
+        </div>
+      </div>
+
+      <!-- Identity & Subtitle -->
+      <div class="space-y-1.5 pt-2">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-fg tracking-tight">
+          Raashid Arquil
+        </h1>
+        <p class="text-xl sm:text-2xl font-semibold text-purple-600 dark:text-purple-400">
+          Software Developer
+        </p>
+      </div>
+
+      <!-- Short & Sweet Narrative Paragraphs -->
+      <div class="space-y-3.5 text-base sm:text-lg text-fg-secondary leading-relaxed pt-2">
+        <p>
+          I am a software developer with First-Class Honors in Computer Science from Kingston University, based in Kandy, Sri Lanka.
+        </p>
+        <p>
+          Right now, I'm building <a href="/work/cropcare" class="text-fg font-semibold underline underline-offset-4 decoration-purple-500/50 hover:decoration-purple-500 transition-colors">CropCare</a> — an offline-first mobile app that diagnoses plant diseases on-device using a custom MobileNetV3 model, Flutter, and FastAPI.
+        </p>
+        <p>
+          I'm focused on strengthening my core engineering fundamentals, adopting industry standards, and building reliable, useful software.
+        </p>
+      </div>
+
+      <!-- Clean UI Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3.5 pt-4">
+        <a
+          href="/work"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-fg text-bg-surface hover:opacity-90 transition-all shadow-sm active:scale-95"
+        >
+          <span>View Work</span>
+          <span class="text-xs">→</span>
+        </a>
+
+        <a
+          href="/about"
+          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all"
+        >
+          <span>About</span>
+        </a>
+
+        <a
+          href="/resume.pdf"
+          download
+          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-mono text-fg-muted hover:text-purple-500 dark:hover:text-purple-400 transition-colors"
+        >
+          <span>Resume (PDF)</span>
+          <span class="text-xs">↓</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Client-side Live Sri Lanka Time Script -->
+    <script is:inline>
+      function updateSriLankaTime() {
+        const el = document.getElementById('sl-time-display');
+        if (!el) return;
+        try {
+          const now = new Date();
+          const options = {
+            timeZone: 'Asia/Colombo',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          };
+          const formatted = new Intl.DateTimeFormat('en-US', options).format(now);
+          el.textContent = `Currently ${formatted} in Sri Lanka`;
+        } catch (e) {
+          el.textContent = `Based in Sri Lanka (UTC+5:30)`;
+        }
+      }
+      updateSriLankaTime();
+      setInterval(updateSriLankaTime, 10000);
+      document.addEventListener('astro:after-swap', updateSriLankaTime);
+    </script>
+
+    <!-- ====================================================================
+         FLAGSHIP PROJECT (CROPCARE)
+         ==================================================================== -->
+    {flagshipProject && <FlagshipHero project={flagshipProject} />}
+
+    <!-- ====================================================================
+         SELECTED WORK / SECONDARY PROJECTS
+         ==================================================================== -->
+    <section class="space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border-subtle pb-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+            Selected Work
+          </h2>
+          <p class="mt-1 text-sm text-fg-secondary">
+            Curated applications emphasizing architectural depth, security, and real-world utility.
+          </p>
+        </div>
+        <a
+          href="/work"
+          class="text-xs font-mono font-medium text-accent hover:underline inline-flex items-center gap-1 flex-shrink-0"
+        >
+          <span>View all {sortedProjects.length} projects</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {selectedWork.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         NOW WIDGET / CURRENT STATUS
+         ==================================================================== -->
+    <NowWidget />
+
+    <!-- ====================================================================
+         TECHNICAL WRITING PREVIEW
+         ==================================================================== -->
+    <section class="space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border-subtle pb-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+            Technical Writing & Notes
+          </h2>
+          <p class="mt-1 text-sm text-fg-secondary">
+            AI-generated demonstration articles exploring architectural decisions, edge inference, and software quality.
+          </p>
+        </div>
+        <a
+          href="/writing"
+          class="text-xs font-mono font-medium text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1 flex-shrink-0"
+        >
+          <span>Read all articles</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="space-y-4">
+        {
+          recentArticles.map((article) => (
+            <article class="group p-5 sm:p-6 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all duration-200 hover:shadow-sm">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-fg-muted mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                    AI Generated Placeholder
+                  </span>
+                  <span>·</span>
+                  <time datetime={article.data.date}>{article.data.date}</time>
+                  <span>·</span>
+                  <span>{article.data.readingTime}</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  {article.data.tags.slice(0, 3).map((tag) => (
+                    <span class="px-1.5 py-0.5 rounded bg-bg-elevated text-fg-muted text-[11px]">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <h3 class="text-lg font-bold text-fg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                <a href={`/writing/${article.id}`}>
+                  {article.data.title}
+                </a>
+              </h3>
+
+              <p class="mt-2 text-sm text-fg-secondary line-clamp-2 leading-relaxed">
+                {article.data.description}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ABOUT PREVIEW SECTION
+         ==================================================================== -->
+    <section class="p-8 sm:p-10 rounded-2xl bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-8 space-y-4">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+            About Me
+          </h2>
+          <p class="text-sm sm:text-base text-fg-secondary leading-relaxed">
+            I hold a First-Class Honors degree in Computer Science from <strong class="text-fg font-semibold">Kingston University</strong> and live in Kandy, Sri Lanka. I enjoy building full-stack web and mobile apps — prioritizing clean architecture, practical problem-solving, and solid engineering habits.
+          </p>
+          <div class="flex flex-wrap items-center gap-4 pt-1">
+            <a
+              href="/about"
+              class="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+            >
+              <span>Learn more about my background</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="md:col-span-4 flex justify-center">
+          <div class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border border-border-strong shadow-md">
+            <img
+              src="/images/profile.jpg"
+              alt="Portrait of Raashid Arquil"
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         CONTACT INVITATION
+         ==================================================================== -->
+    <section class="text-center py-8 space-y-4 max-w-reading mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+        Let's Connect
+      </h2>
+      <p class="text-sm sm:text-base text-fg-secondary leading-relaxed">
+        Whether you are discussing engineering opportunities, architectural trade-offs, or open-source projects, my inbox is always open.
+      </p>
+      <div class="pt-2 flex flex-wrap justify-center gap-4">
+        <a
+          href="mailto:raashid.arq@gmail.com"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold bg-fg text-bg-surface hover:opacity-90 transition-all shadow-sm active:scale-95"
+        >
+          <span>raashid.arq@gmail.com</span>
+          <span>↗</span>
+        </a>
+        <a
+          href="https://linkedin.com/in/raashid-arquil"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-elevated border border-border-subtle transition-colors"
+        >
+          <span>LinkedIn</span>
+          <span>↗</span>
+        </a>
+        <a
+          href="https://github.com/raashidarq"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-elevated border border-border-subtle transition-colors"
+        >
+          <span>GitHub</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

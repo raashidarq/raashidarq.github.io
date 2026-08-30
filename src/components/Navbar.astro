@@ -1,0 +1,147 @@
+---
+// src/components/Navbar.astro
+import ThemeToggle from './ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/work' },
+  { label: 'Writing', href: '/writing' },
+  { label: 'About', href: '/about' },
+];
+
+function isActive(href: string) {
+  if (href === '/') {
+    return currentPath === '/' || currentPath === '';
+  }
+  return currentPath.startsWith(href);
+}
+---
+
+<header
+  class="sticky top-0 z-50 w-full bg-bg border-b border-border-subtle transition-colors"
+>
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Brand / Identity Logo (Text removed) -->
+    <a
+      href="/"
+      class="group flex items-center focus:outline-none"
+      aria-label="Raashid Arquil Home"
+    >
+      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-black p-1 border border-border-strong flex items-center justify-center shadow-sm group-hover:border-purple-500/50 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.25)] transition-all">
+        <img
+          src="/images/logo.png"
+          alt="Raashid Logo"
+          class="w-full h-full object-contain brightness-125 contrast-125 filter transition-transform group-hover:scale-105"
+        />
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center gap-1">
+      {
+        navItems.map((item) => {
+          const active = isActive(item.href);
+          return (
+            <a
+              href={item.href}
+              class={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                active
+                  ? 'text-accent bg-accent-muted font-semibold'
+                  : 'text-fg-secondary hover:text-fg hover:bg-bg-elevated'
+              }`}
+              aria-current={active ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <!-- Right Actions: Theme Toggle & Contact -->
+    <div class="flex items-center gap-3">
+      <ThemeToggle />
+      <a
+        href="mailto:raashid.arq@gmail.com"
+        class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-fg text-bg-surface hover:opacity-90 transition-all active:scale-95"
+      >
+        <span>Get in Touch</span>
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </a>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="md:hidden p-2 rounded-lg text-fg-muted hover:text-fg hover:bg-bg-elevated"
+        aria-label="Open mobile navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg id="menu-open-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg id="menu-close-icon" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-b border-border-subtle bg-bg-surface px-4 pt-2 pb-4 space-y-1">
+    {
+      navItems.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <a
+            href={item.href}
+            class={`block px-3 py-2 rounded-lg text-sm font-medium ${
+              active
+                ? 'text-accent bg-accent-muted font-semibold'
+                : 'text-fg-secondary hover:text-fg hover:bg-bg-elevated'
+            }`}
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+    <div class="pt-2 border-t border-border-subtle">
+      <a
+        href="mailto:raashid.arq@gmail.com"
+        class="block text-center w-full px-3 py-2 rounded-lg text-sm font-medium bg-fg text-bg-surface"
+      >
+        Get in Touch (Email)
+      </a>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  function setupMobileMenu() {
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
+
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', () => {
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!isExpanded));
+      menu.classList.toggle('hidden');
+      if (openIcon && closeIcon) {
+        openIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+      }
+    });
+  }
+
+  setupMobileMenu();
+  document.addEventListener('astro:after-swap', setupMobileMenu);
+</script>
