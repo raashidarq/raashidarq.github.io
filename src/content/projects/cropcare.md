@@ -1,9 +1,9 @@
 ---
 title: "CropCare"
 shortDescription: "An offline-first mobile agricultural diagnostic app powered by a custom on-device MobileNetV3 model, Drift SQLite persistence, and cloud LLM advisory integration."
-fullDescription: "CropCare puts a working plant disease diagnosis directly in a farmer's hand in seconds with zero connectivity required. Powered by a custom-trained on-device MobileNetV3 model, Drift SQLite local database, and cloud integration with FastAPI, Supabase, Google's Gemini API, and WhatsApp expert escalation."
+fullDescription: "CropCare is an offline-first mobile app enabling farmers to diagnose crop diseases from a photo, developed as a mentee project under industry mentorship at Ascentic. It combines a custom on-device MobileNetV3 model trained on multiple Kaggle datasets with Drift SQLite persistence, FastAPI, Supabase sync, Google Gemini AI treatment guidance, and WhatsApp expert escalation."
 date: "July 2026 – Present"
-role: "Developer"
+role: "Mentee Project (Ascentic Mentorship)"
 status: "in-development"
 featured: true
 order: 1
