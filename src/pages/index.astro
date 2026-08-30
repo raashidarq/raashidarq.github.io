@@ -22,45 +22,42 @@ const recentArticles = allArticles
   title="Raashid Arquil — Software Developer"
   description="Personal portfolio of software developer Raashid Arquil, focusing on mobile architectures, edge machine learning, and reliable backend systems."
 >
-  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 space-y-16">
+  <div class="max-w-content mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-20 space-y-16">
     <!-- ====================================================================
          HERO SECTION
          ==================================================================== -->
-    <section class="relative space-y-5 pt-0 max-w-reading">
-      <!-- Subtle Purple Ambient Glow Backdrop -->
-      <div class="absolute -top-12 -left-12 w-96 h-96 bg-purple-600/10 dark:bg-purple-900/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
-
+    <section class="relative space-y-6 pt-4 sm:pt-8 pb-8 sm:pb-12 max-w-reading">
       <!-- Status & Live Sri Lanka Time Bar -->
       <div class="flex flex-wrap items-center gap-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bg-surface border border-border-subtle text-xs font-mono text-fg-secondary shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-bg-surface/90 backdrop-blur-sm border border-emerald-500/30 text-xs font-mono text-fg-secondary shadow-sm hover:border-emerald-500/50 hover:shadow-[0_0_12px_rgba(16,185,129,0.18)] transition-all">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
           <span>Open to Software Engineering Opportunities</span>
         </div>
 
         <!-- Live Sri Lanka Time Badge -->
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-bg-surface/80 border border-purple-500/20 text-xs font-mono text-purple-700 dark:text-purple-300 shadow-sm">
+        <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-bg-surface/90 backdrop-blur-sm border border-border-subtle hover:border-accent/40 hover:shadow-[0_0_12px_rgba(59,130,246,0.12)] text-xs font-mono text-fg-secondary shadow-sm transition-all">
           <span class="text-[11px]">🕒</span>
           <span id="sl-time-display">Currently loading time in Sri Lanka...</span>
         </div>
       </div>
 
       <!-- Identity & Subtitle -->
-      <div class="space-y-1.5 pt-2">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-fg tracking-tight">
+      <div class="space-y-1 pt-1">
+        <h1 class="text-3xl sm:text-4xl lg:text-[44px] font-bold text-fg tracking-tight">
           Raashid Arquil
         </h1>
-        <p class="text-xl sm:text-2xl font-semibold text-purple-600 dark:text-purple-400">
+        <p class="text-base sm:text-lg font-medium text-accent">
           Software Developer
         </p>
       </div>
 
       <!-- Short & Sweet Narrative Paragraphs -->
-      <div class="space-y-3.5 text-base sm:text-lg text-fg-secondary leading-relaxed pt-2">
+      <div class="space-y-2.5 text-sm sm:text-base text-fg-secondary leading-relaxed pt-1">
         <p>
           I am a software developer with First-Class Honors in Computer Science from Kingston University, based in Kandy, Sri Lanka.
         </p>
         <p>
-          Right now, I'm building <a href="/work/cropcare" class="text-fg font-semibold underline underline-offset-4 decoration-purple-500/50 hover:decoration-purple-500 transition-colors">CropCare</a> — an offline-first mobile app that diagnoses plant diseases on-device using a custom MobileNetV3 model, Flutter, and FastAPI.
+          Right now, I'm building <a href="/work/cropcare" class="text-fg font-semibold underline underline-offset-4 decoration-accent/50 hover:decoration-accent transition-colors">CropCare</a> — an offline-first mobile app that diagnoses plant diseases on-device using a custom MobileNetV3 model, Flutter, and FastAPI.
         </p>
         <p>
           I'm focused on strengthening my core engineering fundamentals, adopting industry standards, and building reliable, useful software.
@@ -71,15 +68,15 @@ const recentArticles = allArticles
       <div class="flex flex-wrap items-center gap-3.5 pt-4">
         <a
           href="/work"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-fg text-bg-surface hover:opacity-90 transition-all shadow-sm active:scale-95"
+          class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-fg text-bg-surface hover:opacity-90 shadow-sm active:scale-95"
         >
           <span>View Work</span>
-          <span class="text-xs">→</span>
+          <span class="text-xs transition-transform group-hover:translate-x-1">→</span>
         </a>
 
         <a
           href="/about"
-          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all"
+          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg hover:bg-bg-surface border border-border-subtle hover:border-accent/40 hover:shadow-sm hover:-translate-y-0.5 transition-all"
         >
           <span>About</span>
         </a>
@@ -87,7 +84,7 @@ const recentArticles = allArticles
         <a
           href="/resume.pdf"
           download
-          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-mono text-fg-muted hover:text-purple-500 dark:hover:text-purple-400 transition-colors"
+          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-mono text-fg-muted hover:text-accent hover:-translate-y-0.5 transition-all"
         >
           <span>Resume (PDF)</span>
           <span class="text-xs">↓</span>
@@ -216,41 +213,6 @@ const recentArticles = allArticles
       </div>
     </section>
 
-    <!-- ====================================================================
-         ABOUT PREVIEW SECTION
-         ==================================================================== -->
-    <section class="p-8 sm:p-10 rounded-2xl bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        <div class="md:col-span-8 space-y-4">
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
-            About Me
-          </h2>
-          <p class="text-sm sm:text-base text-fg-secondary leading-relaxed">
-            I hold a First-Class Honors degree in Computer Science from <strong class="text-fg font-semibold">Kingston University</strong> and live in Kandy, Sri Lanka. I enjoy building full-stack web and mobile apps — prioritizing clean architecture, practical problem-solving, and solid engineering habits.
-          </p>
-          <div class="flex flex-wrap items-center gap-4 pt-1">
-            <a
-              href="/about"
-              class="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline"
-            >
-              <span>Learn more about my background</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="md:col-span-4 flex justify-center">
-          <div class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border border-border-strong shadow-md">
-            <img
-              src="/images/profile.jpg"
-              alt="Portrait of Raashid Arquil"
-              loading="lazy"
-              class="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- ====================================================================
          CONTACT INVITATION

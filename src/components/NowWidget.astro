@@ -2,12 +2,12 @@
 // src/components/NowWidget.astro
 ---
 
-<section class="rounded-xl p-6 sm:p-8 bg-bg-surface border border-border-subtle hover:border-purple-500/20 transition-colors">
+<section class="rounded-2xl p-6 sm:p-8 bg-bg-surface border border-border-subtle hover:border-accent/30 transition-colors shadow-sm">
   <div class="flex items-center justify-between gap-4 mb-6">
-    <div class="flex items-center gap-2">
-      <span class="relative flex h-2 w-2">
+    <div class="flex items-center gap-2.5">
+      <span class="relative flex h-2.5 w-2.5">
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"></span>
       </span>
       <h3 class="text-sm font-mono font-semibold uppercase tracking-wider text-fg">
         Current Focus / Now
@@ -18,8 +18,8 @@
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
     <!-- Item 1 -->
-    <div class="space-y-1.5 p-4 rounded-lg bg-bg-elevated/50 border border-border-subtle/60 hover:border-purple-500/30 transition-colors">
-      <span class="text-xs font-mono text-purple-600 dark:text-purple-400 font-semibold block uppercase tracking-wider">
+    <div class="space-y-1.5 p-4 rounded-xl bg-bg-elevated/50 border border-border-subtle/70 hover:border-accent/40 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200">
+      <span class="text-xs font-mono text-accent font-semibold block uppercase tracking-wider">
         Currently Building
       </span>
       <p class="font-medium text-fg">CropCare (Mobile App)</p>
@@ -29,8 +29,8 @@
     </div>
 
     <!-- Item 2 -->
-    <div class="space-y-1.5 p-4 rounded-lg bg-bg-elevated/50 border border-border-subtle/60 hover:border-purple-500/30 transition-colors">
-      <span class="text-xs font-mono text-purple-600 dark:text-purple-400 font-semibold block uppercase tracking-wider">
+    <div class="space-y-1.5 p-4 rounded-xl bg-bg-elevated/50 border border-border-subtle/70 hover:border-accent/40 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200">
+      <span class="text-xs font-mono text-accent font-semibold block uppercase tracking-wider">
         Strengthening Fundamentals
       </span>
       <p class="font-medium text-fg">Mobile & Applied AI</p>
@@ -40,8 +40,8 @@
     </div>
 
     <!-- Item 3 -->
-    <div class="space-y-1.5 p-4 rounded-lg bg-bg-elevated/50 border border-border-subtle/60 hover:border-purple-500/30 transition-colors">
-      <span class="text-xs font-mono text-purple-600 dark:text-purple-400 font-semibold block uppercase tracking-wider">
+    <div class="space-y-1.5 p-4 rounded-xl bg-bg-elevated/50 border border-border-subtle/70 hover:border-accent/40 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200">
+      <span class="text-xs font-mono text-accent font-semibold block uppercase tracking-wider">
         Target Direction
       </span>
       <p class="font-medium text-fg">Industry Standards</p>

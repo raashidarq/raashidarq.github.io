@@ -103,7 +103,11 @@ const jsonLd = {
       }
     </script>
   </head>
-  <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg">
+  <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg relative overflow-x-hidden">
+    <!-- Subtle Ambient Top Glow Spotlight -->
+    <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_75%_50%_at_50%_-15%,rgba(59,130,246,0.06),transparent)] dark:bg-[radial-gradient(ellipse_75%_50%_at_50%_-15%,rgba(96,165,250,0.05),transparent)] -z-10"></div>
+    <div class="fixed inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.025] bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:28px_28px] -z-10"></div>
+
     <Navbar />
     <main id="main-content" class="flex-1">
       <slot />

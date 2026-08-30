@@ -4,7 +4,7 @@ shortDescription: "A comprehensive driving school management platform streamlini
 fullDescription: "SmartDrive is a full-stack driving school management system engineered to replace fragmented manual paperwork and spreadsheets with an automated operational workflow. It features role-based access for students, instructors, and administrative staff."
 date: "2024–2025"
 role: "Full-Stack Developer"
-status: "beta"
+status: "live"
 featured: true
 order: 2
 technologies:
