@@ -20,7 +20,7 @@ technologies:
   - "Sinhala & Tamil i18n"
 category: "Offline-first Mobile App with ML and AI integrations"
 pastelTheme: "green"
-githubUrl: "https://github.com/raashidarq"
+githubUrl: "https://github.com/raashidarq/cropcare"
 liveUrl: ""
 productUrl: ""
 demoUrl: ""

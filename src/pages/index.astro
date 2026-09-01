@@ -54,7 +54,7 @@ const recentArticles = allArticles
       <!-- Short & Sweet Narrative Paragraphs -->
       <div class="space-y-2.5 text-sm sm:text-base text-fg-secondary leading-relaxed pt-1">
         <p>
-          I am a software developer with First-Class Honors in Computer Science from Kingston University, based in Kandy, Sri Lanka.
+          I am a software developer based in Kandy, Sri Lanka, focused on building reliable web applications, mobile architectures, and applied AI systems.
         </p>
         <p>
           Right now, I'm building <a href="/work/cropcare" class="text-fg font-semibold underline underline-offset-4 decoration-accent/50 hover:decoration-accent transition-colors">CropCare</a> — an offline-first mobile app that diagnoses plant diseases on-device using a custom MobileNetV3 model, Flutter, and FastAPI.
@@ -153,65 +153,60 @@ const recentArticles = allArticles
          ==================================================================== -->
     <NowWidget />
 
-    <!-- ====================================================================
-         TECHNICAL WRITING PREVIEW
-         ==================================================================== -->
-    <section class="space-y-8">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border-subtle pb-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
-            Technical Writing & Notes
-          </h2>
-          <p class="mt-1 text-sm text-fg-secondary">
-            AI-generated demonstration articles exploring architectural decisions, edge inference, and software quality.
-          </p>
-        </div>
-        <a
-          href="/writing"
-          class="text-xs font-mono font-medium text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1 flex-shrink-0"
-        >
-          <span>Read all articles</span>
-          <span>→</span>
-        </a>
-      </div>
-
-      <div class="space-y-4">
-        {
-          recentArticles.map((article) => (
-            <article class="group p-5 sm:p-6 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all duration-200 hover:shadow-sm">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-fg-muted mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                    AI Generated Placeholder
-                  </span>
-                  <span>·</span>
-                  <time datetime={article.data.date}>{article.data.date}</time>
-                  <span>·</span>
-                  <span>{article.data.readingTime}</span>
-                </div>
-                <div class="flex flex-wrap gap-1">
-                  {article.data.tags.slice(0, 3).map((tag) => (
-                    <span class="px-1.5 py-0.5 rounded bg-bg-elevated text-fg-muted text-[11px]">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <h3 class="text-lg font-bold text-fg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                <a href={`/writing/${article.id}`}>
-                  {article.data.title}
-                </a>
-              </h3>
-
-              <p class="mt-2 text-sm text-fg-secondary line-clamp-2 leading-relaxed">
-                {article.data.description}
+    {
+      recentArticles && recentArticles.length > 0 && (
+        <section class="space-y-8">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border-subtle pb-4">
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
+                Technical Writing & Notes
+              </h2>
+              <p class="mt-1 text-sm text-fg-secondary">
+                Articles exploring architectural decisions, edge inference, and software quality.
               </p>
-            </article>
-          ))
-        }
-      </div>
-    </section>
+            </div>
+            <a
+              href="/writing"
+              class="text-xs font-mono font-medium text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1 flex-shrink-0"
+            >
+              <span>Read all articles</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="space-y-4">
+            {recentArticles.map((article) => (
+              <article class="group p-5 sm:p-6 rounded-xl bg-bg-surface border border-border-subtle hover:border-purple-500/30 transition-all duration-200 hover:shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-fg-muted mb-2">
+                  <div class="flex items-center gap-2">
+                    <time datetime={article.data.date}>{article.data.date}</time>
+                    <span>·</span>
+                    <span>{article.data.readingTime}</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    {article.data.tags.slice(0, 3).map((tag) => (
+                      <span class="px-1.5 py-0.5 rounded bg-bg-elevated text-fg-muted text-[11px]">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-fg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  <a href={`/writing/${article.id}`}>
+                    {article.data.title}
+                  </a>
+                </h3>
+
+                <p class="mt-2 text-sm text-fg-secondary line-clamp-2 leading-relaxed">
+                  {article.data.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )
+    }
 
 
     <!-- ====================================================================

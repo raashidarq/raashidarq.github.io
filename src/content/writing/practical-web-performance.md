@@ -8,7 +8,7 @@ tags:
   - "Frontend"
   - "Architecture"
 readingTime: "4 min read"
-draft: false
+draft: true
 featured: false
 ---
 

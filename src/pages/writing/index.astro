@@ -42,33 +42,35 @@ const allTags = Array.from(
       </p>
     </header>
 
-    <!-- Tag Filter Bar -->
-    <div class="max-w-reading">
-      <div class="flex items-center gap-2 flex-wrap text-xs font-mono">
-        <span class="text-fg-muted mr-1">Filter by tag:</span>
-        <button
-          type="button"
-          data-filter="all"
-          class="tag-filter-btn px-3 py-1 rounded-lg border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-300 font-medium transition-all"
-        >
-          All ({sortedArticles.length})
-        </button>
-        {
-          allTags.map((tag) => {
-            const count = sortedArticles.filter((a) => a.data.tags?.includes(tag)).length;
-            return (
-              <button
-                type="button"
-                data-filter={tag}
-                class="tag-filter-btn px-2.5 py-1 rounded-lg border border-border-subtle bg-bg-surface text-fg-secondary hover:border-purple-500/40 hover:text-fg transition-all"
-              >
-                #{tag} <span class="opacity-60 text-[10px]">({count})</span>
-              </button>
-            );
-          })
-        }
-      </div>
-    </div>
+    {/* Tag Filter Bar */}
+    {
+      allTags.length > 0 && (
+        <div class="max-w-reading">
+          <div class="flex items-center gap-2 flex-wrap text-xs font-mono">
+            <span class="text-fg-muted mr-1">Filter by tag:</span>
+            <button
+              type="button"
+              data-filter="all"
+              class="tag-filter-btn px-3 py-1 rounded-lg border border-purple-500 bg-purple-500/10 text-purple-600 dark:text-purple-300 font-medium transition-all"
+            >
+              All ({sortedArticles.length})
+            </button>
+            {allTags.map((tag) => {
+              const count = sortedArticles.filter((a) => a.data.tags?.includes(tag)).length;
+              return (
+                <button
+                  type="button"
+                  data-filter={tag}
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg border border-border-subtle bg-bg-surface text-fg-secondary hover:border-purple-500/40 hover:text-fg transition-all"
+                >
+                  #{tag} <span class="opacity-60 text-[10px]">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )
+    }
 
     <!-- Articles List -->
     <section id="articles-container" class="max-w-reading space-y-6">
