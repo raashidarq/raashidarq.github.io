@@ -17,7 +17,7 @@ technologies:
 category: "Driving School Operations & Scheduling Platform"
 pastelTheme: "blue"
 githubUrl: "https://github.com/raashidarq/smartdrive-frontend"
-liveUrl: "https://raashidarq.github.io/smartdrive-frontend/"
+liveUrl: "https://raashidarq.github.io/smartdrive/"
 problemSummary: "Driving schools struggle with high administrative overhead, scheduling conflicts between instructors and student drivers, and manual invoice tracking."
 solutionSummary: "A unified portal providing real-time calendar availability, role-based dashboards, automated SMS/email reminders, and integrated payment processing."
 architectureHighlights:
