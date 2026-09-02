@@ -1,0 +1,283 @@
+---
+// src/components/ImageCarousel.astro
+interface GalleryItem {
+  url: string;
+  caption?: string;
+  alt?: string;
+  title?: string;
+}
+
+interface Props {
+  images: GalleryItem[];
+  title?: string;
+  id?: string;
+}
+
+const { images = [], title = 'Project Gallery', id = 'project-gallery-carousel' } = Astro.props;
+---
+
+{
+  images.length > 0 && (
+    <div id={id} class="image-carousel-container my-10 space-y-4 select-none" data-carousel-id={id}>
+      <!-- Carousel Frame -->
+      <div class="relative rounded-2xl overflow-hidden border border-border-subtle bg-bg-surface/80 dark:bg-bg-elevated/40 backdrop-blur-sm shadow-lg group">
+        <!-- Main Slide Viewport -->
+        <div class="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-slate-950/40">
+          <div class="carousel-track flex h-full transition-transform duration-500 ease-out will-change-transform">
+            {images.map((item, index) => (
+              <div
+                class="carousel-slide min-w-full h-full relative flex items-center justify-center bg-slate-950/20"
+                data-index={index}
+              >
+                <img
+                  src={item.url}
+                  alt={item.alt || item.caption || `${title} preview ${index + 1}`}
+                  class="w-full h-full object-contain cursor-zoom-in transition-transform duration-300 hover:scale-[1.01]"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  data-full-src={item.url}
+                  data-caption={item.caption || item.title || ''}
+                />
+              </div>
+            ))}
+          </div>
+
+          <!-- Glassmorphism Top Bar: Badge & Expand Button -->
+          <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
+            <span class="carousel-counter px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-black/60 text-white/90 backdrop-blur-md border border-white/10 shadow-sm pointer-events-auto">
+              1 / {images.length}
+            </span>
+
+            <button
+              type="button"
+              class="carousel-expand-btn p-2 rounded-full bg-black/60 text-white/90 hover:text-white hover:bg-accent backdrop-blur-md border border-white/10 shadow-sm pointer-events-auto transition-all duration-200 active:scale-95"
+              aria-label="Expand image fullscreen"
+              title="View full resolution"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Bottom Caption Bar -->
+          <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-4 pt-10 text-white z-10 transition-opacity">
+            <p class="carousel-caption text-xs sm:text-sm font-medium tracking-wide text-white/95 line-clamp-2 drop-shadow-sm">
+              {images[0]?.caption || images[0]?.title || title}
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Thumbnail / Tab Strip -->
+        {images.length > 1 && (
+          <div class="p-3 bg-bg-surface border-t border-border-subtle flex items-center gap-2.5 overflow-x-auto scrollbar-none">
+            {images.map((item, index) => (
+              <button
+                type="button"
+                class={`carousel-thumb-btn relative flex-shrink-0 w-16 sm:w-20 aspect-[16/10] rounded-lg overflow-hidden border-2 transition-all duration-200 focus:outline-none ${
+                  index === 0
+                    ? 'border-accent ring-2 ring-accent/30 opacity-100 scale-100'
+                    : 'border-transparent opacity-60 hover:opacity-100 hover:border-border-strong'
+                }`}
+                data-slide-index={index}
+                aria-label={`Go to slide ${index + 1}: ${item.title || item.caption || ''}`}
+              >
+                <img
+                  src={item.url}
+                  alt={`Thumbnail ${index + 1}`}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Lightbox Modal -->
+      <div
+        class="carousel-lightbox fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 items-center justify-center p-4 sm:p-8"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Fullscreen Image View"
+      >
+        <button
+          type="button"
+          class="lightbox-close-btn absolute top-4 right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200 focus:outline-none"
+          aria-label="Close fullscreen view"
+        >
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div class="max-w-6xl max-h-[88vh] flex flex-col items-center justify-center">
+          <img
+            class="lightbox-img max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl border border-white/10"
+            src=""
+            alt=""
+          />
+          <p class="lightbox-caption mt-3 text-sm text-center text-white/80 font-medium px-4 max-w-2xl"></p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  function setupCarousels() {
+    const carousels = document.querySelectorAll<HTMLElement>('.image-carousel-container');
+
+    carousels.forEach((container) => {
+      if (container.dataset.initialized === 'true') return;
+      container.dataset.initialized = 'true';
+
+      const track = container.querySelector<HTMLElement>('.carousel-track');
+      const slides = container.querySelectorAll<HTMLElement>('.carousel-slide');
+      const counter = container.querySelector<HTMLElement>('.carousel-counter');
+      const caption = container.querySelector<HTMLElement>('.carousel-caption');
+      const thumbBtns = container.querySelectorAll<HTMLButtonElement>('.carousel-thumb-btn');
+      const expandBtn = container.querySelector<HTMLButtonElement>('.carousel-expand-btn');
+      const lightbox = container.querySelector<HTMLElement>('.carousel-lightbox');
+      const lightboxImg = lightbox?.querySelector<HTMLImageElement>('.lightbox-img');
+      const lightboxCaption = lightbox?.querySelector<HTMLElement>('.lightbox-caption');
+      const lightboxClose = lightbox?.querySelector<HTMLButtonElement>('.lightbox-close-btn');
+
+      if (!track || slides.length === 0) return;
+      const carouselTrack = track;
+
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+
+      // Extract slide captions
+      const slideData = Array.from(slides).map((slide) => {
+        const img = slide.querySelector('img');
+        return {
+          src: img?.getAttribute('src') || '',
+          fullSrc: img?.dataset.fullSrc || img?.getAttribute('src') || '',
+          caption: img?.dataset.caption || '',
+          alt: img?.getAttribute('alt') || '',
+        };
+      });
+
+      function updateCarousel(newIndex: number) {
+        currentIndex = (newIndex + totalSlides) % totalSlides;
+        carouselTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+        if (counter) {
+          counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+        }
+
+        if (caption) {
+          caption.textContent = slideData[currentIndex].caption || `Slide ${currentIndex + 1}`;
+        }
+
+        // Update Thumbnails
+        thumbBtns.forEach((btn, idx) => {
+          if (idx === currentIndex) {
+            btn.classList.remove('border-transparent', 'opacity-60');
+            btn.classList.add('border-accent', 'ring-2', 'ring-accent/30', 'opacity-100');
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          } else {
+            btn.classList.remove('border-accent', 'ring-2', 'ring-accent/30', 'opacity-100');
+            btn.classList.add('border-transparent', 'opacity-60');
+          }
+        });
+      }
+
+      thumbBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.slideIndex || '0', 10);
+          updateCarousel(idx);
+        });
+      });
+
+      // Lightbox Handlers
+      function openLightbox(index: number) {
+        if (!lightbox || !lightboxImg) return;
+        lightboxImg.src = slideData[index].fullSrc;
+        lightboxImg.alt = slideData[index].alt;
+        if (lightboxCaption) {
+          lightboxCaption.textContent = slideData[index].caption;
+        }
+        lightbox.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          lightbox.classList.remove('opacity-0');
+          lightbox.classList.add('flex', 'opacity-100');
+        });
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.classList.remove('opacity-100');
+        lightbox.classList.add('opacity-0');
+        setTimeout(() => {
+          lightbox.classList.remove('flex');
+          lightbox.classList.add('hidden');
+          document.body.style.overflow = '';
+        }, 300);
+      }
+
+      expandBtn?.addEventListener('click', () => openLightbox(currentIndex));
+      slides.forEach((slide, idx) => {
+        const img = slide.querySelector('img');
+        img?.addEventListener('click', () => openLightbox(idx));
+      });
+
+      lightboxClose?.addEventListener('click', closeLightbox);
+      lightbox?.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (lightbox && !lightbox.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            openLightbox(currentIndex);
+            updateCarousel(currentIndex);
+          }
+          if (e.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            openLightbox(currentIndex);
+            updateCarousel(currentIndex);
+          }
+        }
+      });
+
+      // Touch Swipe Support
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      track.addEventListener(
+        'touchstart',
+        (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        },
+        { passive: true }
+      );
+
+      track.addEventListener(
+        'touchend',
+        (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 45) {
+            if (diff > 0) {
+              updateCarousel(currentIndex + 1);
+            } else {
+              updateCarousel(currentIndex - 1);
+            }
+          }
+        },
+        { passive: true }
+      );
+    });
+  }
+
+  // Run on page load & Astro client navigation
+  setupCarousels();
+  document.addEventListener('astro:page-load', setupCarousels);
+  document.addEventListener('astro:after-swap', setupCarousels);
+</script>

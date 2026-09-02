@@ -21,6 +21,16 @@ const projects = defineCollection({
     youtubeId: z.string().optional(),
     thumbnail: z.string().optional(),
     heroImage: z.string().optional(),
+    gallery: z
+      .array(
+        z.object({
+          url: z.string(),
+          caption: z.string().optional(),
+          alt: z.string().optional(),
+          title: z.string().optional(),
+        })
+      )
+      .optional(),
     pastelTheme: z
       .enum(['green', 'blue', 'indigo', 'purple', 'amber', 'slate'])
       .default('slate'),

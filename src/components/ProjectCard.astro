@@ -30,6 +30,7 @@ const {
   category,
   githubUrl,
   liveUrl,
+  thumbnail,
   pastelTheme = 'slate',
 } = project.data;
 
@@ -88,20 +89,33 @@ const pastelConfig = {
     {category && <span class="text-xs font-mono text-fg-muted truncate max-w-[200px]">{category}</span>}
   </div>
 
-  <!-- Pastel Placeholder Card -->
-  <div
-    class={`relative w-full aspect-[16/9] mb-5 rounded-xl overflow-hidden border ${pastelConfig.bg} ${pastelConfig.border} flex flex-col items-center justify-center p-6 text-center transition-all duration-300 group-hover:scale-[1.015]`}
-  >
-    <div class={`w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold text-sm mb-2 ${pastelConfig.iconBg}`}>
-      {title.slice(0, 2).toUpperCase()}
-    </div>
-    <span class={`text-xs font-mono font-medium ${pastelConfig.accent}`}>
-      {category || pastelConfig.tag}
-    </span>
-    <span class="text-[10px] font-mono text-fg-muted mt-1 opacity-70">
-      Interactive Case Study
-    </span>
-  </div>
+  <!-- Card Visual: Thumbnail Image or Pastel Card -->
+  {
+    thumbnail ? (
+      <div class="relative w-full aspect-[16/9] mb-5 rounded-xl overflow-hidden border border-border-subtle bg-slate-950/20 transition-all duration-300 group-hover:scale-[1.015] group-hover:border-accent/40">
+        <img
+          src={thumbnail}
+          alt={`${title} Preview`}
+          class="w-full h-full object-cover object-center"
+          loading="lazy"
+        />
+      </div>
+    ) : (
+      <div
+        class={`relative w-full aspect-[16/9] mb-5 rounded-xl overflow-hidden border ${pastelConfig.bg} ${pastelConfig.border} flex flex-col items-center justify-center p-6 text-center transition-all duration-300 group-hover:scale-[1.015]`}
+      >
+        <div class={`w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold text-sm mb-2 ${pastelConfig.iconBg}`}>
+          {title.slice(0, 2).toUpperCase()}
+        </div>
+        <span class={`text-xs font-mono font-medium ${pastelConfig.accent}`}>
+          {category || pastelConfig.tag}
+        </span>
+        <span class="text-[10px] font-mono text-fg-muted mt-1 opacity-70">
+          Interactive Case Study
+        </span>
+      </div>
+    )
+  }
 
   <!-- Title & Description -->
   <div class="space-y-2 flex-1">

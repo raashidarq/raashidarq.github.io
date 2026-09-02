@@ -4,6 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 import StatusBadge from '../components/StatusBadge.astro';
 import TechPill from '../components/TechPill.astro';
 import YouTubeEmbed from '../components/YouTubeEmbed.astro';
+import ImageCarousel from '../components/ImageCarousel.astro';
 
 interface Props {
   project: {
@@ -23,6 +24,12 @@ interface Props {
       youtubeId?: string;
       thumbnail?: string;
       heroImage?: string;
+      gallery?: Array<{
+        url: string;
+        caption?: string;
+        alt?: string;
+        title?: string;
+      }>;
     };
   };
 }
@@ -42,6 +49,7 @@ const {
   demoUrl,
   youtubeId,
   heroImage,
+  gallery,
 } = project.data;
 ---
 
@@ -168,6 +176,15 @@ const {
       youtubeId && (
         <div class="max-w-reading mx-auto my-8">
           <YouTubeEmbed videoId={youtubeId} title={`${title} Video Walkthrough`} />
+        </div>
+      )
+    }
+
+    <!-- Optional Visual Gallery Carousel -->
+    {
+      gallery && gallery.length > 0 && (
+        <div class="max-w-reading mx-auto my-8">
+          <ImageCarousel images={gallery} title={title} />
         </div>
       )
     }

@@ -18,6 +18,25 @@ category: "Driving School Operations & Scheduling Platform"
 pastelTheme: "blue"
 githubUrl: "https://github.com/raashidarq/smartdrive-frontend"
 liveUrl: "https://raashidarq.github.io/smartdrive/"
+thumbnail: "/images/smartdrive-thumbnail.png"
+heroImage: "/images/smartdrive-thumbnail.png"
+gallery:
+  - url: "/images/smartdrive-landing.png"
+    title: "SmartDrive Academy Landing Page"
+    caption: "SmartDrive Academy — Landing page showcasing campus proving grounds, cone slalom tracks, and curriculum stats."
+    alt: "SmartDrive Academy Landing Page"
+  - url: "/images/smartdrive-roadmap.png"
+    title: "12-Stage Statutory Driver Roadmap"
+    caption: "The Complete 12-Step Driver Roadmap — Sequential statutory progression from identity verification to trial & licensing."
+    alt: "12-Step Driver Roadmap"
+  - url: "/images/smartdrive-student-portal.png"
+    title: "Student Driver Portal"
+    caption: "Student Driver Portal — Active sandbox showing scheduled practical driving appointments, theory lessons, and milestone progress."
+    alt: "Student Driver Portal"
+  - url: "/images/smartdrive-instructor-portal.png"
+    title: "Instructor Command Center"
+    caption: "Instructor Command Center — Driving schedule, student candidate roster, and on-road post-lesson assessment logger."
+    alt: "Instructor Faculty Command Center"
 problemSummary: "Driving schools struggle with high administrative overhead, scheduling conflicts between instructors and student drivers, and manual invoice tracking."
 solutionSummary: "A unified portal providing real-time calendar availability, role-based dashboards, automated SMS/email reminders, and integrated payment processing."
 architectureHighlights:
@@ -40,12 +59,15 @@ SmartDrive solves this by delivering an integrated, web-based management portal 
 - Implemented calendar scheduling logic ensuring that instructor schedules and vehicle availability are evaluated atomically.
 - Added database exclusion constraints to prevent overlapping reservations during concurrent booking requests.
 
-### 2. Multi-Role Authorization
-- **Student Portal**: View upcoming driving sessions, track practical competency milestones, review instructor feedback, and submit tuition payments.
-- **Instructor Dashboard**: Review daily driving routes, log student test readiness scores, and declare availability windows.
+### 2. Multi-Role Authorization & Interactive Dashboards
+- **Student Driver Portal**: View upcoming driving sessions, track statutory licensing progress, review instructor evaluation notes, and resume modular theory lessons.
+- **Instructor Command Center**: Review assigned vehicles and daily driving routes, declare availability windows, and log real-time student test readiness assessments.
 - **Administrative Console**: Fleet management, financial audit reports, instructor assignment overrides, and business metrics.
 
-### 3. Payment Processing
+### 3. Statutory 12-Step Driver Roadmap
+- Structured progression tracking dividing driver education into 5 sequential statutory phases: *Enrollment & Identity Verification*, *Medical & Learner Permit*, *Theory & Computerized Examination*, *Dual-Control Road Training*, and *Government Trial Endorsement*.
+
+### 4. Payment Processing & Milestone Settlement
 - Integrated the PayPal REST API to facilitate secure upfront tuition deposits and milestone-based installment billing with instant webhook reconciliation.
 
 ---
