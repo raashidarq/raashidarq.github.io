@@ -111,7 +111,7 @@ const {
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg bg-bg-elevated hover:bg-bg-subtle border border-border-subtle hover:border-accent/40 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg bg-bg-elevated hover:bg-bg-surface border border-border-subtle hover:border-accent/40 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
                 aria-label={`GitHub repository for ${title}`}
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@ const {
                 href={liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg bg-bg-elevated hover:bg-bg-subtle border border-border-subtle hover:border-accent/40 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-fg-secondary hover:text-fg bg-bg-elevated hover:bg-bg-surface border border-border-subtle hover:border-accent/40 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
                 aria-label={`Live demo for ${title}`}
               >
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -146,17 +146,23 @@ const {
           <div class="lg:col-span-5 flex flex-col items-center justify-center">
             <a
               href={`/work/${project.id}`}
-              class="group/thumb block w-full relative rounded-2xl overflow-hidden border border-border-subtle hover:border-accent/50 bg-slate-950/30 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+              class="group/thumb block w-full relative rounded-2xl overflow-hidden border border-border-subtle hover:border-emerald-500/50 dark:hover:border-emerald-400/50 bg-bg-surface dark:bg-bg-elevated shadow-md hover:shadow-xl dark:shadow-none hover:-translate-y-1 transition-all duration-300 ring-1 ring-black/5 dark:ring-white/5"
             >
-              <div class="aspect-[16/9] w-full overflow-hidden">
+              <!-- Thumbnail Graphic Container -->
+              <div class="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-emerald-500/10 via-bg-surface to-emerald-600/10 dark:from-emerald-950/30 dark:via-bg-elevated dark:to-emerald-900/20">
                 <img
                   src={thumbnail}
                   alt={`${title} Preview`}
                   class="w-full h-full object-cover object-center transition-transform duration-500 group-hover/thumb:scale-105"
                   loading="eager"
                 />
+
+                <!-- Subtle Ambient Inner Overlay on Hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
-              <div class="p-3.5 bg-bg-elevated/90 border-t border-border-subtle flex items-center justify-between text-xs font-mono text-fg-muted group-hover/thumb:text-accent transition-colors">
+
+              <!-- High-Contrast Clean Bottom Action Bar -->
+              <div class="px-4 py-3 bg-bg-surface dark:bg-bg-elevated border-t border-border-subtle flex items-center justify-between text-xs font-mono text-fg-secondary group-hover/thumb:text-accent transition-colors">
                 <span class="font-medium">Explore Project Case Study</span>
                 <span class="transition-transform group-hover/thumb:translate-x-1 font-bold">→</span>
               </div>
