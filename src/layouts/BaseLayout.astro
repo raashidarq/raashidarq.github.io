@@ -3,6 +3,8 @@
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import '../styles/editorial.css';
+import '../styles/project-media.css';
 
 interface Props {
   title?: string;
@@ -11,15 +13,17 @@ interface Props {
   canonicalUrl?: string;
   articleDate?: string;
   type?: 'website' | 'article';
+  noindex?: boolean;
 }
 
 const {
-  title = 'Raashid Arquil | Software Developer',
-  description = 'Personal developer portfolio and technical case studies by Raashid Arquil. Focused on mobile systems, ML pipelines, backend architecture, and practical engineering.',
-  image = '/images/weather-app-dashboard.png',
-  canonicalUrl = Astro.url.href,
+  title = 'Raashid Arquil | Software Engineer',
+  description = 'Web and mobile applications, independent products, and freelance services by software engineer Raashid Arquil.',
+  image = '/images/portfolio-sharing-thumbnail.png',
+  canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://raashidarq.github.io').href,
   articleDate,
   type = 'website',
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.toString() : 'https://raashidarq.github.io';
@@ -27,12 +31,12 @@ const fullImageUrl = new URL(image, siteUrl).toString();
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': type === 'article' ? 'BlogPosting' : 'ProfilePage',
-  mainEntity: {
+  '@type': type === 'article' ? 'BlogPosting' : (Astro.url.pathname === '/' || Astro.url.pathname.startsWith('/about') ? 'ProfilePage' : 'WebPage'),
+  [Astro.url.pathname === "/" || Astro.url.pathname.startsWith("/about") ? "mainEntity" : "about"]: {
     '@type': 'Person',
     name: 'Raashid Arquil',
     url: siteUrl,
-    jobTitle: 'Software Developer',
+    jobTitle: 'Software Engineer',
     sameAs: [
       'https://github.com/raashidarq',
       'https://linkedin.com/in/raashid-arquil',
@@ -56,15 +60,15 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
-    <link rel="alternate" type="application/rss+xml" title="Raashid Arquil's Writing" href="/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- SEO Meta Tags -->
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Raashid Arquil" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
@@ -81,11 +85,11 @@ const jsonLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullImageUrl} />
 
-    <!-- Google Fonts Preconnect & Inter -->
+    <!-- Fonts used by the editorial layout -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
 
@@ -94,22 +98,19 @@ const jsonLd = {
 
     <!-- Prevent FOUC Theme Script -->
     <script is:inline>
-      const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && prefersDark));
+      } catch {
+        document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
       }
     </script>
   </head>
-  <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg relative overflow-x-hidden">
-    <!-- Subtle Ambient Top Glow Spotlight -->
-    <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_75%_50%_at_50%_-15%,rgba(59,130,246,0.06),transparent)] dark:bg-[radial-gradient(ellipse_75%_50%_at_50%_-15%,rgba(96,165,250,0.05),transparent)] -z-10"></div>
-    <div class="fixed inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.025] bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:28px_28px] -z-10"></div>
-
+  <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg relative">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <Navbar />
-    <main id="main-content" class="flex-1">
+    <main id="main-content" class="flex-1" tabindex="-1">
       <slot />
     </main>
     <Footer />

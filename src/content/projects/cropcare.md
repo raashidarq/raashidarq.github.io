@@ -1,126 +1,95 @@
 ---
 title: "CropCare"
-shortDescription: "An offline-first mobile agricultural diagnostic app powered by a custom on-device MobileNetV3 model, Drift SQLite persistence, and cloud LLM advisory integration."
-fullDescription: "CropCare is an offline-first mobile app enabling farmers to diagnose crop diseases from a photo, developed as a mentee project under industry mentorship at Ascentic. It combines a custom on-device MobileNetV3 model trained on multiple Kaggle datasets with Drift SQLite persistence, FastAPI, Supabase sync, Google Gemini AI treatment guidance, and WhatsApp expert escalation."
-date: "July 2026 – Present"
-role: "Mentee Project (Ascentic Mentorship)"
+shortDescription: "An offline-first mobile MVP for possible crop pest and disease identification, local guidance, and sharing uncertain cases with an expert."
+date: "In development"
+role: "Research, product scope, system design & implementation"
 status: "in-development"
 featured: true
-order: 1
-technologies:
-  - "Flutter"
-  - "Dart"
-  - "MobileNetV3 (TFLite)"
-  - "Drift (SQLite)"
-  - "FastAPI"
-  - "Supabase"
-  - "PostgreSQL"
-  - "Google Gemini API"
-  - "WhatsApp Integration"
-  - "Sinhala & Tamil i18n"
-category: "Offline-first Mobile App with ML and AI integrations"
-pastelTheme: "green"
+order: 2
+technologies: ["Flutter", "MobileNetV3 / TensorFlow Lite", "FastAPI", "Drift / SQLite", "Supabase", "Google Gemini API"]
+category: "Ascentic Launchpad project"
 githubUrl: "https://github.com/raashidarq/cropcare"
-liveUrl: ""
-productUrl: ""
-demoUrl: ""
-thumbnail: "/images/cropcare-thumbnail.png"
 heroImage: "/images/cropcare-thumbnail.png"
 gallery:
-  - url: "/images/cropcare-thumbnail.png"
-    title: "CropCare Mobile Application"
-    caption: "CropCare — Offline-first agricultural diagnosis with on-device MobileNetV3 and Gemini AI."
-    alt: "CropCare Thumbnail"
-  - url: "/images/cropcare-architecture.png"
-    title: "System Architecture"
-    caption: "End-to-end data flow from on-device TFLite inference to FastAPI & Supabase sync."
-    alt: "System Architecture of CropCare"
-problemSummary: "Crop disease is an immediate threat to farmer income and food security, yet expert diagnostic knowledge is geographically scarce and inaccessible in rural areas."
-solutionSummary: "On-device sub-second diagnosis via custom MobileNetV3, offline Drift reference fallbacks, Gemini LLM treatment guidance when online, and WhatsApp human expert escalation."
-architectureHighlights:
-  - "Custom-trained MobileNetV3 on-device inference running with zero internet connectivity."
-  - "Layered Flutter architecture with BLoC/Cubit state management, Drift SQLite, and Background Worker+ sync."
-  - "FastAPI backend communicating with Supabase (Phone OTP & Postgres) and Google Gemini API for localized treatment advisory."
----
-
-## Overview
-
-CropCare is an offline-first mobile application designed to bridge the agricultural diagnostic gap. It allows farmers to capture a photo of an affected plant and receive an immediate on-device disease classification, clear localized treatment guidance, and direct escalation to agricultural experts.
-
----
-
-## The Problem
-
-Crop disease is one of the most direct threats to a farmer's income and food security — a disease caught late, or misidentified entirely, can wipe out a season's yield. Diagnosing it correctly requires either specialist knowledge or access to someone who has it, neither of which is reliably available where it's needed most.
-
----
-
-## Who It Happens To
-
-Smallholder farmers, particularly in rural areas, working the land with limited or no direct access to agricultural extension officers or plant pathologists. 
-
-Farmers often work in regions with inconsistent internet connectivity and operate in local languages — **Sinhala and Tamil**, in this case — rather than the English that most diagnostic tools and documentation are written in.
+  - url: "/images/cropcare-home.png"
+    width: 302
+    height: 610
+    title: "Start a scan"
+    caption: "Development capture of the home screen and recent scan records."
+    alt: "CropCare home screen with plant scan action and history"
+  - url: "/images/cropcare-result.png"
+    width: 303
+    height: 508
+    title: "Inspect a result"
+    caption: "Partial development capture showing the result and a low-confidence message. Scores shown are model outputs."
+    alt: "CropCare result screen with a low-confidence warning"
+  - url: "/images/cropcare-language.png"
+    width: 303
+    height: 605
+    title: "Choose a language"
+    caption: "English, Sinhala, and Tamil language selection in the development interface."
+    alt: "CropCare language selection dialog"
+  - url: "/images/cropcare-storage.png"
+    width: 304
+    height: 439
+    title: "Manage local and cloud records"
+    caption: "Partial development capture showing pending synchronization, account status, and restore controls."
+    alt: "CropCare offline storage and synchronization controls"
 
 ---
+## From an agricultural problem to a mobile MVP
 
-## Why It Happens
+My dad suggested agriculture when I joined Ascentic's AI Launchpad. Research helped narrow a large subject into a specific question: could a farmer use a phone to identify a possible plant problem and find a useful next step, even with limited connectivity?
 
-Expert agricultural knowledge is scarce and geographically concentrated — extension officers cannot be everywhere a disease breaks out, and by the time a farmer can reach one, real damage may already be done. 
+I defined the product scope, user flows, and system design, and used AI to assist implementation. CropCare reached the programme's Top 20 and then the Top 10. I presented the MVP at TRACE, Sri Lanka, on 19th Sep (2026).
 
-Existing digital tools rarely account for the actual conditions farmers work in: unreliable connectivity, language barriers, and interfaces not designed for quick, practical use in a field.
+## What works today
 
----
+The core flow starts in guest mode. A farmer captures a plant image, the application checks whether it is suitable for inference, and TensorFlow Lite runs the classifier on the device. The result and scan history are stored locally using Drift and SQLite.
 
-## How CropCare Solves It
+| Flow | Current behaviour |
+| --- | --- |
+| Scan and classification | On-device inference, preceded by image-quality and content checks. |
+| Local guidance | Pre-seeded guidance is available without a cloud request. |
+| AI recommendation | An explicit online request adds structured advice; the result is cached locally. |
+| Follow-up chat | Diagnosis-scoped conversation with a local transcript and retry behaviour. An online response requires connectivity. |
+| Account and sync | Guest-first local records, account upgrade, queued synchronization, and cloud restore. |
+| Expert referral | The native share sheet packages the photograph and case details for WhatsApp or another supported app. Sending depends on the chosen app and connectivity. |
 
-CropCare puts a working diagnosis in a farmer's hand, from their own phone, in seconds — **no internet required**. 
+The interface supports English, Sinhala, and Tamil, with text-to-speech and adjustable text settings. Available speech features depend on the device's language support.
 
-- **Sub-Second On-Device Diagnosis**: A photo of an affected plant is analyzed on-device by a custom-trained **MobileNetV3** model via TensorFlow Lite, giving an immediate disease identification even with zero connectivity.
-- **Hybrid Treatment Guidance**: When the farmer is online, an LLM (via **Google's Gemini API**) generates clear, localized treatment guidance tailored to that diagnosis; when they're offline, the app falls back to a built-in local reference database powered by **Drift (SQLite)**, so there is always an answer.
-- **In-App Follow-Up & WhatsApp Escalation**: Farmers can ask follow-up questions through an in-app chat. When the diagnosis is uncertain, the case can be escalated directly to a human agricultural expert via **WhatsApp** — closing the gap between AI-assisted triage and real human expertise.
-- **Accessibility & Inclusivity**: Built-in accessibility features — including adjustable text sizing, multilingual UI (Sinhala, Tamil, English), and speech playback (TTS) — are designed specifically to make the app usable for its actual audience in the field.
+The MVP is in development. Model evaluation and treatment safeguards remain part of the release work.
 
----
+## Looking beyond the confidence score
 
-## System Architecture
+During testing, I selected a photograph from the gallery and the application did not give the expected answer. The issue became clearer later: a confident-looking output did not establish that the classifier had correctly understood the image.
 
-Below is the initial system architecture diagram for CropCare, showing the end-to-end data flow from camera input and on-device model execution to background synchronization and cloud advisory services:
+Raising the confidence threshold alone would not address that example. I added checks before inference for file validity, image size, exposure, blur, and vegetation-like colour content. The checks can reject unsuitable images before they reach the model.
 
-<div class="my-8 rounded-xl overflow-hidden border border-border-subtle bg-bg-surface p-2 shadow-sm">
-  <img
-    src="/images/cropcare-architecture.png"
-    alt="System Architecture of CropCare"
-    class="w-full h-auto rounded-lg"
-    loading="lazy"
-  />
-</div>
+After inference, confidence and normalized Shannon entropy help identify uncertain outputs and change how the result is presented. They are additional checks, not proof that a prediction is correct.
 
-## Current Features Available in the App
+The image checks are lightweight heuristics. Their thresholds need evaluation against real field photographs, including diseased leaves and different crops; they are not a trained guarantee that an image contains a plant.
 
-- **On-Device Disease Diagnosis**: Instant identification of plant diseases using a custom MobileNetV3 model running via TensorFlow Lite — 100% offline with zero cellular latency.
-- **Offline Reference Database**: Built-in fallback database containing disease descriptions, symptom checklists, and standard remedies stored locally via Drift (SQLite).
-- **AI-Powered Localized Treatment**: Integration with Google Gemini API when online to generate personalized treatment protocols, organic remedies, and precise pesticide guidelines.
-- **In-App Follow-Up Chat**: Context-aware chat interface allowing farmers to ask specific questions regarding symptoms and disease management.
-- **WhatsApp Expert Escalation**: Direct one-tap export and case sharing with agricultural extension officers and plant pathologists via WhatsApp when a diagnosis is uncertain.
-- **Accessibility & Speech Playback**: Multilingual interface supporting Sinhala, Tamil, and English, along with adjustable text sizing and Text-to-Speech (TTS) audio playback.
-- **Background Telemetry Sync**: Automatic batch synchronization of diagnostic history and field logs via Background Worker+ once network connectivity is restored.
+## Local guidance first; AI when requested
 
----
+Earlier iterations requested AI guidance automatically when opening a result. Reopening a scan could spend another API request, and navigating away during an asynchronous request exposed a closed-state lifecycle error.
 
-## Key Decisions & Trade-Offs
+The current flow loads local guidance first. A separate “Get AI Recommendation” action makes the online request deliberate, and caching avoids fetching an existing recommendation again. State updates also account for the screen's lifecycle.
 
-| Decision | Why Chosen | Trade-Off & Mitigation |
-| :--- | :--- | :--- |
-| **Custom MobileNetV3 (On-Device)** | Delivers sub-50ms inference with zero cellular network dependency. | Lower parameter count than cloud Vision Transformers; mitigated through focused dataset curation on regional crop pathologies. |
-| **Drift (SQLite) Local Cache** | Strongly typed Dart SQL queries with reactive stream subscriptions. | Requires schema migration management on client app updates. |
-| **FastAPI + Supabase Backend** | Asynchronous Python backend paired with managed PostgreSQL and Phone OTP auth. | Decoupled architecture requires idempotent background sync handling. |
-| **WhatsApp Expert Escalation** | Leverages the messaging platform farmers already have installed rather than forcing a complex new support portal. | Manual human triage; laid groundwork for future dedicated extension officer portals. |
+This separates the part that can work offline from the optional cloud interaction, while keeping advice available when connectivity fails.
 
----
+## Testing and current limits
 
-## Future Plans
+The Flutter test suite includes use cases, state transitions, database repositories, API clients, and widgets. Specific tests cover image validation, localization parity, treatment-guideline coverage, and retaining guidance through online-request failures. The backend has its own test suite for API behaviour.
 
-- **Weather Integration**: Factoring in humidity, rainfall, and forecast conditions to assess disease risk proactively, rather than only reacting after symptoms appear.
-- **Latest Market Considerations for Farmers**: Giving farmers visibility into current market conditions, so decisions extend beyond treatment to when and where to sell.
-- **TTS and Speech Recognition for Sinhala and Tamil**: Extending the app's voice features beyond English, so farmers more comfortable speaking than reading or typing aren't left out.
-- **Features Suited for Agricultural Extension Officers & Researchers**: Evolving today's manual WhatsApp escalation into a proper platform connecting farmers with experts, and giving researchers meaningful, aggregated access to the patterns the app surfaces over time.
+I also tested the application on a Samsung Galaxy A528B, including the camera, offline use, speech output, and sharing. Application checks and automated tests are separate from evaluating model accuracy on representative field images.
+
+The model pipeline is moving from lab-style PlantVillage data toward field-oriented datasets and a 34-class taxonomy across six crops. The current application uses the field MobileNetV3 model. Classification quality, the rejection thresholds, and treatment safeguards still need further evaluation before a public release.
+
+CropCare is not released on the Play Store.
+
+## The programme and presentation
+
+[Ascentic's eight-week AI Launchpad](https://ascentic.se/ailaunchpad/) combined practical sessions with mentorship. The programme's finalist listing includes CropCare and my mentor, Bamisan.
+
+The experience changed how I approach a project: start with the problem and existing solutions, then decide where the technology belongs. [Read my reflection on Launchpad](/notes/problem-before-technology).

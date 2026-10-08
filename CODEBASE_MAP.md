@@ -1,134 +1,41 @@
-# Codebase Map (`CODEBASE_MAP.md`)
+# Portfolio codebase map
 
-> **Persistent Architecture Reference**: This document describes the structure, components, data flows, routing, and deployment workflow for Raashid Arquil's developer portfolio and case study platform.
+Astro static site with TypeScript content collections, Tailwind utilities, and editorial CSS. GitHub Pages deployment remains in .github/workflows/deploy.yml.
 
----
+## Pages
+- src/pages/index.astro: introduction, selected products, services, earlier work, actual experiences.
+- src/pages/work/index.astro: featured products and secondary archive.
+- src/pages/work/[...slug].astro: collection-driven project pages.
+- src/pages/services.astro: scoped service offers and intended delivery process.
+- src/pages/contact.astro: email and prefilled enquiry prompts; no backend form.
+- src/pages/about.astro: personal story, working method, background.
+- src/pages/writing: retained routes; existing articles remain drafts.
+- src/pages/404.astro: recovery page.
 
-## 1. Architectural Overview
+## Shared presentation
+BaseLayout supplies metadata, font loading, theme initialization, skip link, navigation and footer. Navbar uses native details for its mobile menu. ThemeToggle updates theme and accessible state with optional localStorage persistence.
 
-- **Framework**: [Astro 5](https://astro.build) (Static output, islands architecture)
-- **Language**: TypeScript (Strict type checking, Zod schemas)
-- **Styling**: Tailwind CSS + Custom CSS Design Tokens (`src/styles/tokens.css`)
-- **Content Engine**: Astro Content Collections (`src/content.config.ts`)
-- **Deployment**: Static HTML/CSS hosting (GitHub Pages)
+ProductCover renders abstract, typographic covers for KeepClose and CropCare. ProjectCard renders collection entries. ContactBanner provides the shared contact invitation. CaseStudyLayout renders metadata, story content, and static image galleries linking to full-size assets.
 
----
+## Content and styling
+src/content/projects contains Markdown project stories. Featured entries are KeepClose, CropCare, and SmartDrive. Earlier projects are available through the archive. Content schemas are in src/content.config.ts.
 
-## 2. Directory Structure
+src/styles/tokens.css owns semantic light/dark colours. src/styles/global.css owns the editorial layout, type scale and breakpoints. tailwind.config.mjs remains for utility classes and legacy writing pages.
 
-```
-portfolio-redesign/
-├── .github/                     # GitHub Actions CI/CD workflows
-├── public/                      # Static assets served at root
-│   ├── images/                  # Project screenshots, portraits, and SVGs
-│   ├── cv.pdf                   # Downloadable CV PDF
-│   └── robots.txt               # Search engine directives
-├── src/
-│   ├── assets/                  # Bundled assets (processed by Vite)
-│   ├── components/              # Modular UI components
-│   │   ├── FlagshipHero.astro   # High-impact launch showcase for CropCare
-│   │   ├── Footer.astro         # Understated semantic footer
-│   │   ├── Navbar.astro         # Sticky header with mobile drawer & theme switcher
-│   │   ├── NowWidget.astro      # Current engineering focus widget
-│   │   ├── ProjectCard.astro    # Editorial project card with status indicators
-│   │   ├── StatusBadge.astro    # Semantic status badge (In Development, Live, etc.)
-│   │   ├── TechPill.astro       # Monospace technology badge
-│   │   ├── ThemeToggle.astro    # Client-side theme switcher (zero layout shift)
-│   │   └── YouTubeEmbed.astro   # Zero-runtime click-to-load video facade
-│   ├── content/
-│   │   ├── projects/            # Markdown case studies with structured frontmatter
-│   │   │   ├── cropcare.md      # Flagship mobile + ML case study
-│   │   │   ├── smartdrive.md
-│   │   │   ├── weather-app-dashboard.md
-│   │   │   ├── grifindo-payroll.md
-│   │   │   └── malcolm-photography.md
-│   │   └── writing/             # Technical articles & architecture logs
-│   │       ├── on-device-ml-cropcare.md
-│   │       ├── flutter-bloc-architecture.md
-│   │       └── practical-web-performance.md
-│   ├── layouts/
-│   │   ├── BaseLayout.astro     # Base document layout with SEO, OpenGraph, JSON-LD
-│   │   ├── CaseStudyLayout.astro# Editorial layout for deep project case studies
-│   │   └── WritingLayout.astro  # Longform typography layout for articles
-│   ├── pages/
-│   │   ├── 404.astro            # Custom 404 recovery page
-│   │   ├── about.astro          # About narrative, values, credentials & CV
-│   │   ├── index.astro          # Homepage (Hero, Flagship, Selected, Writing)
-│   │   ├── rss.xml.ts           # Auto-generated RSS feed endpoint
-│   │   ├── work/
-│   │   │   ├── [...slug].astro  # Dynamic project case study router
-│   │   │   └── index.astro      # Work & case studies archive
-│   │   └── writing/
-│   │       ├── [...slug].astro  # Dynamic article router
-│   │       └── index.astro      # Technical writing archive
-│   ├── styles/
-│   │   ├── global.css           # Base styles, focus states, reduced-motion
-│   │   └── tokens.css           # Semantic color tokens for light & dark themes
-│   └── content.config.ts        # Content Collections schema definition
-├── astro.config.mjs             # Astro configuration (Tailwind, Sitemap)
-├── design.md                    # Authoritative visual design specification
-├── package.json                 # Project dependencies & build scripts
-├── README.md                    # Developer setup & publishing instructions
-├── tailwind.config.mjs          # Tailwind theme mapping to CSS variables
-└── tsconfig.json                # TypeScript strict configuration & path aliases
-```
+Assignment-Answers.md is user-owned source material. design.md describes the new direction. REDESIGN-NOTES.md records factual questions, assets and validation limits.
 
----
+## Assets
+public/images retains existing project images and portrait. portfolio-social.svg is editable source; portfolio-social.png is the broadly compatible social preview. KeepClose UI and approved event media are still to be supplied.
 
-## 3. Content Architecture & Schemas
+## Commands
+npm run dev -- --host 127.0.0.1 starts a local preview.
+npm run build performs Astro diagnostics and builds dist.
+No new packages are required for the redesign.
 
-Defined in `src/content.config.ts`:
+## Second editorial revision
 
-### `projects` Collection
-- `title` (string)
-- `shortDescription` (string)
-- `fullDescription` (optional string)
-- `date` (string, e.g. "2025–2026")
-- `role` (string)
-- `status` (`'concept' | 'in-development' | 'beta' | 'live' | 'archived'`)
-- `featured` (boolean)
-- `order` (number)
-- `technologies` (string array)
-- `category` (string)
-- `githubUrl` / `liveUrl` / `productUrl` / `demoUrl` (optional URLs)
-- `youtubeId` (optional YouTube video ID for click-to-load embed)
-- `thumbnail` / `heroImage` (optional image paths)
-- `architectureHighlights` (optional string array)
-
-### `writing` Collection
-- `title` (string)
-- `description` (string)
-- `date` (string)
-- `updatedDate` (optional string)
-- `tags` (string array)
-- `readingTime` (string)
-- `draft` (boolean)
-- `featured` (boolean)
-
----
-
-## 4. How to Add New Content
-
-### Adding a New Project
-Create a Markdown file under `src/content/projects/your-project-slug.md` with the required frontmatter. It will automatically appear in `/work`, on the homepage (if `featured: true`), and generate a dedicated case study page at `/work/your-project-slug`.
-
-### Adding a New Article
-Create a Markdown file under `src/content/writing/your-article-slug.md` with the required frontmatter. It will automatically generate `/writing/your-article-slug` and update the RSS feed at `/rss.xml`.
-
----
-
-## 5. Development & Deployment
-
-```bash
-# Start local development server (port 4321)
-npm run dev
-
-# Run TypeScript & schema verification
-npm run check
-
-# Build static production bundle into dist/
-npm run build
-
-# Preview production build locally
-npm run preview
-```
+- Notes collection: src/content/notes; index and article routes: src/pages/notes. Preview entries have no dates, noindex metadata, and are excluded from RSS/sitemap.
+- src/styles/editorial.css contains the second pass layout and responsive rules; BaseLayout imports it after global.css.
+- SmartDrive uses actual sandbox screenshots and a CSS screenshot cover, with fictional-data labels.
+- Legacy unused presentation components were removed.
+- CONTENT-QUESTIONS.md tracks unverified facts; REVISION-STATUS.md records the remaining review and validation.

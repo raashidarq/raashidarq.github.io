@@ -9,7 +9,7 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap(),
+    sitemap({filter: (page) => !/\/(notes|writing)(\/|$)/.test(new URL(page).pathname) && !/\/work\/(grifindo-payroll|malcolm-photography|weather-app-dashboard)\//.test(new URL(page).pathname)}),
   ],
   markdown: {
     shikiConfig: {

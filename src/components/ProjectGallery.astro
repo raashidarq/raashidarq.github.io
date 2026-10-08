@@ -1,0 +1,63 @@
+﻿---
+import OptimizedImage from './OptimizedImage.astro';
+interface Item { url:string; alt?:string; title?:string; caption?:string; width?:number; height?:number; }
+interface Props { items:Item[]; title:string; demo?:boolean; }
+const {items,title,demo=false}=Astro.props;
+const id=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+---
+<section class="case-evidence image-gallery" data-project-gallery aria-label={`${title} image gallery`}>
+  <div class="section-heading"><h2 class="eyebrow">{demo?'Inside the prototype':'Project gallery'}</h2><span class="small-copy">{demo?'Fictional demo data':title==='KeepClose'?'Development screens · Fictional records':'Development screens'}</span></div>
+  <div class="gallery-viewer">
+    {items.map((item,index)=><figure class="gallery-slide" hidden={index!==0} data-slide>
+      <button type="button" class="gallery-expand" aria-label={`Expand ${item.title||item.alt||`image ${index+1}`}`} aria-haspopup="dialog"><OptimizedImage src={item.url} alt={item.alt||item.title||title} width={item.width} height={item.height} sizes="(max-width: 760px) 90vw, 900px"/><span class="gallery-expand-label">View full size ↗</span></button>
+      <figcaption><h3>{item.title||`Image ${index+1}`}</h3>{item.caption&&<p>{item.caption}</p>}</figcaption>
+    </figure>)}
+  </div>
+  <div class="gallery-navigation"><button class="gallery-back" type="button" aria-label="Previous image">← Previous</button><p class="gallery-position" aria-live="polite" aria-atomic="true">1 / {items.length}</p><button class="gallery-forward" type="button" aria-label="Next image">Next →</button></div>
+  <div class="gallery-thumbnails" aria-label="Choose an image">{items.map((item,index)=><button class="gallery-thumbnail" type="button" aria-pressed={index===0?'true':'false'} aria-label={`${index+1}. ${item.title||item.alt||'Image'}`} data-src={item.url} data-alt={item.alt||item.title||title} data-title={item.title||`Image ${index+1}`} data-caption={item.caption||''}><OptimizedImage src={item.url} alt="" width={item.width} height={item.height} sizes="100px"/><span>{String(index+1).padStart(2,'0')}</span></button>)}</div>
+  <dialog class="gallery-dialog" aria-label={`${title} expanded gallery`} aria-describedby={`${id}-caption`}>
+    <div class="gallery-modal"><div class="gallery-toolbar"><p class="gallery-counter" aria-live="polite"></p><button class="gallery-close" type="button" autofocus>Close ×</button></div><div class="gallery-stage"><p class="gallery-feedback" role="status">Loading image…</p><img class="gallery-full-image" alt="" hidden/></div><div class="gallery-modal-copy"><h2 class="gallery-image-title"></h2><p class="gallery-caption" id={`${id}-caption`}></p></div><div class="gallery-controls"><button class="gallery-prev" type="button" aria-label="Previous image">← Previous</button><a class="gallery-original" target="_blank" rel="noopener noreferrer">Open original ↗</a><button class="gallery-next" type="button" aria-label="Next image">Next →</button></div></div>
+  </dialog>
+</section>
+<script>
+ document.querySelectorAll<HTMLElement>('[data-project-gallery]').forEach(gallery=>{
+  const slides=Array.from(gallery.querySelectorAll<HTMLElement>('[data-slide]'));
+  const thumbnails=Array.from(gallery.querySelectorAll<HTMLButtonElement>('.gallery-thumbnail'));
+  const dialog=gallery.querySelector<HTMLDialogElement>('dialog')!;
+  const image=gallery.querySelector<HTMLImageElement>('.gallery-full-image')!;
+  const feedback=gallery.querySelector<HTMLElement>('.gallery-feedback')!;
+  let current=0, savedOverflow='';
+  function renderModal(){
+   const item=thumbnails[current].dataset;
+   image.hidden=true;feedback.hidden=false;feedback.textContent='Loading image…';
+   image.onload=()=>{image.hidden=false;feedback.hidden=true;};
+   image.onerror=()=>{feedback.textContent='This image could not load. Use Open original below.';};
+   image.alt=item.alt||'';image.src=item.src!;
+   if(image.complete&&image.naturalWidth>0){image.hidden=false;feedback.hidden=true;}
+   gallery.querySelector<HTMLElement>('.gallery-image-title')!.textContent=item.title||'';
+   gallery.querySelector<HTMLElement>('.gallery-caption')!.textContent=item.caption||'';
+   gallery.querySelector<HTMLElement>('.gallery-counter')!.textContent=`${current+1} / ${slides.length}`;
+   gallery.querySelector<HTMLAnchorElement>('.gallery-original')!.href=item.src!;
+  }
+  function select(index:number){
+   current=(index+slides.length)%slides.length;
+   slides.forEach((slide,i)=>slide.hidden=i!==current);
+   thumbnails.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===current)));
+   gallery.querySelector<HTMLElement>('.gallery-position')!.textContent=`${current+1} / ${slides.length}`;
+   if(dialog.open)renderModal();
+  }
+  thumbnails.forEach((button,index)=>button.addEventListener('click',()=>select(index)));
+  ['.gallery-back','.gallery-prev'].forEach(selector=>gallery.querySelector<HTMLButtonElement>(selector)!.addEventListener('click',()=>select(current-1)));
+  ['.gallery-forward','.gallery-next'].forEach(selector=>gallery.querySelector<HTMLButtonElement>(selector)!.addEventListener('click',()=>select(current+1)));
+  gallery.querySelectorAll<HTMLButtonElement>('.gallery-expand').forEach((button,index)=>button.addEventListener('click',()=>{
+   select(index);renderModal();savedOverflow=document.body.style.overflow;dialog.showModal();document.body.style.overflow='hidden';
+  }));
+  gallery.querySelector('.gallery-close')!.addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+  gallery.addEventListener('keydown',event=>{
+   if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();select(current+(event.key==='ArrowLeft'?-1:1));}
+  });
+  dialog.addEventListener('close',()=>{document.body.style.overflow=savedOverflow;slides[current].querySelector<HTMLButtonElement>('button')?.focus();});
+  gallery.querySelectorAll<HTMLButtonElement>('.gallery-back,.gallery-forward,.gallery-prev,.gallery-next').forEach(button=>button.disabled=slides.length<2);
+ });
+</script>

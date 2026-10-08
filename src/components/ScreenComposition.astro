@@ -1,0 +1,18 @@
+---
+import OptimizedImage from './OptimizedImage.astro';
+interface Item{url:string;alt?:string;title?:string;caption?:string;width?:number;height?:number;}
+interface Props{items:Item[];layout:'phone'|'web'|'mixed';interactive?:boolean;compact?:boolean;}
+const {items,layout,interactive=false,compact=false}=Astro.props;
+---
+<div class={`screen-composition composition-${layout} ${compact?'composition-compact':''}`}>
+  <div class="composition-screens">
+    {items.map((item,index)=>{
+      const Tag=interactive?'button':'div';
+      return <Tag type={interactive?'button':undefined} class={`composition-screen screen-${index+1} ${interactive?'gallery-open':''}`} data-index={index} data-src={item.url} data-alt={item.alt||item.title||'Project interface'} data-caption={item.caption||item.title||''} aria-label={interactive?`Expand ${item.title||item.alt||'image'}, ${index+1} of ${items.length}`:undefined} aria-haspopup={interactive?'dialog':undefined}>
+        {layout==='web'&&<div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>SmartDrive</span></div>}
+        <OptimizedImage src={item.url} alt={item.alt||item.title||'Project interface'} width={item.width} height={item.height} sizes={layout==='phone'?'(max-width: 760px) 170px, 220px':compact?'(max-width: 640px) 260px, 400px':'(max-width: 760px) 70vw, 680px'}/>
+        {interactive&&<span class="composition-expand" aria-hidden="true">View screen</span>}
+      </Tag>;
+    })}
+  </div>
+</div>

@@ -1,0 +1,31 @@
+---
+import ScreenComposition from './ScreenComposition.astro';
+const smartScreens=[{url:'/images/smartdrive-instructor-new.jpg',alt:'SmartDrive instructor demo interface',width:1434,height:992},{url:'/images/smartdrive-student-new.jpg',alt:'SmartDrive student demo interface',width:1434,height:992},{url:'/images/smartdrive-admin.jpg',alt:'SmartDrive administrator demo interface',width:1434,height:992}];
+interface Props{kind:'keepclose'|'cropcare'|'smartdrive';}
+const {kind}=Astro.props;
+---
+{kind==='keepclose'?<div class="product-cover keepclose-cover">
+<div class="cover-top">
+<span>A personal project</span>
+<span>Android / Offline</span>
+</div>
+<div class="keepclose-word">Keep<span>Close.</span>
+</div>
+<div class="cover-bottom">People. Relationships.<br/>The details worth remembering.</div>
+<div class="cover-orbit" aria-hidden="true">
+</div>
+<div class="cover-orbit second" aria-hidden="true">
+</div>
+</div>:kind==='smartdrive'?<div class="product-cover smartdrive-cover"><div class="cover-top"><span>SmartDrive</span><span>Prototype / Demo data</span></div><div class="smart-cover-title">The school.<br/><em class="serif">In one place.</em></div><ScreenComposition items={smartScreens} layout="web" compact/></div>:<div class="product-cover cropcare-cover">
+<div class="cover-top">
+<span>Ascentic Launchpad</span>
+<span>Mobile / Applied ML</span>
+</div>
+<div>
+<div class="crop-title">CropCare</div>
+<div class="serif">A closer look<br/>at crop health.</div>
+</div>
+<div class="cover-bottom">On-device classification.<br/>An application in development.</div>
+<div class="crop-lines" aria-hidden="true">
+</div>
+</div>}

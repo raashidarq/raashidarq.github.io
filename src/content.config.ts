@@ -25,6 +25,8 @@ const projects = defineCollection({
       .array(
         z.object({
           url: z.string(),
+          width: z.number().optional(),
+          height: z.number().optional(),
           caption: z.string().optional(),
           alt: z.string().optional(),
           title: z.string().optional(),
@@ -54,7 +56,19 @@ const writing = defineCollection({
   }),
 });
 
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
+  schema: z.object({
+    title: z.string(), description: z.string(),
+    date: z.string().optional(), sourceUrl: z.string().url().optional(),
+    topic: z.string(), readingTime: z.string(),
+    preview: z.boolean().default(true), order: z.number().default(99),
+    image: z.string().optional(),
+  }),
+});
+
 export const collections = {
+  notes,
   projects,
   writing,
 };

@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props {
+  src: string;
+  alt: string;
+  width?: number | string;
+  height?: number | string;
+  loading?: 'lazy' | 'eager';
+  sizes?: string;
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+const {src, alt, width, height, loading = 'lazy', fetchpriority = 'auto', sizes = '(max-width: 640px) calc(100vw - 36px), (max-width: 1000px) 50vw, 720px'} = Astro.props;
+const assets = import.meta.glob<{default: ImageMetadata}>('../../public/images/*.{jpg,jpeg,png}', {eager: true});
+const asset = assets[`../../public${src}`]?.default;
+const outputWidth = asset ? Math.min(asset.width, 1440) : (width ? Number(width) : undefined);
+---
+{asset ? <Image src={asset} alt={alt} width={outputWidth} widths={[360,720,1080,1440].filter(w=>w<=asset.width)} sizes={sizes} format="webp" quality={85} loading={loading} fetchpriority={fetchpriority}/> : <img src={src} alt={alt} width={width} height={height} loading={loading} fetchpriority={fetchpriority}/>}
