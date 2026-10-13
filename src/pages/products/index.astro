@@ -1,0 +1,50 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import type { Palette } from '../../layouts/ProductLayout.astro';
+
+const palette: Palette = {
+  scheme: 'light', bg: '#f5f2eb', surface: '#fbfaf6', ink: '#242722', muted: '#555951',
+  accent: '#984b30', accentInk: '#984b30', onAccent: '#fbfaf6', line: '#d8d7ce',
+};
+
+const products = [
+  { slug: 'keepclose', name: 'KeepClose', line: 'Remember the people in your life, and what matters to them.', status: 'Android · In development',
+    c: { bg: '#e3e7db', surface: '#f3f5ee', ink: '#1f2a22', accentInk: '#3f5c45', line: '#c3cbbc' } },
+  { slug: 'cropcare', name: 'CropCare', line: 'Photograph a plant. See what might be wrong, and what to do next.', status: 'Working MVP',
+    c: { bg: '#16392b', surface: '#1f4a38', ink: '#f2efe3', accentInk: '#b9d98a', line: '#35624e' } },
+  { slug: 'tally', name: 'Tally', line: 'Habits, focus, tasks, and reflection in one desktop app, all on your own device.', status: 'Desktop · In development',
+    c: { bg: '#121714', surface: '#1c241f', ink: '#eef3ef', accentInk: '#7cc6a0', line: '#2c3a31' } },
+  { slug: 'smartdrive', name: 'SmartDrive', line: 'A driving school in one system, not in phone calls and record books.', status: 'Prototype · Live demo',
+    c: { bg: '#e6ecf1', surface: '#ffffff', ink: '#16304a', accentInk: '#2559b0', line: '#c6d2dd' } },
+];
+const cardVars = (c: (typeof products)[number]['c']) =>
+  `--c-bg:${c.bg};--c-surface:${c.surface};--c-ink:${c.ink};--c-accent-ink:${c.accentInk};--c-line:${c.line}`;
+---
+<ProductLayout
+  title="Products by Raashid Arquil"
+  description="KeepClose, CropCare, Tally, and SmartDrive: small, honest software products made by Raashid Arquil."
+  palette={palette}
+  brand="index"
+  wordmark="Products by Raashid"
+  headerCta={{ label: 'Get in touch', short: 'Contact', href: '/contact/' }}
+>
+  <section class="p-wrap pi-intro" aria-labelledby="pi-title">
+    <p class="p-eyebrow">Independent products</p>
+    <h1 id="pi-title" class="p-name">Products</h1>
+    <p class="p-subline">Software I’m building, each starting from a real problem. Each page says plainly what works today and what’s still to come.</p>
+  </section>
+  <section class="p-wrap" aria-label="All products">
+    <ul class="pi-list">
+      {products.map((p) => (
+        <li>
+          <a class="pi-card" href={`/products/${p.slug}/`} style={cardVars(p.c)}>
+            <span class="pi-status">{p.status}</span>
+            <h2>{p.name}</h2>
+            <p>{p.line}</p>
+            <span class="pi-go">View {p.name} →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</ProductLayout>

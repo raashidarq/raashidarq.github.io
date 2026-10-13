@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SmartDrive stills</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/engine.css">
+<style>
+  :root {
+    --bg: #e6ecf1; --surface: #ffffff; --ink: #16304a; --accent: #2f6fd6; --line: rgba(22,48,74,0.12);
+    --ring: #2f6fd6; --ring-halo: rgba(47,111,214,0.18); --ring-glow: rgba(47,111,214,0.35);
+  }
+  html, body { overflow: visible; }
+  .shot { position: relative; overflow: hidden; background: var(--bg); }
+  .shot svg.geo { position: absolute; inset: 0; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<section class="shot" id="hero" data-w="2400" data-h="1500"></section>
+<section class="shot" id="feature-1" data-w="1600" data-h="1200"></section>
+<section class="shot" id="feature-2" data-w="1600" data-h="1200"></section>
+<section class="shot" id="feature-3" data-w="1600" data-h="1200"></section>
+<section class="shot" id="og" data-w="1200" data-h="630"></section>
+
+<script src="../lib/engine.js"></script>
+<script src="../lib/stills.js"></script>
+<script>
+const IMG = (n) => `../../public/images/smartdrive-${n}.jpg`;
+const URL_ = "raashidarq.github.io/smartdrive";
+const geo = (el, cx, cy, rs, grid = 200) => {
+  const W = +el.dataset.w, H = +el.dataset.h;
+  let lines = "";
+  for (let x = grid; x < W; x += grid) lines += `M${x} 0V${H}`;
+  for (let y = grid; y < H; y += grid) lines += `M0 ${y}H${W}`;
+  el.insertAdjacentHTML("afterbegin", `<svg class="geo" viewBox="0 0 ${W} ${H}">
+    <path d="${lines}" stroke="#16304a" stroke-opacity="0.05" stroke-width="1.5"/>
+    <g fill="none" stroke="#2f6fd6">${rs.map((r, i) => `<circle cx="${cx}" cy="${cy}" r="${r}" stroke-opacity="${0.13 - i * 0.03}" stroke-width="2" ${i === 1 ? 'stroke-dasharray="2 14"' : ""}/>`).join("")}</g></svg>`);
+};
+const SPOT = "rgba(22,48,74,0.16)";
+
+{ const s = document.getElementById("hero");
+  geo(s, 1900, 1500, [700, 950, 1200]);
+  Still.browser(s, { src: IMG("admin"), url: URL_, x: 1010, y: 120, s: 0.9 });
+  Still.browser(s, { src: IMG("student-new"), url: URL_, x: 250, y: 300, s: 1.05 });
+}
+{ const s = document.getElementById("feature-1");
+  geo(s, 1400, 1200, [600, 800, 1000]);
+  Still.browser(s, { src: IMG("student-new"), url: URL_, x: 141, y: -53, s: 1.3,
+    rings: [{ x: 128, y: 362, w: 758, h: 174, r: 18, spot: true, dim: SPOT }] });
+}
+{ const s = document.getElementById("feature-2");
+  geo(s, 1400, 1200, [600, 800, 1000]);
+  Still.browser(s, { src: IMG("schedule"), iw: 1434, ih: 992, url: URL_, x: -5, y: -287, s: 1.45,
+    rings: [{ x: 262, y: 394, w: 584, h: 352, r: 18, spot: true, dim: SPOT }] });
+}
+{ const s = document.getElementById("feature-3");
+  geo(s, 1400, 1200, [600, 800, 1000]);
+  Still.browser(s, { src: IMG("instructor-new"), url: URL_, x: -128, y: -157, s: 1.3,
+    rings: [{ x: 136, y: 662, w: 1156, h: 108, r: 16, spot: true, dim: SPOT }] });
+}
+{ const s = document.getElementById("og");
+  geo(s, 1100, 630, [360, 480, 600], 120);
+  s.insertAdjacentHTML("beforeend", `<div style="position:absolute;left:80px;top:215px;width:520px">
+    <div class="wordmark" style="font-size:104px">SmartDrive</div>
+    <div style="margin-top:22px;font-size:31px;line-height:1.38;font-weight:500;color:#3d5670">The school. In one place.</div></div>`);
+  Still.browser(s, { src: IMG("student-new"), url: URL_, x: 640, y: 110, s: 0.56 });
+}
+</script>
+</body>
+</html>

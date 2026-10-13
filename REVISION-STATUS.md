@@ -1,0 +1,26 @@
+# Portfolio revision status
+
+Implemented: clear professional opening; compact homepage with three selected projects; bounded service scopes; earlier mobile identity; real SmartDrive sandbox captures and screenshot-based cover; event evidence; Notes index and two complete user-supplied reflections; preview/noindex handling without fake dates; writing redirect; archive discovery cleanup; quieter case endings; clearer metadata and accessible card names; copy-email feedback; Escape/outside-click menu dismissal; coherent favicon; page-appropriate metadata; intrinsic gallery dimensions; removed unused legacy components; separated revision styling.
+
+Confirmed input added: CropCare MVP, Top 20 then Top 10 progression, TRACE presentation, and the supplied LinkedIn reflections.
+
+Pending evidence: KeepClose interfaces and exact completed flows; CropCare screens/video and verification details; SmartDrive backend functionality beyond observed sandbox screens; dates and contribution details; service availability; resume factual alignment. See CONTENT-QUESTIONS.md.
+
+Validation: production build passed with zero errors/warnings/hints (25 Astro files, 16 built pages). All 312 generated local references resolve; preview Notes and the error page have noindex metadata, and preview Notes are excluded from the sitemap. Browser inspection of the revised localhost pages is pending because the in-app browser currently displays a connection-error page; both local servers respond with HTTP 200 from the workspace. Public SmartDrive sandbox inspected, with student, booking, instructor, and administrator captures saved. No deployment or commit performed.
+
+## Answers incorporated
+
+CropCare case study expanded with implemented flow boundaries, image rejection, opt-in cached guidance, and testing scope. Current inference code and decision records reviewed; exact benchmark/test totals and absolute reliability language omitted because source records differ. Added TRACE 19 September (year pending), eHab Software Engineering category, 14 October 2023, and research/Figma contribution. Linked original Notes posts, retaining preview status and no invented publication dates. Services copy unchanged; FREELANCE-DECISIONS.md provides decision questions.
+
+## Final local review build
+Responsive WebP delivery added for portraits, event material, and project evidence; originals remain accessible through gallery links. Narrow covers, single-column mobile metadata/process, and scrollable engineering tables refined. Astro diagnostics: 26 files, zero errors/warnings/hints. Production build: 16 pages. Preview running at http://localhost:4321/ (127.0.0.1:4321). Browser visual verification remains unavailable because its connection-error document is blocked by the browser URL policy. User can review the production preview directly. Factual evidence questions and resume alignment remain pending; services copy remains unchanged by instruction.
+
+## Requested detail refinements
+Corrected the gallery-photo testing account without asserting a desk or specific classification. TRACE date confirmed as 19th Sep (2026). Internal table dividers, navigable native-dialog galleries with keyboard controls and focus restoration, screenshot-based CSS laptop cover, and SVG CTA arrow added. Separate portfolio-sharing-thumbnail.png created; used as the default social image. Visual browser interaction verification remains blocked by the existing browser URL policy.
+
+KeepClose evidence incorporated from supplied report and read-only source review. Added four fictional-record development renders, portrait-aware gallery layout, concrete flows and design boundaries, and dated validation results. Corrected the encrypted-ZIP claim: archive export uses plain ZipOutputStream. Physical-phone testing and personal investigation remain questions. App tests were not rerun.
+
+Presentation revision: removed KeepClose Validation and remaining work section by request. Replaced thumbnail grids with staged phone, browser-window, and mixed-media compositions using existing real assets. Removed CSS laptop; SmartDrive cover uses layered interface panels. Retained expanded viewer navigation. Build diagnostics: 28 files, zero errors/warnings/hints; 16 pages built. Five served pages verified. Browser visual/interaction QA remains unverified.
+
+## Critique finishing pass
+Restored unified dark portfolio sharing image; all generated local/social references resolve. Added four existing CropCare development captures, labelled partial captures accurately, and separated decorative screen composition from labelled gallery selection. Added phone-strip controls, image titles, loading/error feedback, and larger modal controls. Gallery presentation CSS consolidated in project-media.css; obsolete grid/laptop rules removed. Tightened homepage/case copy; added source-supported SmartDrive demo booking/context/local-storage explanation. Website CTA intent now reaches the enquiry subject. Services and preview Notes remain unchanged. RESUME-DRAFT.md prepared; linked PDF awaits qualification confirmation. Build diagnostics: 28 files, no errors/warnings/hints. Gallery logic checked against generated script with mocked DOM contracts; this is not live browser testing. Production preview localhost:4322. Visual/touch/dark-theme browser verification remains unavailable.

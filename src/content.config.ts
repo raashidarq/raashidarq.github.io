@@ -64,6 +64,10 @@ const notes = defineCollection({
     topic: z.string(), readingTime: z.string(),
     preview: z.boolean().default(true), order: z.number().default(99),
     image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    imageCaption: z.string().optional(),
+    imageWidth: z.number().optional(),
+    imageHeight: z.number().optional(),
   }),
 });
 

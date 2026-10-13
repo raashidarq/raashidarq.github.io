@@ -1,12 +1,15 @@
 ---
 import ScreenComposition from './ScreenComposition.astro';
+import OptimizedImage from './OptimizedImage.astro';
+const keepScreens=[{url:'/images/keepclose-profile.png',alt:'',width:360,height:800},{url:'/images/keepclose-memory.png',alt:'',width:360,height:800}];
+const cropScreens=[{url:'/images/cropcare-home.png',alt:'',width:302,height:610},{url:'/images/cropcare-language.png',alt:'',width:303,height:605}];
 const smartScreens=[{url:'/images/smartdrive-instructor-new.jpg',alt:'SmartDrive instructor demo interface',width:1434,height:992},{url:'/images/smartdrive-student-new.jpg',alt:'SmartDrive student demo interface',width:1434,height:992},{url:'/images/smartdrive-admin.jpg',alt:'SmartDrive administrator demo interface',width:1434,height:992}];
-interface Props{kind:'keepclose'|'cropcare'|'smartdrive';}
+interface Props{kind:'keepclose'|'cropcare'|'smartdrive'|'tally';}
 const {kind}=Astro.props;
 ---
-{kind==='keepclose'?<div class="product-cover keepclose-cover">
+{kind==='tally'?<div class="product-cover tally-cover"><div class="cover-top"><span>Independent product</span><span>Desktop / Offline</span></div><div class="tally-word">Tally<span>.</span></div><div class="cover-bottom">Habits. Focus. Tasks. Reflection.<br/>All on your own device.</div><div class="tally-window" aria-hidden="true"><div class="tally-window-bar"><i></i><i></i><i></i></div><img src="/images/tally/tally-today-dark-1x.png" alt="" width="1440" height="900" loading="lazy"/></div></div>:kind==='keepclose'?<div class="product-cover keepclose-cover">
 <div class="cover-top">
-<span>A personal project</span>
+<span>Independent product</span>
 <span>Android / Offline</span>
 </div>
 <div class="keepclose-word">Keep<span>Close.</span>
@@ -16,6 +19,7 @@ const {kind}=Astro.props;
 </div>
 <div class="cover-orbit second" aria-hidden="true">
 </div>
+<div class="cover-phones" aria-hidden="true">{keepScreens.map(i=><OptimizedImage src={i.url} alt="" width={i.width} height={i.height} sizes="160px" loading="lazy"/>)}</div>
 </div>:kind==='smartdrive'?<div class="product-cover smartdrive-cover"><div class="cover-top"><span>SmartDrive</span><span>Prototype / Demo data</span></div><div class="smart-cover-title">The school.<br/><em class="serif">In one place.</em></div><ScreenComposition items={smartScreens} layout="web" compact/></div>:<div class="product-cover cropcare-cover">
 <div class="cover-top">
 <span>Ascentic Launchpad</span>
@@ -28,4 +32,5 @@ const {kind}=Astro.props;
 <div class="cover-bottom">On-device classification.<br/>An application in development.</div>
 <div class="crop-lines" aria-hidden="true">
 </div>
+<div class="cover-phones" aria-hidden="true">{cropScreens.map(i=><OptimizedImage src={i.url} alt="" width={i.width} height={i.height} sizes="160px" loading="lazy"/>)}</div>
 </div>}

@@ -5,8 +5,8 @@ import ContactBanner from '../../components/ContactBanner.astro';
 import {getCollection} from 'astro:content';
 const projects=(await getCollection('projects')).filter(p=>p.data.featured).sort((a,b)=>a.data.order-b.data.order);
 ---
-<BaseLayout title="Work — Raashid Arquil" description="KeepClose, CropCare, and SmartDrive: independent products and a web application prototype."><div class="shell">
-<header class="page-intro compact-intro"><p class="eyebrow">Products & projects</p><h1 class="display">Selected work.</h1><p class="lead">Offline relationship records, crop-health identification, and a driving-school workflow. Each project starts with a different problem.</p></header>
+<BaseLayout title="Work — Raashid Arquil" description="KeepClose, CropCare, Tally, and SmartDrive: independent products and a web application prototype."><div class="shell">
+<header class="page-intro compact-intro"><p class="eyebrow">Products & projects</p><h1 class="display">Selected work.</h1><p class="lead">Offline relationship records, crop-health identification, a local-first desktop day planner, and a driving-school workflow. Each project starts with a different problem.</p></header>
 <section class="work-grid curated-work" aria-label="Selected projects"><h2 class="sr-only">Selected projects</h2>{projects.map(project=><ProjectCard project={project}/>)}</section>
 <section class="section"><p class="eyebrow mb-4">Earlier work</p><h2 class="section-title">A few earlier builds.</h2><div class="archive-list"><a class="archive-row" href="https://github.com/raashidarq/weather-app-fe" target="_blank" rel="noopener noreferrer">Weather dashboard<span>React / Express · View source ↗</span></a><a class="archive-row" href="https://github.com/raashidarq/malcolm-lismore-photography-website" target="_blank" rel="noopener noreferrer">Photography website<span>PHP / MySQL · View source ↗</span></a></div></section><ContactBanner/>
 </div></BaseLayout>

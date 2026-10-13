@@ -11,8 +11,13 @@ interface Props {
   fetchpriority?: 'high' | 'low' | 'auto';
 }
 const {src, alt, width, height, loading = 'lazy', fetchpriority = 'auto', sizes = '(max-width: 640px) calc(100vw - 36px), (max-width: 1000px) 50vw, 720px'} = Astro.props;
-const assets = import.meta.glob<{default: ImageMetadata}>('../../public/images/*.{jpg,jpeg,png}', {eager: true});
+// Only raster formats are optimised; SVGs and anything else fall through to a plain <img>.
+// Every globbed file is emitted to _astro/, so exclude images that are only ever used by URL (OG card).
+const assets = import.meta.glob<{default: ImageMetadata}>(['../../public/images/*.{jpg,jpeg,png}', '!../../public/images/portfolio-sharing-thumbnail.png'], {eager: true});
 const asset = assets[`../../public${src}`]?.default;
-const outputWidth = asset ? Math.min(asset.width, 1440) : (width ? Number(width) : undefined);
+// Read dimensions from a clone: touching properties on Astro's image proxy marks the original as
+// "referenced", which makes the build ship a second full-size copy in _astro/ next to public/images/.
+const meta = asset ? ((asset as ImageMetadata & {clone?: ImageMetadata}).clone ?? asset) : undefined;
+const outputWidth = meta ? Math.min(meta.width, 1440) : (width ? Number(width) : undefined);
 ---
-{asset ? <Image src={asset} alt={alt} width={outputWidth} widths={[360,720,1080,1440].filter(w=>w<=asset.width)} sizes={sizes} format="webp" quality={85} loading={loading} fetchpriority={fetchpriority}/> : <img src={src} alt={alt} width={width} height={height} loading={loading} fetchpriority={fetchpriority}/>}
+{asset && meta ? <Image src={asset} alt={alt} width={outputWidth} widths={[360,720,1080,1440].filter(w=>w<=meta.width)} sizes={sizes} format="webp" quality={85} loading={loading} fetchpriority={fetchpriority}/> : <img src={src} alt={alt} width={width} height={height} loading={loading} fetchpriority={fetchpriority}/>}

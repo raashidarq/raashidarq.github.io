@@ -1,0 +1,102 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+
+const palette: Palette = {
+  scheme: 'light', bg: '#e3e7db', surface: '#f3f5ee', ink: '#1f2a22', muted: '#46524a',
+  accent: '#4d6b52', accentInk: '#3f5c45', onAccent: '#f3f5ee', line: '#c3cbbc',
+};
+const notify = { label: 'Get notified when it launches', short: 'Get notified', href: 'mailto:raashid.arq@gmail.com?subject=KeepClose%3A%20notify%20me' };
+const img = (n: number, alt: string) => ({ src: `/products/keepclose/feature-${n}.webp`, fallback: `/products/keepclose/feature-${n}.png`, width: 1600, height: 1200, alt });
+
+const product: Product = {
+  slug: 'keepclose',
+  name: 'KeepClose',
+  tagline: 'People. Relationships. The details worth remembering.',
+  promise: 'Remember the people in your life, and what matters to them.',
+  subline: 'An offline Android app for remembering people, recording memories, and understanding how your relationships connect.',
+  status: 'Android · In development · Not on the Play Store yet',
+  primary: notify,
+  secondary: { label: 'See what it does', href: '#features' },
+  heroAlt: 'KeepClose on an Android phone, showing a person profile with relationship details',
+  film: { label: 'See it in use', caption: 'A short silent film of the development build, using fictional people.' },
+  problem: {
+    heading: 'It starts with an awkward moment.',
+    paragraphs: [
+      'Someone calls my name. They recognise me, start talking, and I’m still trying to work out who they are. Sometimes a conversation mentions a distant relative I should remember, and I can’t quite place them.',
+      'I wanted a tool to help me remember. KeepClose keeps relationship context, memories, and follow-ups together on your phone.',
+    ],
+    attribution: 'Raashid Arquil, maker of KeepClose',
+  },
+  features: {
+    heading: 'From a name to something worth remembering.',
+    items: [
+      {
+        title: 'Start with just a name',
+        body: 'The first entry can be a name and nothing else. Add more when you have it: how you met, an interest, a conversation, or a connection to another person.',
+        image: img(1, 'A KeepClose person profile with how you met, interests, and connections'),
+      },
+      {
+        title: 'Keep memories, not just contacts',
+        body: 'A memory can hold a note, a photo, or a voice recording. Voice is transcribed in English right on the phone, and any memory can carry an optional follow-up reminder.',
+        image: img(2, 'Capturing a memory in KeepClose with a note, photo, voice recording, and reminder'),
+      },
+      {
+        title: 'See how people connect',
+        body: 'Link people to each other, not only to you. KeepClose can explain a path in plain terms such as “your mother’s cousin”.',
+        points: ['A family-tree view for exploring connections', 'Circles to group people your own way, with a reconnect cadence'],
+        image: img(3, 'A KeepClose family tree connecting people through their relationships'),
+      },
+      {
+        title: 'Share only what you choose',
+        body: 'Pick the people and the fields you want in a CSV export, then preview the result before you share it.',
+        screen: true,
+        image: { src: '/images/keepclose-export.png', width: 360, height: 800, alt: 'KeepClose export screen with person and field selection, using fictional records' },
+      },
+    ],
+    extras: ['Typo-tolerant search', 'Nicknames with symbols still searchable', 'CSV import with duplicate review', 'ZIP backup of records and media'],
+  },
+  how: {
+    id: 'privacy', nav: 'Privacy', eyebrow: 'Privacy',
+    heading: 'Offline by design. Sharing only when you choose.',
+    items: [
+      { title: 'No internet permission', body: 'The app doesn’t ask for Internet access. Speech recognition uses a model bundled with the app. There are no cloud accounts and no automatic sync.' },
+      { title: 'Encrypted records', body: 'Your records are stored in an encrypted database, with the key held by Android’s Keystore. Photos and audio are kept in the app’s private files, which that database encryption doesn’t cover.' },
+      { title: 'A lock that suits you', body: 'Lock the app with a PIN, a pattern, biometrics, or your Android device credentials.' },
+      { title: 'Backups you control', body: 'A ZIP backup holds your records and media. It isn’t encrypted, so keep it as carefully as any personal file. CSV exports are readable by design, which is why you choose and preview what goes in.' },
+    ],
+  },
+  availability: {
+    heading: 'In development, and not on the Play Store yet.',
+    intro: 'The screenshots and film use fictional records from the development build.',
+    today: [
+      'Add people, record memories with attachments, and revisit profiles and reminders',
+      'Link people with relationships, explore family connections, and organise people into circles',
+      'Choose people and fields for CSV export, review imports and possible duplicates, or create a ZIP archive',
+      'Lock the app with a PIN, pattern, biometrics, or device credentials',
+    ],
+    nextLabel: 'Not in the first version',
+    next: [
+      'Cloud sync',
+      'Facial recognition',
+      'Cloud AI processing of notes',
+      'Live collaborative editing',
+    ],
+    note: 'These are left out on purpose: each would add data handling and permissions beyond keeping your own records on your own phone.',
+  },
+  faq: [
+    { q: 'Does KeepClose need an internet connection?', a: 'No. The app doesn’t request Internet permission, and voice transcription runs offline with a bundled English model.' },
+    { q: 'Is there an account or cloud sync?', a: 'No. There are no cloud accounts or automatic sync. Sharing is always an export you make yourself, through another app.' },
+    { q: 'How do I back up or move my data?', a: 'Create a ZIP backup of your records and media, or export the people and fields you choose as CSV. The ZIP backup isn’t encrypted, so store it carefully. CSV import includes field mapping and a review of possible duplicates.' },
+    { q: 'Will search find an unusual nickname?', a: 'Yes. Names and nicknames with punctuation or symbols are treated as plain text, and search is typo-tolerant.' },
+    { q: 'When can I get it?', a: 'KeepClose is an Android app in development and isn’t on the Play Store yet. Ask to be notified and you’ll hear when it launches.' },
+  ],
+  closing: {
+    heading: 'Be the first to know when it launches.',
+    body: 'Send a quick email and I’ll let you know when KeepClose is ready to download.',
+    primary: notify,
+    secondary: { label: 'Read how it’s built', href: '/work/keepclose/' },
+  },
+};
+---
+<ProductLayout title="KeepClose: remember the people in your life" description={product.subline} palette={palette} brand="keepclose" product={product} />

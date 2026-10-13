@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/resume.css';
+
+// Single source for the résumé. public/resume.pdf is printed from this page (see studio/README.md).
+// Every claim here is backed by a case study or the project's own repository. Keep it that way.
+const site = 'https://raashidarq.github.io';
+const projects = [
+  {
+    name: 'CropCare', kind: 'Offline crop-disease diagnosis app · Top 10, Ascentic AI Launchpad',
+    stack: 'Flutter · TensorFlow Lite · Drift/SQLite · FastAPI · Supabase · Gemini API',
+    when: 'In development',
+    links: [{ label: 'github.com/raashidarq/cropcare', href: 'https://github.com/raashidarq/cropcare' }],
+    bullets: [
+      'Trained a MobileNetV3 classifier covering <strong>34 categories across 6 crops</strong> and shipped it on-device as a 6.06 MB TFLite model, so diagnosis works without connectivity.',
+      'Flagged uncertain predictions with normalized Shannon entropy and confidence thresholds, and rejected unsuitable photos with blur, exposure and vegetation checks before inference.',
+      'Built offline treatment guidance for 28 disease and pest categories in English, Sinhala and Tamil on a 14-table Drift schema, backed by 227 automated tests including localization-parity checks.',
+      'Made Gemini recommendations opt-in and cached, avoiding repeat API requests and a lifecycle crash caused by automatic calls.',
+    ],
+  },
+  {
+    name: 'Tally', kind: 'Local-first desktop productivity app',
+    stack: 'Tauri v2 (Rust) · React 19 · TypeScript · Dexie/IndexedDB · Vitest · Playwright',
+    when: 'In development',
+    links: [{ label: 'Product page', href: `${site}/products/tally/` }],
+    bullets: [
+      'Built a desktop app unifying habits, tasks, focus timing, journaling and energy tracking; no account, and a content security policy blocks all external connections.',
+      'Chose Tauri over Electron for a ~2.5 MB Windows installer; the Rust shell handles the tray, a global quick-capture shortcut, a mini timer window and single-instance behaviour.',
+      'Split 7 features into modules with lint-enforced import boundaries; tested with 73 unit test files, 24 Playwright end-to-end specs (with axe accessibility checks) and versioned-migration tests.',
+    ],
+  },
+  {
+    name: 'KeepClose', kind: 'Encrypted, offline relationship-memory app for Android',
+    stack: 'Kotlin · Jetpack Compose · Room · SQLCipher · Vosk',
+    when: 'In development',
+    links: [{ label: 'Product page', href: `${site}/products/keepclose/` }],
+    bullets: [
+      'Modelled relationships as a directional graph that explains indirect links in plain language (“your mother’s cousin”) and renders a family tree.',
+      'Kept all data on the device: SQLCipher-encrypted database with Keystore-backed keys, on-device speech-to-text via Vosk, and no Internet permission.',
+      'Built CSV import with field mapping and duplicate review, selective CSV export, and full ZIP backup.',
+    ],
+  },
+  {
+    name: 'SmartDrive', kind: 'Driving-school management system (final-year project)',
+    stack: 'React · Supabase · Tailwind CSS',
+    when: '2024 – 2025',
+    links: [{ label: 'Live demo', href: `${site}/smartdrive/` }],
+    bullets: [
+      'Built role-based dashboards for students, instructors and administrators (scheduling, learning progress, fleet management) with Supabase email authentication and a no-account public demo mode.',
+    ],
+  },
+];
+const skills = [
+  ['Languages', 'Kotlin, TypeScript, JavaScript, Dart, Python, SQL, Rust (Tauri)'],
+  ['Mobile & desktop', 'Jetpack Compose, Room, Flutter, Tauri'],
+  ['Web & backend', 'React, Astro, Node.js/Express, FastAPI, Tailwind CSS'],
+  ['Data & ML', 'TensorFlow Lite, Supabase/PostgreSQL, SQLite, IndexedDB, Gemini API'],
+  ['Testing & tools', 'Vitest, Playwright, Git, GitHub Actions, Figma'],
+];
+---
+<BaseLayout title="Resume — Raashid Arquil" description="Résumé of Raashid Arquil, software engineer building web, mobile and desktop products.">
+<div class="shell resume-shell">
+  <div class="resume-actions">
+    <a class="button" href="/resume.pdf" download>Download PDF</a>
+    <button class="text-link" type="button" onclick="window.print()">Print</button>
+  </div>
+  <article class="resume" aria-label="Résumé">
+    <header class="cv-head">
+      <h1>Raashid Arquil</h1>
+      <p class="cv-title">Software Engineer · Web, Mobile &amp; Desktop</p>
+      <p class="cv-contact">
+        <a href="mailto:raashid.arq@gmail.com">raashid.arq@gmail.com</a><span>·</span>
+        <a href="tel:+94781653552">+94 78 165 3552</a><span>·</span>
+        <a href={site}>raashidarq.github.io</a><span>·</span>
+        <a href="https://github.com/raashidarq">github.com/raashidarq</a><span>·</span>
+        <a href="https://www.linkedin.com/in/raashid-arquil/">linkedin.com/in/raashid-arquil</a><span>·</span>
+        <span>Sri Lanka (GMT+5:30), open to remote</span>
+      </p>
+    </header>
+
+    <section>
+      <h2>Summary</h2>
+      <p>First-Class Computer Science graduate and independent developer building offline-first products across Android (Kotlin), Flutter, desktop (Tauri) and React, from problem research and scoping to tested builds. Available for freelance projects and graduate or junior engineering roles.</p>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+      {projects.map((p) => (
+        <div class="cv-entry">
+          <div class="cv-entry-head">
+            <h3>{p.name} <span class="cv-kind">— {p.kind}</span></h3>
+            <span class="cv-when">{p.when}</span>
+          </div>
+          <p class="cv-meta">{p.stack}{p.links.map((l) => <> · <a href={l.href}>{l.label}</a></>)}</p>
+          <ul>{p.bullets.map((b) => <li set:html={b} />)}</ul>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Programmes &amp; awards</h2>
+      <div class="cv-entry">
+        <div class="cv-entry-head"><h3>Ascentic AI Launchpad <span class="cv-kind">— Finalist, Top 10</span></h3><span class="cv-when">Sep 2026</span></div>
+        <p class="cv-meta">Eight-week mentored programme; took CropCare from problem research to a working MVP and presented it at TRACE, Sri Lanka.</p>
+      </div>
+      <div class="cv-entry">
+        <div class="cv-entry-head"><h3>ESOFT Intercampus Hackathon <span class="cv-kind">— Software Engineering category winner</span></h3><span class="cv-when">Oct 2023</span></div>
+        <p class="cv-meta">Team of five; led user research and built the Figma prototype for eHab, a mental-health support app.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <div class="cv-entry">
+        <div class="cv-entry-head"><h3>BSc (Hons) Computer Science <span class="cv-kind">— First Class</span></h3><span class="cv-when">Sep 2025</span></div>
+        <p class="cv-meta">Kingston University (UK), delivered at ESOFT Metro Campus, Sri Lanka</p>
+      </div>
+      <div class="cv-entry">
+        <div class="cv-entry-head"><h3>Postgraduate Diploma in Professional Marketing (Level 7) <span class="cv-kind">— Merit</span></h3><span class="cv-when">Mar 2024</span></div>
+        <p class="cv-meta">Chartered Institute of Marketing (CIM), studied at SLIM, a CIM Accredited Study Centre. <strong>Distinctions</strong> in Innovation in Marketing and Corporate Digital Communications (Certificates of Excellence, Dec 2023 exams).</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <dl class="cv-skills">{skills.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+    </section>
+  </article>
+</div>
+</BaseLayout>

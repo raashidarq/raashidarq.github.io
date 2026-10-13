@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {getCollection} from 'astro:content';
-const notes=(await getCollection('notes')).sort((a,b)=>a.data.order-b.data.order);
+const notes=(await getCollection('notes')).sort((a,b)=>(b.data.date??'').localeCompare(a.data.date??'')||a.data.order-b.data.order);
+const fmt=(d?:string)=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):undefined;
 ---
-<BaseLayout title="Notes — Raashid Arquil" description="First-hand notes on building software, product decisions, and communicating the work." noindex>
+<BaseLayout title="Notes — Raashid Arquil" description="First-hand notes on building software, product decisions, and communicating the work.">
 <div class="shell notes-shell">
 <header class="page-intro compact-intro"><p class="eyebrow">Notes</p><h1 class="display">Along the way.</h1><p class="lead">Things I've noticed while building, learning, and explaining the work.</p></header>
-<p class="preview-notice">Preview collection · Two reflections adapted from my LinkedIn posts.</p>
-<section aria-label="Notes" class="note-list">{notes.map(note=><article><a href={`/notes/${note.id}`} class="note-link"><div class="note-meta"><span>{note.data.topic}</span><span>{note.data.readingTime}</span></div><h2>{note.data.title}<span aria-hidden="true">↗</span></h2><p>{note.data.description}</p></a></article>)}</section>
-<p class="notes-footnote">These entries are preview content for the Notes design. The original LinkedIn posts are linked from each entry. Publication dates remain unconfirmed.</p>
+<section aria-label="Notes" class="note-list">{notes.map(note=><article><a href={`/notes/${note.id}/`} class="note-link"><div class="note-meta"><span>{note.data.topic}</span><span>{[fmt(note.data.date),note.data.readingTime].filter(Boolean).join(' · ')}</span></div><h2>{note.data.title}<span aria-hidden="true">↗</span></h2><p>{note.data.description}</p></a></article>)}</section>
+<p class="notes-footnote">Most of these started as LinkedIn posts. Each one links to the original.</p>
 </div>
 </BaseLayout>

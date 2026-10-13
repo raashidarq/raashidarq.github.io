@@ -55,7 +55,13 @@ const id=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');
   gallery.querySelector('.gallery-close')!.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
   gallery.addEventListener('keydown',event=>{
-   if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();select(current+(event.key==='ArrowLeft'?-1:1));}
+   if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
+   if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return;
+   // Only steer the gallery from its own buttons or from inside the open dialog; leave links/inputs alone.
+   const target=event.target instanceof Element?event.target:null;
+   const inDialog=dialog.open&&!!target&&dialog.contains(target);
+   const onControl=!!target&&!dialog.contains(target)&&target.closest('button')!==null;
+   if(inDialog||onControl){event.preventDefault();select(current+(event.key==='ArrowLeft'?-1:1));}
   });
   dialog.addEventListener('close',()=>{document.body.style.overflow=savedOverflow;slides[current].querySelector<HTMLButtonElement>('button')?.focus();});
   gallery.querySelectorAll<HTMLButtonElement>('.gallery-back,.gallery-forward,.gallery-prev,.gallery-next').forEach(button=>button.disabled=slides.length<2);

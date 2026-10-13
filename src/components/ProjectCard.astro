@@ -7,8 +7,8 @@ const {title,shortDescription,category,thumbnail,status}=project.data;
 const state=project.id==='smartdrive'?'Prototype':status==='in-development'?'In development':status==='live'?'Demo available':status==='archived'?'Earlier work':status;
 ---
 <article class="project-card">
-<a href={`/work/${project.id}`} aria-label={`View ${title}: ${state}`}>
-{project.id==='keepclose'||project.id==='cropcare'||project.id==='smartdrive'?<ProductCover kind={project.id}/>:<div class="project-image">{thumbnail?<img src={thumbnail} alt={`${title} project preview`} loading="lazy"/>:<span class="serif text-5xl">{title}</span>}</div>}
+<a href={`/work/${project.id}/`} aria-label={`View ${title}: ${state}`}>
+{project.id==='keepclose'||project.id==='cropcare'||project.id==='smartdrive'||project.id==='tally'?<ProductCover kind={project.id}/>:<div class="project-image">{thumbnail?<img src={thumbnail} alt={`${title} project preview`} loading="lazy"/>:<span class="serif text-5xl">{title}</span>}</div>}
 <div class="project-meta">
 <span>{category}</span>
 <span class="status">{state}</span>

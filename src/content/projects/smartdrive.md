@@ -5,10 +5,10 @@ date: "2024-2025"
 role: "Web application design & development"
 status: "beta"
 featured: true
-order: 3
-technologies: ["React", "Node.js", "Supabase / PostgreSQL", "Tailwind CSS"]
+order: 4
+technologies: ["React", "Supabase (auth)", "Tailwind CSS", "Vite"]
 category: "Web application prototype"
-githubUrl: "https://github.com/raashidarq/smartdrive-frontend"
+githubUrl: "https://github.com/raashidarq/smartdrive"
 liveUrl: "https://raashidarq.github.io/smartdrive/"
 thumbnail: "/images/smartdrive-student-new.jpg"
 heroImage: "/images/smartdrive-student-new.jpg"
@@ -49,7 +49,7 @@ For my final-year project, I built SmartDrive to explore that possibility.
 
 The prototype brings together scheduling, learning materials, and fleet management for administrators, instructors, and students.
 
-The aim was to put those related activities into one system, rather than leaving the process spread across calls and manual records.
+The aim was to put those related activities into one system, rather than leaving the process spread across calls and manual records. Accounts use Supabase email authentication, and each role lands on its own dashboard.
 
 ## Following a booking through the demo
 
@@ -57,10 +57,10 @@ The demonstration keeps shared application state in a React context. When a stud
 
 This connects the booking form to the surrounding dashboard instead of leaving each screen as an isolated mockup. The form collects the course, instructor, date, time, transmission, and pickup location.
 
-The demo uses fictional records and browser-local state. It does not establish server-enforced booking conflicts, production authorization, or a deployed driving-school service. Those boundaries matter when moving from a demonstration to a system people depend on.
+The public demo runs on fictional records and browser-local state, so anyone can try every role without an account. A school relying on it would need the server to own bookings: preventing double-booked instructors and checking who is allowed to change what.
 
-## Why I want to revisit it.
+## Where it goes next.
 
-With my current skills and motivation, I intend to rebuild parts of SmartDrive into something suitable for practical use. A learner-facing PWA is one possibility.
+Honestly, as a final-year project it was more hopeful than finished. I'd build it differently now. The first change: move bookings to the server, so conflicts and permissions are enforced there rather than in the browser. After that, a learner-facing PWA.
 
-If the result is ready, I'd like to propose it to the driving school I attended.
+When it's ready for real use, I'd like to take it back to the driving school I attended.

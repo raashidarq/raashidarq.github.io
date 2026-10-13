@@ -56,3 +56,30 @@
 .article-body th+th,.article-body td+td{border-left:1px solid var(--color-border-subtle)}
 .contact-banner .button{flex-shrink:0;white-space:nowrap}
 .contact-banner .button svg{flex-shrink:0}
+
+/* Freelance positioning pass */
+.hero-credentials{margin-top:28px;max-width:46rem;font-size:13px;line-height:1.7;letter-spacing:.01em;color:var(--color-fg-secondary)}
+.offer-who{font-size:15px;line-height:1.7;color:var(--color-fg);font-style:italic;margin-bottom:10px}
+.offer-proof{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:4px}
+.keepclose-cover,.cropcare-cover{position:relative;overflow:hidden}
+.product-cover>div.cover-phones{position:absolute;z-index:1;right:5%;bottom:-16%;width:42%;display:flex;gap:6%;align-items:flex-end;pointer-events:none}
+.cover-phones img{width:47%;height:auto;border:4px solid #242b25;border-radius:16px;box-shadow:0 16px 28px #182d2333;background:#fff}
+.cover-phones img:first-child{transform:translateY(-14%) rotate(-3deg)}
+.cover-phones img:last-child{transform:rotate(3deg)}
+.keepclose-cover>.cover-top,.keepclose-cover>.keepclose-word,.keepclose-cover>.cover-bottom{position:relative;z-index:2}
+.keepclose-cover>.cover-bottom,.cropcare-cover>.cover-bottom{max-width:50%}
+@media(max-width:640px){.product-cover>div.cover-phones{width:44%;right:3%}}
+.hero-credentials span{white-space:nowrap}
+.tally-cover{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;background:#121714;color:#eef3ef}
+.tally-cover .cover-top{color:#a9b5ad;position:relative;z-index:2}
+.tally-word{position:relative;z-index:2;font-family:"Instrument Serif",Georgia,serif;font-size:88px;line-height:.9;letter-spacing:-.04em}
+.tally-word span{color:#3d9a6c}
+.tally-cover .cover-bottom{position:relative;z-index:2;color:#a9b5ad;max-width:46%}
+.tally-window{position:absolute;z-index:1;left:44%;top:30%;width:78%;border-radius:10px;overflow:hidden;background:#1c1e1c;box-shadow:0 24px 48px #0008,0 0 0 1px #ffffff14}
+.tally-window-bar{display:flex;gap:5px;padding:7px 9px;background:#232623}
+.tally-window-bar i{width:7px;height:7px;border-radius:50%;background:#3a3f3b}
+.tally-window img{display:block;width:100%;height:auto}
+.home-project-grid .tally-word{font-size:72px}
+@media(max-width:640px){.tally-word{font-size:70px}}
+.curated-work .project-card:last-of-type:nth-of-type(even){grid-column:auto}
+.curated-work .project-card:last-of-type:nth-of-type(even)>a{display:block}

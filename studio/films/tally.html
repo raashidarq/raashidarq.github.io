@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tally film</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/engine.css">
+<style>
+  :root {
+    --bg: #121714; --surface: #1c241f; --ink: #eef3ef; --accent: #3d9a6c;
+    --ink-soft: rgba(238,243,239,0.78); --line: rgba(238,243,239,0.12); --shadow: rgba(0,0,0,0.6);
+    --ring: #3d9a6c; --ring-halo: rgba(61,154,108,0.28); --ring-glow: rgba(61,154,108,0.45);
+    --callout-bg: #eef3ef; --callout-ink: #121714; --tap: #1f7a4d; --tap-fill: rgba(61,154,108,0.2);
+  }
+  .txt { position: absolute; left: 150px; width: 660px; }
+  .txt .headline { font-size: 84px; }
+  .hook { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
+  .hook .headline { font-size: 100px; }
+  .end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; text-align: center; }
+  .clip { position: absolute; inset: 0; }
+  .panelbg { position: absolute; left: 0; top: 0; opacity: 0; border-radius: 28px; background: #f7f6f3;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 60px 120px -40px rgba(0,0,0,0.75); }
+  .appwin { background: #f7f6f3; }
+  .appwin .viewport img { width: 100%; height: 100%; }
+  .key { position: absolute; left: 0; top: 0; opacity: 0; min-width: 84px; height: 84px; padding: 0 22px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: var(--ink);
+    background: var(--surface); border: 1px solid rgba(238,243,239,0.16); box-shadow: 0 6px 0 rgba(0,0,0,0.35); }
+  .plus { position: absolute; left: 0; top: 0; opacity: 0; font-size: 34px; font-weight: 600; color: var(--ink-soft); }
+  .chip svg { stroke: #3d9a6c; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <svg class="geo" viewBox="0 0 1920 1080" width="1920" height="1080">
+    <defs>
+      <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#1d2a22" stop-opacity="1"/>
+        <stop offset="1" stop-color="#1d2a22" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle cx="1360" cy="560" r="760" fill="url(#glow)"/>
+    <!-- tally marks, a quiet nod to the name -->
+    <g id="g-tally" stroke="#3d9a6c" stroke-opacity="0.14" stroke-width="3" stroke-linecap="round">
+      <path d="M1580 120v90M1606 120v90M1632 120v90M1658 120v90M1566 196l110-62"/>
+      <path d="M240 880v90M266 880v90M292 880v90"/>
+    </g>
+    <g id="g-rings" fill="none" stroke="#3d9a6c">
+      <circle cx="1360" cy="560" r="560" stroke-opacity="0.10" stroke-width="1.5"/>
+      <circle cx="1360" cy="560" r="420" stroke-opacity="0.08" stroke-width="1.5" stroke-dasharray="2 12"/>
+      <circle cx="1360" cy="560" r="720" stroke-opacity="0.06" stroke-width="1.5"/>
+    </g>
+  </svg>
+
+  <div class="panelbg" id="panelbg"></div>
+  <div class="clip" id="clip">
+  <div class="cam" id="cam">
+    <div class="appwin" id="win" style="width:1440px;height:900px">
+      <div class="viewport" style="width:1440px;height:900px">
+        <img id="i-today" src="../../public/images/tally/tally-today-light.png" alt="">
+        <img id="i-check" src="../../public/images/tally/tally-seq-check-02-task-done.png" alt="" style="top:14px">
+        <img id="i-p1" src="../../public/images/tally/tally-seq-palette-01.png" alt="">
+        <img id="i-p2" src="../../public/images/tally/tally-seq-palette-02.png" alt="">
+        <img id="i-p3" src="../../public/images/tally/tally-seq-palette-03.png" alt="">
+        <img id="i-p4" src="../../public/images/tally/tally-seq-palette-04.png" alt="">
+        <img id="i-p5" src="../../public/images/tally/tally-seq-palette-05.png" alt="">
+        <img id="i-journal" src="../../public/images/tally/tally-seq-palette-06.png" alt="">
+        <img id="i-habits" src="../../public/images/tally/tally-habits-light.png" alt="">
+        <img id="i-today2" src="../../public/images/tally/tally-today-light.png" alt="">
+        <img id="i-timer2" src="../../public/images/tally/tally-seq-timer-02.png" alt="">
+        <div class="ring" id="r-row" style="left:362px;top:466px;width:604px;height:36px;border-radius:10px"></div>
+        <div class="ring" id="r-toast" style="left:720px;top:840px;width:220px;height:52px;border-radius:12px"></div>
+        <div class="ring" id="r-pal" style="left:432px;top:108px;width:576px;height:190px;border-radius:12px"></div>
+        <div class="ring" id="r-heat" style="left:240px;top:402px;width:968px;height:173px;border-radius:14px"></div>
+        <div class="ring" id="r-timer" style="left:1070px;top:486px;width:144px;height:144px;border-radius:50%"></div>
+      </div>
+    </div>
+    <div class="appwin" id="mini" style="width:340px;height:96px;border-radius:12px">
+      <div class="viewport" style="width:340px;height:96px"><img src="../../public/images/tally/tally-mini-timer-light.png" alt="" style="left:-1px;top:-1px;width:342px;height:98px"></div>
+    </div>
+    <div class="appwin" id="qc" style="width:520px;height:340px;border-radius:14px">
+      <div class="viewport" style="width:520px;height:340px"><img src="../../public/images/tally/tally-quick-capture-light.png" alt="" style="left:-1px;top:-1px;width:522px;height:342px"></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="callout" id="c-undo">Applied instantly<small>Undo instead of confirm</small></div>
+  <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M4.5 2.8l14.6 10.3-6.4 1.2 3.7 6.8-2.6 1.4-3.7-6.9-4.6 4.5z" fill="#121714" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+  <div class="tap" id="tap1"></div>
+
+  <div class="hook">
+    <div class="headline" id="h1" data-split>Habits in one app. A timer in another.</div>
+    <div class="headline" id="h2" data-split><em>None of them sees the whole day.</em></div>
+  </div>
+
+  <div class="txt" style="top:370px">
+    <img id="wm" src="../assets/tally-logo-dark.svg" alt="Tally" style="height:150px;width:auto;opacity:0">
+    <div class="body-l" id="intro-b" data-split style="margin-top:24px;width:560px">A local-first desktop app for habits, focus, tasks and reflection.</div>
+  </div>
+
+  <div class="txt" style="top:390px"><div class="eyebrow" id="e1" data-split>Today</div>
+    <div class="headline" id="b1" data-split style="margin-top:22px">Changes apply instantly. <em>And can be undone.</em></div></div>
+  <div class="txt" style="top:330px"><div class="eyebrow" id="e2" data-split>Command palette</div>
+    <div class="headline" id="b2" data-split style="margin-top:22px">Everything, <em>one shortcut away.</em></div></div>
+  <div class="key" id="k1">Ctrl</div><div class="plus" id="kp">+</div><div class="key" id="k2">K</div>
+  <div class="txt" style="top:390px"><div class="eyebrow" id="e3" data-split>Habits</div>
+    <div class="headline" id="b3" data-split style="margin-top:22px">Streaks you <em>can see.</em></div></div>
+  <div class="txt" style="top:390px"><div class="eyebrow" id="e4" data-split>Focus</div>
+    <div class="headline" id="b4" data-split style="margin-top:22px">A timer that stays <em>within reach.</em></div></div>
+  <div class="txt" style="top:240px"><div class="eyebrow" id="e5" data-split>Local-first</div>
+    <div class="headline" id="b5" data-split style="margin-top:22px">Your data stays <em>on your device.</em></div></div>
+  <div class="chip" id="ch1"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></svg>Works offline, no sign-up</div>
+  <div class="chip" id="ch2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/><path d="M9 12l2 2 4-4"/></svg>External connections blocked</div>
+  <div class="chip" id="ch3"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/></svg>Tauri + Rust · ~2.5 MB installer</div>
+
+  <div class="end">
+    <img id="end-wm" src="../assets/tally-logo-dark.svg" alt="Tally" style="height:190px;width:auto;opacity:0">
+    <div class="body-l" id="end-tag" data-split style="font-size:36px;color:var(--ink)">Habits. Focus. Tasks. Reflection. All on your own device.</div>
+    <div class="pill" id="end-pill" style="margin-top:20px"><span class="dot"></span>In development · Desktop app</div>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const { E, kf, env, tf, words, camera, ring, prog, callout, tap } = Studio;
+const $ = (id) => document.getElementById(id);
+let B = { x: 0, y: 0 };
+const U = (ux, uy) => [B.x + ux, B.y + uy];
+const aim = (ux, uy, z, X = 1320, Y = 540) => { const [wx, wy] = U(ux, uy); return [wx - (X - 960) / z, wy - (Y - 540) / z, z]; };
+const S = (cam, ux, uy) => cam.toStage(...U(ux, uy));
+const fade = (id, keys) => { $(id).style.opacity = kf(t0, keys, E.inOut); };
+let t0 = 0;
+
+const CUR = [[7.6, [700, 640]], [8.7, [379, 483]], [9.6, [379, 483]], [10.6, [600, 700]]];
+const CLICKS = [[8.75, "tap1"]];
+
+function render(t) {
+  t0 = t;
+  $("g-rings").setAttribute("transform", `rotate(${t * 1.1} 1360 560)`);
+
+  const rise = prog(t, 3.2, 5.1, E.outQuint);
+  const leave = prog(t, 29.2, 30.2, E.inOutQuint);
+  B = { x: 0, y: (1 - rise) * 420 + leave * 120 };
+  tf($("win"), { x: B.x, y: B.y, o: rise * (1 - leave), rx: (1 - rise) * 14, persp: 2600 });
+
+  // screens (each layer over the previous)
+  fade("i-check", [[8.8, 0], [9.1, 1]]);
+  fade("i-p1", [[11.7, 0], [12.2, 1]]);
+  fade("i-p2", [[12.95, 0], [13.0, 1]]);
+  fade("i-p3", [[13.3, 0], [13.35, 1]]);
+  fade("i-p4", [[13.65, 0], [13.7, 1]]);
+  fade("i-p5", [[13.95, 0], [14.0, 1]]);
+  fade("i-journal", [[14.8, 0], [15.2, 1]]);
+  fade("i-habits", [[16.5, 0], [17.1, 1]]);
+  fade("i-today2", [[20.6, 0], [21.2, 1]]);
+  fade("i-timer2", [[22.3, 0], [22.45, 1]]);
+
+  const c = kf(t, [
+    [0, [960 - 50 / 0.6, 450, 0.6]],
+    [3.3, [720 - 310 / 0.6, 470, 0.6]],
+    [6.6, [720 - 310 / 0.62, 465, 0.62], E.linear],
+    [7.8, aim(640, 480, 1.45)],
+    [9.6, aim(640, 500, 1.48), E.linear],
+    [10.6, aim(700, 760, 1.4, 1250, 814)],
+    [11.4, aim(700, 760, 1.41, 1250, 814), E.linear],
+    [12.4, aim(720, 340, 1.28, 1360, 500)],
+    [14.6, aim(720, 340, 1.31, 1360, 510), E.linear],
+    [15.6, aim(820, 400, 1.15, 1360)],
+    [16.4, aim(820, 410, 1.17, 1360), E.linear],
+    [17.4, aim(730, 470, 1.32, 1380)],
+    [20.4, aim(730, 470, 1.38, 1380), E.linear],
+    [21.4, aim(1142, 560, 1.5, 1400)],
+    [22.6, aim(1142, 560, 1.52, 1400), E.linear],
+    [23.6, aim(1142, 620, 1.0, 1250)],
+    [25.85, aim(1142, 620, 1.03, 1250), E.linear],
+    [25.86, aim(800, 450, 0.6, 1400), E.linear],
+    [27.0, aim(800, 450, 0.62, 1400), E.out],
+    [34, aim(800, 450, 0.62, 1400)],
+  ]);
+  const cam = camera($("cam"), c);
+
+  // floating mini timer + quick capture (world space, near the window's right edge)
+  { const p = prog(t, 22.9, 24.0, E.outQuint), q = prog(t, 28.9, 29.8);
+    tf($("mini"), { x: 1180, y: 380 + (1 - p) * 60, s: 1.15, o: p * (1 - q) }); }
+  { const p = prog(t, 23.5, 24.6, E.outQuint), q = prog(t, 28.9, 29.8);
+    tf($("qc"), { x: 1080, y: 560 + (1 - p) * 60, s: 1.0, o: p * (1 - q) }); }
+
+  { // zoomed views sit in a rounded panel to the right of the copy
+    const k = t < 25.85 ? kf(t, [[6.9, 0], [7.8, 1]], E.inOutQuint) : 0;
+    const co = 1 - prog(t, 25.3, 25.8) + prog(t, 25.9, 26.6, E.out);
+    $("clip").style.opacity = co;
+    const L = 860 * k, T = 70 * k, R = 70 * k, Bm = 70 * k, rad = 28 * k;
+    $("clip").style.clipPath = k > 0.001 ? `inset(${T}px ${R}px ${Bm}px ${L}px round ${rad}px)` : "none";
+    const pb = $("panelbg");
+    pb.style.left = L + "px"; pb.style.top = T + "px"; pb.style.width = 1920 - L - R + "px"; pb.style.height = 1080 - T - Bm + "px";
+    pb.style.opacity = k > 0.001 ? Math.min(1, k * 3) * co : 0;
+  }
+
+  words($("h1"), t, 0.2, 3.0, { stagger: 0.06 });
+  words($("h2"), t, 1.3, 3.1, { stagger: 0.06 });
+  { const p = prog(t, 3.9, 5.0, E.outQuint), q = prog(t, 6.4, 6.9); tf($("wm"), { y: (1 - p) * 40 - q * 20, o: p * (1 - q), blur: (1 - p) * 10 + q * 8 }); }
+  words($("intro-b"), t, 4.5, 6.6, { stagger: 0.035 });
+
+  words($("e1"), t, 7.6, 11.3); words($("b1"), t, 7.8, 11.3);
+  ring($("r-row"), t, 9.1, 10.4);
+  ring($("r-toast"), t, 10.3, 11.6);
+  callout($("c-undo"), t, 10.5, 11.6, S(cam, 940, 866), S(cam, 940, 0)[0] + 40);
+
+  words($("e2"), t, 12.0, 16.2); words($("b2"), t, 12.2, 16.2);
+  [["k1", 0], ["kp", 0.12], ["k2", 0.24]].forEach(([id, d], i) => {
+    const p = prog(t, 12.4 + d, 13.2 + d, E.outQuint), q = prog(t, 15.9, 16.4);
+    const press = env(t, 12.6, 13.0, 0.08, 0.3);
+    tf($(id), { x: 150 + [0, 134, 180][i] , y: 640 + (1 - p) * 20 + (id !== "kp" ? press * 5 : 22), o: p * (1 - q) });
+  });
+  ring($("r-pal"), t, 13.2, 14.8);
+
+  words($("e3"), t, 17.0, 20.3); words($("b3"), t, 17.2, 20.3);
+  ring($("r-heat"), t, 17.7, 20.5);
+
+  words($("e4"), t, 21.2, 25.4); words($("b4"), t, 21.4, 25.4);
+  ring($("r-timer"), t, 21.6, 23.2);
+
+  words($("e5"), t, 26.2, 29.0); words($("b5"), t, 26.4, 29.0);
+  ["ch1", "ch2", "ch3"].forEach((id, i) => {
+    const a = 26.8 + i * 0.28;
+    const p = prog(t, a, a + 0.9, E.outQuint), q = prog(t, 28.9 + i * 0.06, 29.4 + i * 0.06);
+    tf($(id), { x: 150 + (1 - p) * -30, y: 520 + i * 118, o: p * (1 - q) });
+  });
+
+  const cu = kf(t, CUR, E.inOutQuint);
+  const [cx, cy] = S(cam, cu[0], cu[1]);
+  const press = CLICKS.reduce((m, [ct]) => Math.max(m, env(t, ct - 0.08, ct + 0.22, 0.08, 0.2)), 0);
+  tf($("cursor"), { x: cx - 6, y: cy - 4, s: 1 - 0.12 * press, o: env(t, 7.5, 10.8, 0.4, 0.4) });
+  CLICKS.forEach(([ct, id]) => tap($(id), t, ct, [cx, cy]));
+
+  { const p = prog(t, 30.0, 31.2, E.outQuint); tf($("end-wm"), { y: (1 - p) * 40, o: p, blur: (1 - p) * 10 }); }
+  words($("end-tag"), t, 30.6, null, { stagger: 0.06 });
+  { const p = prog(t, 31.3, 32.2, E.outQuint); tf($("end-pill"), { y: (1 - p) * 16, o: p }); }
+}
+
+Studio.boot({ duration: 34, render, poster: 13.4 });
+</script>
+</body>
+</html>

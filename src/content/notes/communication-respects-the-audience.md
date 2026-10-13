@@ -3,8 +3,9 @@ title: "Communication is a form of respect"
 description: "Notes from a session on demo readiness: time, clarity, and the audience's perspective."
 topic: "Communication"
 readingTime: "3 min read"
+date: "2026-08-22"
 order: 2
-preview: true
+preview: false
 sourceUrl: "https://www.linkedin.com/feed/update/urn:li:activity:7496972484102066176/"
 ---
 One of the things I took away from a session on Demo Readiness and Presentation Skills was that good communication is about respecting your audience.

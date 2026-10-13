@@ -3,8 +3,9 @@ title: "Start with the problem"
 description: "What building CropCare through Ascentic's AI Launchpad changed about my approach to software."
 topic: "Building products"
 readingTime: "3 min read"
+date: "2026-09-23"
 order: 1
-preview: true
+preview: false
 sourceUrl: "https://www.linkedin.com/feed/update/urn:li:activity:7508482167241584640/"
 image: "/images/launchpad-presenting.jpg"
 ---

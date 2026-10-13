@@ -1,0 +1,92 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+
+const palette: Palette = {
+  scheme: 'dark', bg: '#121714', surface: '#1c241f', ink: '#eef3ef', muted: '#a9b5ad',
+  accent: '#1f7a4d', accentInk: '#7cc6a0', onAccent: '#ffffff', line: '#2c3a31',
+};
+const notify = { label: 'Get notified', href: 'mailto:raashid.arq@gmail.com?subject=Tally%3A%20notify%20me' };
+const img = (n: number, alt: string) => ({ src: `/products/tally/feature-${n}.webp`, fallback: `/products/tally/feature-${n}.png`, width: 1600, height: 1200, alt });
+
+const product: Product = {
+  slug: 'tally',
+  name: 'Tally',
+  tagline: 'Habits. Focus. Tasks. Reflection. All on your own device.',
+  promise: 'One place for the day.',
+  subline: 'Habits, focus sessions, tasks, reflection, and energy in a single desktop dashboard. It works offline, doesn’t ask you to sign up, and keeps everything on your device.',
+  status: 'Desktop · Windows, macOS & Linux · In development',
+  primary: notify,
+  secondary: { label: 'See what’s inside', href: '#features' },
+  heroAlt: 'The Tally desktop dashboard with habits, tasks, a focus timer, and a journal',
+  film: { label: 'See it in use', caption: 'A short silent film of Tally in development.' },
+  problem: {
+    heading: 'Four apps, and none of them sees the whole day.',
+    paragraphs: [
+      'Habits in one app, a focus timer in another, tasks somewhere else, and a journal in a notebook. Each one wants its own account.',
+      'Tally brings them into a single desktop dashboard that opens instantly, works offline, and doesn’t ask you to sign up.',
+    ],
+    attribution: 'Raashid Arquil, maker of Tally',
+  },
+  features: {
+    heading: 'Everything for the day, side by side.',
+    items: [
+      {
+        title: 'Tasks and focus',
+        body: 'Plan in a list, on a board, or across the week. Then focus with a timer that logs your time.',
+        points: ['An inbox, projects, quick add, and a morning review', 'Focus reports, plus a small always-available timer window'],
+        image: img(1, 'Tally tasks in a board view next to a focus timer'),
+      },
+      {
+        title: 'Habits, energy and mood',
+        body: 'Track daily habits with a streak heatmap, and log quick energy and mood check-ins on a timeline across the day.',
+        image: img(2, 'A Tally habit streak heatmap and an energy and mood timeline'),
+      },
+      {
+        title: 'Journal, goals and trends',
+        body: 'Write daily notes with prompts and bookmarks. Set weekly goals with a workload bar, and see an overview and trends across everything.',
+        image: img(3, 'The Tally journal beside weekly goals and analytics'),
+      },
+    ],
+    extras: ['Command palette', 'A dashboard you can rearrange', 'Global quick-capture shortcut', 'System-tray menu'],
+  },
+  how: {
+    nav: 'Under the hood', eyebrow: 'Under the hood',
+    heading: 'Small, local, and built to last.',
+    items: [
+      { title: 'Light on your machine', body: 'Tally uses your system’s own webview with a small Rust shell, rather than shipping a full browser. The Windows installer is around 2.5 MB.' },
+      { title: 'Your data stays on your device', body: 'The app’s security policy blocks external connections, so keeping your data local is enforced by the app, not just promised.' },
+      { title: 'Safe updates', body: 'Database upgrades are versioned and tested, and the app’s identifier is fixed, so an update never moves where your data lives.' },
+      { title: 'Forgiving by default', body: 'Changes apply instantly and can be undone. Two open windows stay in sync, and turning a feature off hides it without deleting its data.' },
+    ],
+  },
+  availability: {
+    heading: 'In development. A first public release is coming.',
+    today: [
+      'Habits, tasks, focus, energy and mood, journal, goals, and analytics',
+      'Backups, a trash, and CSV, Markdown, and JSON export',
+      '73 unit test files and 24 end-to-end specs, including automated accessibility checks',
+      'A CI workflow set up to build for Windows, macOS, and Linux',
+    ],
+    next: [
+      'Hands-on checks of the tray, notifications, and shortcuts on each platform',
+      'Proper screenshots with demo data',
+      'The first public release',
+    ],
+  },
+  faq: [
+    { q: 'Do I need an account?', a: 'No. Tally doesn’t ask you to sign up, and everything stays on your device.' },
+    { q: 'Does it work offline?', a: 'Yes. Tally is local-first. Your data lives on your computer, and the app blocks external connections.' },
+    { q: 'Which platforms will it run on?', a: 'Tally is a desktop app for Windows, macOS, and Linux.' },
+    { q: 'Can I get my data out?', a: 'Yes. There are backups and a trash, plus export to CSV, Markdown, and JSON, so your data is never locked in.' },
+    { q: 'When can I try it?', a: 'Tally is in development, with a first public release coming next. Ask to be notified and you’ll hear when it’s out.' },
+  ],
+  closing: {
+    heading: 'Hear when Tally’s first release is ready.',
+    body: 'Send a quick email and I’ll let you know when you can download it.',
+    primary: notify,
+    secondary: { label: 'Read how it’s built', href: '/work/tally/' },
+  },
+};
+---
+<ProductLayout title="Tally: one place for the day" description={product.subline} palette={palette} brand="tally" product={product} />

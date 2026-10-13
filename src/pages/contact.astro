@@ -48,6 +48,8 @@ button?.addEventListener('click',async()=>{const status=document.querySelector('
 <script>
 const enquiry=document.querySelector<HTMLAnchorElement>('a[href^="mailto:"][href*="subject="]');
 if(new URLSearchParams(location.search).get('topic')==='website'&&enquiry){
-  const url=new URL(enquiry.href);url.searchParams.set('subject','Website enquiry');enquiry.href=url.href;enquiry.firstChild!.textContent='Write a website enquiry ';
+  // Swap only the subject segment; URL.searchParams would re-encode the body (spaces become '+').
+  enquiry.href=enquiry.href.replace(/([?&]subject=)[^&]*/,`$1${encodeURIComponent('Website enquiry')}`);
+  if(enquiry.firstChild)enquiry.firstChild.textContent='Write a website enquiry ';
 }
 </script>

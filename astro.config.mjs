@@ -9,7 +9,7 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap({filter: (page) => !/\/(notes|writing)(\/|$)/.test(new URL(page).pathname) && !/\/work\/(grifindo-payroll|malcolm-photography|weather-app-dashboard)\//.test(new URL(page).pathname)}),
+    sitemap({filter: (page) => !/\/writing(\/|$)/.test(new URL(page).pathname) && !/\/work\/(grifindo-payroll|malcolm-photography|weather-app-dashboard)\//.test(new URL(page).pathname)}),
   ],
   markdown: {
     shikiConfig: {
@@ -17,5 +17,9 @@ export default defineConfig({
       wrap: true,
     },
   },
+  // GitHub Pages serves directory output and 301s '/x' to '/x/'. Kept as 'ignore' so dev links
+  // without a slash still resolve; internal hrefs should be written with trailing slashes.
+  trailingSlash: 'ignore',
+  build: { format: 'directory' },
   prefetch: true,
 });

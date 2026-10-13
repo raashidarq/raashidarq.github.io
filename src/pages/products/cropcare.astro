@@ -1,0 +1,103 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+
+const palette: Palette = {
+  scheme: 'dark', bg: '#16392b', surface: '#1f4a38', ink: '#f2efe3', muted: '#cdd6c6',
+  accent: '#b9d98a', accentInk: '#b9d98a', onAccent: '#16392b', line: '#35624e',
+};
+const follow = { label: 'Follow its progress', short: 'Follow', href: 'mailto:raashid.arq@gmail.com?subject=CropCare%3A%20follow%20progress' };
+const source = { label: 'View the source', href: 'https://github.com/raashidarq/cropcare' };
+const img = (n: number, alt: string) => ({ src: `/products/cropcare/feature-${n}.webp`, fallback: `/products/cropcare/feature-${n}.png`, width: 1600, height: 1200, alt });
+
+const product: Product = {
+  slug: 'cropcare',
+  name: 'CropCare',
+  tagline: 'A closer look at crop health.',
+  promise: 'Photograph a plant. See what might be wrong, and what to do next.',
+  subline: 'An offline-first mobile app for possible crop pest and disease identification, local guidance, and sharing uncertain cases with an expert.',
+  status: 'Working MVP · Top 10, Ascentic AI Launchpad · Not on the Play Store yet',
+  primary: follow,
+  secondary: source,
+  heroAlt: 'CropCare on a phone, scanning a crop leaf',
+  film: { label: 'See a scan', caption: 'A short silent film of the MVP. Scores shown are model outputs, not a diagnosis.' },
+  problem: {
+    heading: 'Help with a sick plant, even with a weak signal.',
+    paragraphs: [
+      'When I joined Ascentic’s AI Launchpad, my dad suggested agriculture. Research narrowed that big subject to one question: could a farmer use a phone to identify a possible plant problem and find a useful next step, even with limited connectivity?',
+      'CropCare is my answer so far.',
+    ],
+    attribution: 'Raashid Arquil, maker of CropCare',
+  },
+  features: {
+    heading: 'Scan, check, and act on the phone.',
+    items: [
+      {
+        title: 'Scan right on the phone',
+        body: 'Take a photo of the plant. CropCare first checks that the image is usable, then runs the classifier on the device. Results and your scan history are saved locally.',
+        points: ['Checks for blur, exposure, image size, and plant-like colour before scanning', 'Unsuitable photos are turned away instead of guessed at'],
+        image: img(1, 'Scanning a crop leaf with CropCare'),
+      },
+      {
+        title: 'Honest when it isn’t sure',
+        body: 'A confident-looking score isn’t proof the model understood the photo. When a result looks uncertain, CropCare says so instead of presenting a guess as a diagnosis.',
+        image: img(2, 'A CropCare result with a low-confidence message'),
+      },
+      {
+        title: 'Guidance first, AI when you ask',
+        body: 'Built-in guidance opens without a network request. If you want more, tap “Get AI Recommendation” for structured advice, which is saved so it isn’t fetched twice.',
+        points: ['Follow-up chat about your result (needs a connection)', 'Share the photo and case details with an expert on WhatsApp or another app'],
+        image: img(3, 'CropCare guidance and the Get AI Recommendation action'),
+      },
+      {
+        title: 'In your language',
+        body: 'Use CropCare in English, Sinhala, or Tamil, with text-to-speech and adjustable text settings.',
+        screen: true,
+        image: { src: '/images/cropcare-language.png', width: 303, height: 605, alt: 'CropCare language selection with English, Sinhala, and Tamil' },
+      },
+    ],
+  },
+  how: {
+    nav: 'How it works', eyebrow: 'How it works',
+    heading: 'The essentials work offline. The cloud is optional.',
+    items: [
+      { title: 'A model on your phone', body: 'The classifier is a MobileNetV3 model trained on 34 classes across six crops, and it runs on the device with TensorFlow Lite.' },
+      { title: 'No account needed to start', body: 'Start in guest mode with your records on the phone. Upgrade to an account later for queued sync and cloud restore.' },
+      { title: 'Online only on request', body: 'AI recommendations and follow-up chat are deliberate online actions. If the connection fails, the local guidance stays on screen.' },
+      { title: 'Tested on a real phone', body: 'Tested on a Samsung Galaxy A528B, including the camera, offline use, speech output, and sharing.' },
+    ],
+  },
+  availability: {
+    heading: 'It works. Real world, it could do better.',
+    intro: 'That’s why CropCare isn’t on the Play Store yet.',
+    today: [
+      'On-device scanning with image-quality checks first',
+      'Built-in guidance without a cloud request',
+      'Optional AI recommendation and follow-up chat',
+      'Guest mode, account upgrade, sync, and cloud restore',
+      'Sharing a case with an expert',
+      'English, Sinhala, and Tamil',
+    ],
+    next: [
+      'Measure accuracy on real field photographs',
+      'Calibrate the rejection thresholds against those results',
+      'Better guardrails on the treatment guidance',
+    ],
+    milestones: ['Top 20, then Top 10 in Ascentic’s AI Launchpad', 'Presented at TRACE, Sri Lanka, 19 September 2026'],
+  },
+  faq: [
+    { q: 'Does CropCare work without internet?', a: 'Scanning, results, history, and the built-in guidance all work on the phone. The AI recommendation and follow-up chat need a connection.' },
+    { q: 'Is the result a diagnosis?', a: 'No. CropCare identifies a possible pest or disease. Uncertain results are flagged as uncertain, and you can share a case with an expert.' },
+    { q: 'Do I need an account?', a: 'No. You can start in guest mode with records kept on your phone, and upgrade to an account later if you want sync and cloud restore.' },
+    { q: 'Which languages does it support?', a: 'English, Sinhala, and Tamil, with text-to-speech and adjustable text settings.' },
+    { q: 'Can I download it?', a: 'Not yet. It’s a working MVP that needs testing against real field photographs before it goes on the Play Store. The source code is public on GitHub.' },
+  ],
+  closing: {
+    heading: 'Follow CropCare as it gets ready for the field.',
+    body: 'Send a quick email to hear about progress, or look through the code yourself.',
+    primary: follow,
+    secondary: source,
+  },
+};
+---
+<ProductLayout title="CropCare: a closer look at crop health" description={product.subline} palette={palette} brand="cropcare" product={product} />

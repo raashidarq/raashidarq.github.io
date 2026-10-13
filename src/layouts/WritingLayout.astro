@@ -3,5 +3,5 @@ import BaseLayout from './BaseLayout.astro';
 const {post}=Astro.props;
 ---
 <BaseLayout title={`${post.data.title} — Raashid Arquil`} description={post.data.description} type="article" noindex>
-<div class="shell notes-shell"><header class="page-intro compact-intro"><a class="text-link" href="/notes">← Notes</a><h1 class="note-title">{post.data.title}</h1><p class="lead">{post.data.description}</p></header><article class="article-body note-body"><slot/></article></div>
+<div class="shell notes-shell"><header class="page-intro compact-intro"><a class="text-link" href="/notes/">← Notes</a><h1 class="note-title">{post.data.title}</h1><p class="lead">{post.data.description}</p></header><article class="article-body note-body"><slot/></article></div>
 </BaseLayout>

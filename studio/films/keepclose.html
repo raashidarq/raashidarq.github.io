@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KeepClose film</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/engine.css">
+<style>
+  :root {
+    --bg: #e3e7db; --surface: #f3f5ee; --ink: #1f2a22; --accent: #4d6b52;
+    --ink-soft: #3c4a40; --line: rgba(31,42,34,0.12); --bezel: #1f2a22; --bezel-rim: rgba(255,255,255,0.08);
+    --shadow: rgba(31,42,34,0.42); --ring-halo: rgba(77,107,82,0.16); --ring-glow: rgba(77,107,82,0.35);
+    --callout-bg: #1f2a22; --tap: #4d6b52; --tap-fill: rgba(77,107,82,0.14);
+  }
+  .txt { position: absolute; left: 150px; width: 690px; }
+  .txt .headline { font-size: 84px; }
+  .hook { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; }
+  .hook .headline { font-size: 104px; }
+  .end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; text-align: center; }
+  .pathline { position: absolute; height: 4px; border-radius: 2px; background: var(--accent); transform-origin: 0 50%; }
+  .pathdot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 6px rgba(77,107,82,0.18); }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <svg class="geo" id="geo" viewBox="0 0 1920 1080" width="1920" height="1080">
+    <defs>
+      <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#f3f5ee" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="#f3f5ee" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle id="g-glow" cx="1360" cy="540" r="640" fill="url(#glow)"/>
+    <g id="g-rings" fill="none" stroke="#4d6b52">
+      <circle cx="1360" cy="540" r="560" stroke-opacity="0.16" stroke-width="1.5"/>
+      <circle cx="1360" cy="540" r="420" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="2 12"/>
+      <circle cx="1360" cy="540" r="720" stroke-opacity="0.09" stroke-width="1.5"/>
+    </g>
+    <g id="g-nodes" fill="#4d6b52">
+      <circle cx="1920" cy="540" r="7" fill-opacity="0.35"/>
+      <circle cx="800" cy="540" r="6" fill-opacity="0.3"/>
+      <circle cx="1360" cy="-20" r="6" fill-opacity="0.3"/>
+    </g>
+  </svg>
+
+  <div class="cam" id="cam">
+    <div class="phone" id="phone">
+      <div class="punch"></div>
+      <div class="screen" style="width:360px;height:800px">
+        <img id="s-profile" src="../../public/images/keepclose-profile.png" width="360" height="800" alt="">
+        <img id="s-memory" src="../../public/images/keepclose-memory.png" width="360" height="800" alt="">
+        <img id="s-tree" src="../../public/images/keepclose-family-tree.png" width="360" height="800" alt="">
+        <img id="s-export" src="../../public/images/keepclose-export.png" width="360" height="800" alt="">
+        <div class="pathline" id="pl1" style="left:70px;top:340px;width:92px"></div>
+        <div class="pathline" id="pl2" style="left:198px;top:340px;width:92px"></div>
+        <div class="ring" id="r-conn" style="left:18px;top:286px;width:324px;height:250px;border-radius:14px"></div>
+        <div class="ring" id="r-attach" style="left:16px;top:362px;width:328px;height:48px;border-radius:12px"></div>
+        <div class="ring" id="r-follow" style="left:16px;top:618px;width:328px;height:80px;border-radius:12px"></div>
+        <div class="ring" id="r-tree" style="left:14px;top:189px;width:300px;height:204px;border-radius:16px"></div>
+        <div class="ring" id="r-banner" style="left:16px;top:80px;width:328px;height:96px;border-radius:12px"></div>
+        <div class="ring" id="r-fields" style="left:12px;top:352px;width:336px;height:366px;border-radius:14px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- stage-space overlays -->
+  <div class="callout" id="c-conn">Directional relationships<small>Parent and child: one connection</small></div>
+  <div class="callout" id="c-voice">Offline transcription<small>Bundled Vosk model</small></div>
+  <div class="callout" id="c-follow">Optional follow-up<small>A gentle reminder</small></div>
+  <div class="callout" id="c-tree">Linked profiles</div>
+  <div class="callout" id="c-banner">Nothing leaves<small>until you preview</small></div>
+  <div class="callout" id="c-fields">Pick people and fields</div>
+  <div class="tap" id="tap1"></div>
+  <div class="tap" id="tap2"></div>
+
+  <div class="hook" id="hook">
+    <div class="headline" id="h1" data-split>Someone recognises you.</div>
+    <div class="headline" id="h2" data-split><em>You can't quite place them.</em></div>
+  </div>
+
+  <div class="txt" id="t-intro" style="top:350px">
+    <div class="wordmark" id="wm" data-split>KeepClose</div>
+    <div class="body-l" id="intro-b" data-split style="margin-top:26px;width:700px">An offline Android app for remembering people, and how they connect.</div>
+  </div>
+
+  <div class="txt" style="top:390px">
+    <div class="eyebrow" id="e1" data-split>Connections</div>
+    <div class="headline" id="b1" data-split style="margin-top:22px">Relationships between people, <em>not just with you.</em></div>
+  </div>
+  <div class="txt" style="top:390px">
+    <div class="eyebrow" id="e2" data-split>Memories</div>
+    <div class="headline" id="b2" data-split style="margin-top:22px">Capture a memory. <em>Note, voice or photo.</em></div>
+  </div>
+  <div class="txt" style="top:390px">
+    <div class="eyebrow" id="e3" data-split>Family tree</div>
+    <div class="headline" id="b3" data-split style="margin-top:22px">Explore how <em>the family connects.</em></div>
+  </div>
+  <div class="txt" style="top:390px">
+    <div class="eyebrow" id="e4" data-split>Export</div>
+    <div class="headline" id="b4" data-split style="margin-top:22px">Choose exactly <em>what to share.</em></div>
+  </div>
+  <div class="txt" style="top:250px">
+    <div class="eyebrow" id="e5" data-split>Privacy</div>
+    <div class="headline" id="b5" data-split style="margin-top:22px">Offline <em>by design.</em></div>
+  </div>
+  <div class="chip" id="ch1"><svg viewBox="0 0 24 24" fill="none" stroke="#4d6b52" stroke-width="1.8" stroke-linecap="round"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="#4d6b52"/><path d="M3 3l18 18"/></svg>No Internet permission</div>
+  <div class="chip" id="ch2"><svg viewBox="0 0 24 24" fill="none" stroke="#4d6b52" stroke-width="1.8" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>SQLCipher-encrypted database</div>
+  <div class="chip" id="ch3"><svg viewBox="0 0 24 24" fill="none" stroke="#4d6b52" stroke-width="1.8" stroke-linecap="round"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.1 4.5 4.5 0 0 0 7 18z"/><path d="M3 3l18 18"/></svg>No cloud accounts or sync</div>
+
+  <div class="end" id="end">
+    <div class="wordmark" id="end-wm" data-split style="font-size:200px">KeepClose</div>
+    <div class="body-l" id="end-tag" data-split style="font-size:36px;color:var(--ink)">People. Relationships. The details worth remembering.</div>
+    <div class="pill" id="end-pill" style="margin-top:20px"><span class="dot"></span>In development · Android</div>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const { E, kf, env, tf, words, camera, ring, prog, callout, tap } = Studio;
+const $ = (id) => document.getElementById(id);
+const BZ = 14;
+const sq = location.search.includes("square");
+
+// world position of a screen point on the phone
+let P = { x: 0, y: 0, s: 1 };
+const W = (sx, sy) => [P.x + (BZ + sx) * P.s, P.y + (BZ + sy) * P.s];
+// camera that puts screen point (sx,sy) at stage x = X, with zoom z
+const aim = (sx, sy, z, X = 1230, Y = 540) => { const [wx, wy] = W(sx, sy); return [wx - (X - 960) / z, wy - (Y - 540) / z, z]; };
+
+const PR = (cam) => cam.toStage(P.x + 388 * P.s, 0)[0] + 30;   // stage x just right of the phone
+const S = (cam, sx, sy) => cam.toStage(...W(sx, sy));
+
+function render(t) {
+  // ---- background geometry (slow drift)
+  $("g-rings").setAttribute("transform", `rotate(${t * 1.2} 1360 540)`);
+  $("g-nodes").setAttribute("transform", `rotate(${t * -2.2} 1360 540)`);
+
+  // ---- phone placement (world)
+  const rise = prog(t, 3.1, 4.9, E.outQuint);
+  const shift = prog(t, 25.9, 27.0, E.inOutQuint);
+  const leave = prog(t, 29.2, 30.2, E.inOutQuint);
+  P = { x: 1150 + shift * 120, y: 64 + (1 - rise) * 300 + leave * 80, s: 1.15 };
+  tf($("phone"), { x: P.x, y: P.y, s: P.s, o: rise * (1 - leave), rx: (1 - rise) * 16, persp: 2200 });
+
+  // ---- screens
+  $("s-profile").style.opacity = 1;
+  $("s-memory").style.opacity = kf(t, [[11.9, 0], [12.6, 1]]);
+  $("s-tree").style.opacity = kf(t, [[17.4, 0], [18.1, 1]]);
+  $("s-export").style.opacity = kf(t, [[21.7, 0], [22.4, 1]]);
+
+  // ---- camera
+  const c = kf(t, [
+    [0, [960, 560, 0.97]],
+    [6.4, [960, 540, 1.0]],
+    [7.6, aim(180, 410, 1.5)],
+    [11.4, aim(180, 412, 1.56), E.linear],
+    [12.6, aim(180, 470, 1.22)],
+    [13.2, aim(180, 470, 1.22)],
+    [15.0, aim(180, 470, 1.28), E.linear],
+    [15.8, aim(180, 600, 1.42)],
+    [17.0, aim(180, 610, 1.46), E.linear],
+    [18.2, aim(163, 300, 1.5)],
+    [21.2, aim(163, 296, 1.56), E.linear],
+    [22.4, aim(180, 260, 1.32)],
+    [23.6, aim(180, 260, 1.34), E.linear],
+    [24.4, aim(180, 520, 1.26)],
+    [25.6, aim(180, 530, 1.28), E.linear],
+    [26.9, [960, 540, 1.0]],
+    [33, [960, 540, 1.0]],
+  ]);
+  const cam = camera($("cam"), c);
+
+  // ---- hook
+  words($("h1"), t, 0.25, 2.9);
+  words($("h2"), t, 1.15, 3.0);
+
+  // ---- intro
+  words($("wm"), t, 3.9, 6.6, { dy: 50, dur: 1.1 });
+  words($("intro-b"), t, 4.5, 6.6, { stagger: 0.035 });
+
+  // ---- beat 1: connections
+  words($("e1"), t, 7.4, 11.5); words($("b1"), t, 7.6, 11.5);
+  ring($("r-conn"), t, 8.2, 11.6);
+  const plo = 1 - prog(t, 11.2, 11.7);
+  const pa = prog(t, 8.6, 9.3, E.inOut), pb = prog(t, 9.2, 9.9, E.inOut);
+  tf($("pl1"), { sx: pa, sy: 1, o: (pa > 0 ? 0.95 : 0) * plo });
+  tf($("pl2"), { sx: pb, sy: 1, o: (pb > 0 ? 0.95 : 0) * plo });
+  callout($("c-conn"), t, 9.6, 11.6, S(cam, 342, 411), PR(cam));
+
+  // ---- beat 2: memory
+  words($("e2"), t, 12.5, 17.0); words($("b2"), t, 12.7, 17.0);
+  ring($("r-attach"), t, 13.4, 15.2);
+  tap($("tap1"), t, 13.9, S(cam, 97, 386));
+  callout($("c-voice"), t, 14.1, 15.3, S(cam, 344, 386), PR(cam));
+  ring($("r-follow"), t, 15.6, 17.2);
+  callout($("c-follow"), t, 16.0, 17.2, S(cam, 344, 658), PR(cam));
+
+  // ---- beat 3: family tree
+  words($("e3"), t, 18.0, 21.3); words($("b3"), t, 18.2, 21.3);
+  ring($("r-tree"), t, 18.7, 21.4);
+  tap($("tap2"), t, 19.8, S(cam, 242, 323));
+  callout($("c-tree"), t, 19.2, 21.4, S(cam, 314, 291), PR(cam));
+
+  // ---- beat 4: export
+  words($("e4"), t, 22.2, 25.6); words($("b4"), t, 22.4, 25.6);
+  ring($("r-banner"), t, 22.7, 24.2);
+  callout($("c-banner"), t, 23.0, 24.2, S(cam, 344, 128), PR(cam));
+  ring($("r-fields"), t, 24.5, 25.9);
+  callout($("c-fields"), t, 24.7, 25.9, S(cam, 348, 535), PR(cam));
+
+  // ---- privacy
+  words($("e5"), t, 26.4, 29.2); words($("b5"), t, 26.6, 29.2);
+  ["ch1", "ch2", "ch3"].forEach((id, i) => {
+    const a = 27.0 + i * 0.28;
+    const p = prog(t, a, a + 0.9, E.outQuint), q = prog(t, 29.0 + i * 0.06, 29.5 + i * 0.06);
+    tf($(id), { x: 150 + (1 - p) * -30, y: 520 + i * 118, o: p * (1 - q) });
+  });
+
+  // ---- end card
+  words($("end-wm"), t, 30.0, null, { dy: 50, dur: 1.2 });
+  words($("end-tag"), t, 30.6, null, { stagger: 0.05 });
+  { const p = prog(t, 31.2, 32.1, E.outQuint); tf($("end-pill"), { y: (1 - p) * 16, o: p }); }
+}
+
+Studio.boot({ duration: 33, render, poster: 9.9 });
+</script>
+</body>
+</html>

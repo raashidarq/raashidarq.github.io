@@ -1,0 +1,94 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+
+const palette: Palette = {
+  scheme: 'light', bg: '#e6ecf1', surface: '#ffffff', ink: '#16304a', muted: '#44566a',
+  accent: '#2f6fd6', accentInk: '#2559b0', onAccent: '#ffffff', line: '#c6d2dd',
+};
+const demo = { label: 'Try the live demo', short: 'Live demo', href: 'https://raashidarq.github.io/smartdrive/' };
+const talk = { label: 'Run a driving school? Let’s talk', href: '/contact/' };
+const img = (n: number, alt: string) => ({ src: `/products/smartdrive/feature-${n}.webp`, fallback: `/products/smartdrive/feature-${n}.png`, width: 1600, height: 1200, alt });
+
+const product: Product = {
+  slug: 'smartdrive',
+  name: 'SmartDrive',
+  tagline: 'The school. In one place.',
+  promise: 'A driving school in one system, not in phone calls and record books.',
+  subline: 'Scheduling, learning materials, and fleet management for administrators, instructors, and students, with a dashboard for each.',
+  status: 'Prototype · Live demo with fictional data',
+  primary: demo,
+  secondary: talk,
+  heroAlt: 'SmartDrive dashboards for a driving school on a laptop',
+  film: { label: 'See the demo', caption: 'A short silent film of the prototype. All records are fictional.' },
+  problem: {
+    heading: 'I went through the process myself.',
+    paragraphs: [
+      'Getting my driving licence involved bookings by phone, records kept in books, and queues without a clear order. People waited around.',
+      'It felt like a process software could make much better, so I built SmartDrive to explore that.',
+    ],
+    attribution: 'Raashid Arquil, maker of SmartDrive',
+  },
+  features: {
+    heading: 'One place for everyone at the school.',
+    items: [
+      {
+        title: 'For students',
+        body: 'See your learning progress and upcoming sessions at a glance.',
+        image: img(1, 'The SmartDrive student dashboard with progress and upcoming sessions'),
+      },
+      {
+        title: 'Book a lesson',
+        body: 'Request a practical session in one form: course, instructor, date, time, transmission, and pickup location.',
+        image: img(2, 'Booking a practical driving lesson in SmartDrive'),
+      },
+      {
+        title: 'For instructors',
+        body: 'Review session requests and record evaluations in one workspace.',
+        image: img(3, 'The SmartDrive instructor workspace with session requests'),
+      },
+      {
+        title: 'For the office',
+        body: 'Administrators manage members, courses, and announcements from their own dashboard.',
+        image: { src: '/images/smartdrive-admin.jpg', width: 1434, height: 992, alt: 'SmartDrive administration dashboard with fictional demo data' },
+      },
+    ],
+  },
+  how: {
+    nav: 'How it works', eyebrow: 'How it works',
+    heading: 'One booking, reflected everywhere.',
+    items: [
+      { title: 'Connected screens', body: 'When a student books a session, the dashboard adds the session, creates a notification, and logs the activity, instead of each screen standing alone.' },
+      { title: 'A dashboard per role', body: 'Accounts use email sign-in, and administrators, instructors, and students each land on their own dashboard.' },
+      { title: 'Try every role, no account', body: 'The public demo runs on fictional records kept in your browser, so changes survive a reload and you can try every role without signing up.' },
+    ],
+  },
+  availability: {
+    heading: 'A prototype, honestly.',
+    intro: 'It started as my final-year project, and it was more hopeful than finished.',
+    today: [
+      'A live demo of every role: student, instructor, and administrator',
+      'Lesson booking connected to notifications and activity',
+      'Fictional demo data, saved in your browser',
+    ],
+    next: [
+      'Move bookings to the server, so double-booked instructors and permissions are checked there rather than in the browser',
+      'After that, a learner-facing app (PWA)',
+    ],
+    note: 'Before a school could rely on it, the server needs to own bookings. When it’s ready for real use, I’d like to take it back to the driving school I attended.',
+  },
+  faq: [
+    { q: 'Can my driving school use SmartDrive today?', a: 'Not yet. It’s a prototype. Before a school relies on it, bookings need to move to the server so conflicts and permissions are enforced there. If you run a school, I’d like to hear from you.' },
+    { q: 'Do I need an account to try the demo?', a: 'No. The demo runs on fictional records and browser-local state, so you can try every role without an account.' },
+    { q: 'Is any of the data real?', a: 'No. Everything in the demo is fictional, and your changes are stored only in your own browser.' },
+    { q: 'Who is it for?', a: 'Driving schools: administrators, instructors, and students, each with their own dashboard.' },
+  ],
+  closing: {
+    heading: 'Run a driving school? Let’s talk.',
+    body: 'Try the demo, then tell me how your school handles bookings today.',
+    primary: talk,
+    secondary: demo,
+  },
+};
+---
+<ProductLayout title="SmartDrive: the driving school, in one place" description={product.subline} palette={palette} brand="smartdrive" product={product} />

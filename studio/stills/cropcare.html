@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CropCare stills</title>
+<link rel="stylesheet" href="../lib/fonts.css">
+<link rel="stylesheet" href="../lib/engine.css">
+<style>
+  :root {
+    --bg: #16392b; --surface: #1f4a38; --ink: #f2efe3; --accent: #b9d98a; --line: rgba(242,239,227,0.12);
+    --bezel: #0c1f17; --bezel-rim: rgba(242,239,227,0.16); --shadow: rgba(0,0,0,0.6);
+    --ring: #b9d98a; --ring-halo: rgba(185,217,138,0.28); --ring-glow: rgba(185,217,138,0.45);
+  }
+  html, body { overflow: visible; }
+  .shot { position: relative; overflow: hidden; background: var(--bg); }
+  .shot svg.geo { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ring { border-color: #7fae45; }
+</style>
+</head>
+<body>
+<section class="shot" id="hero" data-w="2400" data-h="1500"></section>
+<section class="shot" id="feature-1" data-w="1600" data-h="1200"></section>
+<section class="shot" id="feature-2" data-w="1600" data-h="1200"></section>
+<section class="shot" id="feature-3" data-w="1600" data-h="1200"></section>
+<section class="shot" id="og" data-w="1200" data-h="630"></section>
+
+<script src="../lib/engine.js"></script>
+<script src="../lib/stills.js"></script>
+<script>
+const IMG = (n) => `../../public/images/cropcare-${n}.png`;
+const P = (s, x, y, src, rings, ih = 610) => ({ sw: 303, sh: 610, iw: src === "home" ? 302 : 303, ih, s, x, y, bezel: 12, radius: 52, screenRadius: 40, bg: "#fbf9f7", src: IMG(src), rings });
+const geo = (el, cx, cy, rs, extra = "") => {
+  el.insertAdjacentHTML("afterbegin", `<svg class="geo" viewBox="0 0 ${el.dataset.w} ${el.dataset.h}">
+    <defs><radialGradient id="g${el.id}" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#2a5c45" stop-opacity="0.95"/><stop offset="1" stop-color="#2a5c45" stop-opacity="0"/></radialGradient></defs>
+    <circle cx="${cx}" cy="${cy}" r="${rs[rs.length - 1]}" fill="url(#g${el.id})"/>
+    <g fill="none" stroke="#b9d98a">${rs.map((r, i) => `<circle cx="${cx}" cy="${cy}" r="${r}" stroke-opacity="${0.13 - i * 0.025}" stroke-width="2" ${i === 1 ? 'stroke-dasharray="2 14"' : ""}/>`).join("")}</g>
+    ${extra}</svg>`);
+};
+const SPOT = "rgba(10,25,18,0.30)";
+const vf = (x0, y0, x1, y1, l = 70) => `<g fill="none" stroke="#b9d98a" stroke-opacity="0.24" stroke-width="3" stroke-linecap="round">
+  <path d="M${x0} ${y0 + l}V${y0}H${x0 + l}M${x1 - l} ${y0}H${x1}V${y0 + l}M${x1} ${y1 - l}V${y1}H${x1 - l}M${x0 + l} ${y1}H${x0}V${y1 - l}"/></g>`;
+
+{ const s = document.getElementById("hero");
+  geo(s, 1200, 750, [560, 760, 1000], vf(780, 120, 1620, 1380, 90) + `<g fill="#b9d98a" fill-opacity="0.35"><circle cx="1960" cy="750" r="9"/><circle cx="440" cy="750" r="9"/></g>`);
+  Still.card(s, { src: IMG("result"), iw: 303, ih: 508, w: 303, h: 508, x: 400, y: 430, s: 1.55, radius: 20, bg: "#fbf9f7" });
+  Still.phone(s, P(1.5, 1500, 290, "language", [], 605));
+  Still.phone(s, P(1.75, 914, 195, "home"));
+}
+{ const s = document.getElementById("feature-1");
+  geo(s, 800, 600, [520, 700, 920]);
+  Still.phone(s, P(2.1, 457, 250, "home", [{ x: 8, y: 52, w: 285, h: 100, r: 16, spot: true, dim: SPOT }]));
+}
+{ const s = document.getElementById("feature-2");
+  geo(s, 800, 600, [520, 700, 920]);
+  Still.card(s, { src: IMG("result"), iw: 303, ih: 508, w: 303, h: 508, x: 482, y: -61, s: 2.1, radius: 20, bg: "#fbf9f7",
+    rings: [{ x: 8, y: 268, w: 287, h: 94, r: 12, spot: true, dim: SPOT }] });
+}
+{ const s = document.getElementById("feature-3");
+  geo(s, 800, 600, [520, 700, 920]);
+  Still.phone(s, P(2.0, 473, -230, "language", [{ x: 44, y: 205, w: 216, h: 166, r: 12 }], 605));
+}
+{ const s = document.getElementById("og");
+  geo(s, 960, 330, [280, 400, 540], vf(780, 40, 1140, 660, 50));
+  s.insertAdjacentHTML("beforeend", `<div style="position:absolute;left:84px;top:210px;width:560px">
+    <div class="wordmark" style="font-size:124px">CropCare</div>
+    <div style="margin-top:22px;font-size:31px;line-height:1.38;font-weight:500;color:rgba(242,239,227,0.82)">A closer look at crop health.</div></div>`);
+  Still.phone(s, P(0.98, 800, 70, "home"));
+}
+</script>
+</body>
+</html>

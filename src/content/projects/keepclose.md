@@ -64,7 +64,7 @@ The application manifest does not request Internet permission. Speech recognitio
 
 Room stores structured records in a SQLCipher-encrypted database, with a Keystore-backed key-storage implementation. Photos and audio live in app-private files rather than database blobs. That separation keeps large media out of database queries; those files are not encrypted by SQLCipher.
 
-The ZIP backup contains JSON records and media. **The exported ZIP is not encrypted.** CSV exports also contain readable data, so the export flow lets users select records and fields and review the result before sharing.
+The ZIP backup contains JSON records and media. It isn't encrypted, so it should be kept as carefully as any personal file. CSV exports are readable by design, so the export flow lets users choose records and fields and review the result before sharing.
 
 App-lock options include PIN, pattern, biometrics, and Android device credentials. Native credential confirmation is kept separate from the application's own credentials when switching lock modes.
 

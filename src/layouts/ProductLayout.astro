@@ -1,0 +1,351 @@
+---
+// src/layouts/ProductLayout.astro
+// Standalone, customer-facing product shell. No portfolio navbar: each product gets its own
+// slim header, brand palette and a small "Built by" footer. Pass `product` to render the
+// standard landing page; anything in the default slot is rendered after it (or alone).
+import '../styles/product.css';
+
+type Link = { label: string; href: string; short?: string };
+type Img = { src: string; alt: string; width: number; height: number; fallback?: string };
+type Feature = { title: string; body: string; points?: string[]; image: Img; screen?: boolean };
+
+export interface Product {
+  slug: string;
+  name: string;
+  tagline: string;
+  promise: string;
+  subline: string;
+  status: string;
+  primary: Link;
+  secondary: Link;
+  film: { label: string; caption: string };
+  problem: { heading: string; paragraphs: string[]; attribution?: string };
+  features: { heading: string; intro?: string; items: Feature[]; extras?: string[] };
+  how: { id?: string; nav: string; eyebrow: string; heading: string; intro?: string; items: { title: string; body: string }[] };
+  availability: { heading: string; intro?: string; today: string[]; next: string[]; nextLabel?: string; note?: string; milestones?: string[] };
+  faq: { q: string; a: string }[];
+  closing: { heading: string; body: string; primary: Link; secondary?: Link };
+  heroAlt: string;
+}
+
+export type Palette = {
+  scheme: 'light' | 'dark';
+  bg: string; surface: string; ink: string; muted: string;
+  accent: string; accentInk: string; onAccent: string; line: string;
+};
+
+interface Props {
+  title: string;
+  description: string;
+  palette: Palette;
+  brand: string;
+  image?: string;
+  product?: Product;
+  wordmark?: string;
+  headerLinks?: Link[];
+  headerCta?: Link;
+  caseStudy?: string;
+}
+
+const { title, description, palette, brand, image, product, caseStudy } = Astro.props;
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://raashidarq.github.io';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const ogImage = new URL(image || (product ? `/products/${product.slug}/og.jpg` : '/images/portfolio-sharing-thumbnail.png'), siteUrl).toString();
+const hasOwnOg = !!product || !!image;
+
+const wordmark = Astro.props.wordmark || product?.name || 'Products';
+const headerLinks: Link[] = Astro.props.headerLinks || (product ? [
+  { label: 'Features', href: '#features' },
+  { label: product.how.nav, href: `#${product.how.id || 'how'}` },
+  { label: 'FAQ', href: '#faq' },
+] : []);
+const headerCta = Astro.props.headerCta || product?.primary;
+
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+const linkAttrs = (href: string) => (isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {});
+
+const vars = [
+  `--p-bg:${palette.bg}`, `--p-surface:${palette.surface}`, `--p-ink:${palette.ink}`, `--p-muted:${palette.muted}`,
+  `--p-accent:${palette.accent}`, `--p-accent-ink:${palette.accentInk}`, `--p-on-accent:${palette.onAccent}`, `--p-line:${palette.line}`,
+  `color-scheme:${palette.scheme}`,
+].join(';');
+
+const base = product ? `/products/${product.slug}` : '';
+// Hide a not-yet-generated or failed image so the brand-coloured, fixed-ratio box shows instead.
+const hideOnError = "this.closest('.p-media')&&this.closest('.p-media').classList.add('is-missing')";
+const filmId = product ? `${product.slug}-film` : 'film';
+---
+
+<!doctype html>
+<html lang="en" data-brand={brand} style={vars}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content={palette.scheme} />
+    <meta name="theme-color" content={palette.bg} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Raashid Arquil" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    {hasOwnOg && <meta property="og:image:width" content="1200" />}
+    {hasOwnOg && <meta property="og:image:height" content="630" />}
+    <meta property="og:site_name" content="Raashid Arquil" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@raashidarq" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="product">
+    <a class="p-skip" href="#main">Skip to content</a>
+
+    <header class="p-header">
+      <div class="p-wrap p-header-row">
+        <a class="p-wordmark" href={product ? '#top' : '/products/'}>{wordmark}</a>
+        {headerLinks.length > 0 && (
+          <nav class="p-nav" aria-label={`${wordmark} sections`}>
+            {headerLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+          </nav>
+        )}
+        {headerCta && (
+          <a class="p-btn p-btn-sm" href={headerCta.href} {...linkAttrs(headerCta.href)}>
+            <span class="p-cta-long">{headerCta.label}</span>
+            <span class="p-cta-short" aria-hidden="true">{headerCta.short || headerCta.label}</span>
+          </a>
+        )}
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      {product && (
+        <>
+          <section class="p-hero" id="top" aria-labelledby="p-title">
+            <div class="p-wrap">
+              <p class="p-chip"><span class="p-dot" aria-hidden="true"></span>{product.status}</p>
+              <h1 id="p-title" class="p-name">{product.name}</h1>
+              <p class="p-promise">{product.promise}</p>
+              <p class="p-subline">{product.subline}</p>
+              <div class="p-actions">
+                <a class="p-btn" href={product.primary.href} {...linkAttrs(product.primary.href)}>{product.primary.label}</a>
+                <a class="p-btn p-btn-ghost" href={product.secondary.href} {...linkAttrs(product.secondary.href)}>{product.secondary.label}</a>
+              </div>
+            </div>
+            <div class="p-wrap p-wrap-wide">
+              <div class="p-media p-hero-media" style="aspect-ratio:2400/1500">
+                <span class="p-media-fallback" aria-hidden="true">{product.tagline}</span>
+                <picture>
+                  <source type="image/webp" srcset={`${base}/hero.webp`} />
+                  <img src={`${base}/hero.png`} alt={product.heroAlt} width="2400" height="1500" fetchpriority="high" decoding="async" onerror={hideOnError} />
+                </picture>
+              </div>
+            </div>
+          </section>
+
+          <section class="p-section p-film-section" aria-labelledby="p-film-title">
+            <div class="p-wrap p-wrap-wide">
+              <h2 id="p-film-title" class="p-eyebrow">{product.film.label}</h2>
+              <figure class="p-film">
+                <div class="p-media p-film-frame" style="aspect-ratio:16/9">
+                  <span class="p-media-fallback" aria-hidden="true">{product.name}</span>
+                  <video id={filmId} autoplay muted loop playsinline preload="metadata" poster={`${base}/film-poster.jpg`} aria-label={`${product.name} product film, no audio`}>
+                    <source src={`${base}/film.mp4`} type="video/mp4" />
+                  </video>
+                  <button type="button" class="p-film-play" hidden data-film-play>
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+                    <span>Play the film</span>
+                  </button>
+                  <button type="button" class="p-film-toggle" data-film-toggle aria-label="Pause the film">
+                    <svg class="i-pause" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor" /></svg>
+                    <svg class="i-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+                  </button>
+                </div>
+                <figcaption>{product.film.caption}</figcaption>
+              </figure>
+              <script is:inline define:vars={{ filmId }}>
+                (function () {
+                  var v = document.getElementById(filmId);
+                  if (!v) return;
+                  var frame = v.parentElement;
+                  var big = frame.querySelector('[data-film-play]');
+                  var toggle = frame.querySelector('[data-film-toggle]');
+                  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                  if (reduce) {
+                    v.autoplay = false;
+                    v.removeAttribute('autoplay');
+                    try { v.pause(); } catch (e) {}
+                    big.hidden = false;
+                  }
+                  function sync() {
+                    var playing = !v.paused;
+                    frame.classList.toggle('is-playing', playing);
+                    toggle.setAttribute('aria-label', playing ? 'Pause the film' : 'Play the film');
+                    if (playing) big.hidden = true;
+                  }
+                  function missing() { frame.classList.add('is-missing'); big.hidden = true; toggle.hidden = true; }
+                  v.addEventListener('play', sync);
+                  v.addEventListener('pause', sync);
+                  var src = v.querySelector('source');
+                  if (src) src.addEventListener('error', missing);
+                  // networkState is briefly NO_SOURCE while the browser picks a source, so only trust the error event.
+                  v.addEventListener('loadeddata', function () { frame.classList.remove('is-missing'); toggle.hidden = false; });
+                  big.addEventListener('click', function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+                  toggle.addEventListener('click', function () {
+                    if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else { v.pause(); }
+                  });
+                  sync();
+                })();
+              </script>
+            </div>
+          </section>
+
+          <section class="p-section" aria-labelledby="p-problem">
+            <div class="p-wrap p-problem">
+              <p class="p-eyebrow">Why it exists</p>
+              <h2 id="p-problem" class="p-h2">{product.problem.heading}</h2>
+              <div class="p-problem-body">
+                {product.problem.paragraphs.map((p) => <p>{p}</p>)}
+                {product.problem.attribution && <p class="p-attrib">{product.problem.attribution}</p>}
+              </div>
+            </div>
+          </section>
+
+          <section class="p-section p-features" id="features" aria-labelledby="p-features-title">
+            <div class="p-wrap">
+              <p class="p-eyebrow">Features</p>
+              <h2 id="p-features-title" class="p-h2">{product.features.heading}</h2>
+              {product.features.intro && <p class="p-intro">{product.features.intro}</p>}
+              <div class="p-feature-list">
+                {product.features.items.map((f) => (
+                  <article class:list={['p-feature', { 'is-screen': f.screen }]}>
+                    <div class="p-feature-copy">
+                      <h3 class="p-h3">{f.title}</h3>
+                      <p>{f.body}</p>
+                      {f.points && <ul class="p-points">{f.points.map((pt) => <li>{pt}</li>)}</ul>}
+                    </div>
+                    <div class="p-media p-feature-media" style={`aspect-ratio:${f.image.width}/${f.image.height}`}>
+                      <span class="p-media-fallback" aria-hidden="true">{f.title}</span>
+                      {f.image.fallback ? (
+                        <picture>
+                          <source type="image/webp" srcset={f.image.src} />
+                          <img src={f.image.fallback} alt={f.image.alt} width={f.image.width} height={f.image.height} loading="lazy" decoding="async" onerror={hideOnError} />
+                        </picture>
+                      ) : (
+                        <img src={f.image.src} alt={f.image.alt} width={f.image.width} height={f.image.height} loading="lazy" decoding="async" onerror={hideOnError} />
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {product.features.extras && (
+                <ul class="p-extras" aria-label="Also included">
+                  {product.features.extras.map((x) => <li>{x}</li>)}
+                </ul>
+              )}
+            </div>
+          </section>
+
+          <section class="p-section p-band" id={product.how.id || 'how'} aria-labelledby="p-how-title">
+            <div class="p-wrap">
+              <p class="p-eyebrow">{product.how.eyebrow}</p>
+              <h2 id="p-how-title" class="p-h2">{product.how.heading}</h2>
+              {product.how.intro && <p class="p-intro">{product.how.intro}</p>}
+              <div class="p-grid">
+                {product.how.items.map((i) => (
+                  <div class="p-card">
+                    <h3 class="p-h4">{i.title}</h3>
+                    <p>{i.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section class="p-section" id="status" aria-labelledby="p-status-title">
+            <div class="p-wrap">
+              <p class="p-eyebrow">Status &amp; availability</p>
+              <h2 id="p-status-title" class="p-h2">{product.availability.heading}</h2>
+              {product.availability.intro && <p class="p-intro">{product.availability.intro}</p>}
+              <div class="p-status">
+                <div>
+                  <h3 class="p-h4">Works today</h3>
+                  <ul class="p-checks">{product.availability.today.map((t) => <li>{t}</li>)}</ul>
+                </div>
+                <div>
+                  <h3 class="p-h4">{product.availability.nextLabel || 'Coming next'}</h3>
+                  <ul class="p-nexts">{product.availability.next.map((t) => <li>{t}</li>)}</ul>
+                </div>
+              </div>
+              {product.availability.milestones && (
+                <ul class="p-milestones" aria-label="Milestones">
+                  {product.availability.milestones.map((m) => <li>{m}</li>)}
+                </ul>
+              )}
+              {product.availability.note && <p class="p-note">{product.availability.note}</p>}
+            </div>
+          </section>
+
+          <section class="p-section p-band" id="faq" aria-labelledby="p-faq-title">
+            <div class="p-wrap p-faq">
+              <div>
+                <p class="p-eyebrow">FAQ</p>
+                <h2 id="p-faq-title" class="p-h2">Questions, answered</h2>
+              </div>
+              <div class="p-faq-list">
+                {product.faq.map((f) => (
+                  <details>
+                    <summary><h3 class="p-q">{f.q}</h3></summary>
+                    <p>{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section class="p-section p-closing" aria-labelledby="p-closing-title">
+            <div class="p-wrap">
+              <p class="p-tagline">{product.tagline}</p>
+              <h2 id="p-closing-title" class="p-h2">{product.closing.heading}</h2>
+              <p class="p-intro">{product.closing.body}</p>
+              <div class="p-actions">
+                <a class="p-btn" href={product.closing.primary.href} {...linkAttrs(product.closing.primary.href)}>{product.closing.primary.label}</a>
+                {product.closing.secondary && (
+                  <a class="p-btn p-btn-ghost" href={product.closing.secondary.href} {...linkAttrs(product.closing.secondary.href)}>{product.closing.secondary.label}</a>
+                )}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+      <slot />
+    </main>
+
+    <footer class="p-footer">
+      <div class="p-wrap p-footer-row">
+        <p>Built by <a href="/">Raashid Arquil</a></p>
+        <nav aria-label="About the maker">
+          {(caseStudy || product) && <a href={caseStudy || `/work/${product!.slug}/`}>Read the case study</a>}
+          <a href="/products/">All products</a>
+          <a href="/">Portfolio</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
