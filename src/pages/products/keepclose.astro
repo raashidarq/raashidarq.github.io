@@ -1,102 +1,618 @@
 ---
-import ProductLayout from '../../layouts/ProductLayout.astro';
-import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+// KeepClose product page. Standalone design on ProductShell; styles in src/styles/products/keepclose.css.
+// Every claim here is grounded in the app source (F:\Projects\KeepClose) and the case study.
+import ProductShell from '../../layouts/ProductShell.astro';
+import '../../styles/products/keepclose.css';
 
-const palette: Palette = {
-  scheme: 'light', bg: '#e3e7db', surface: '#f3f5ee', ink: '#1f2a22', muted: '#46524a',
-  accent: '#4d6b52', accentInk: '#3f5c45', onAccent: '#f3f5ee', line: '#c3cbbc',
-};
-const notify = { label: 'Get notified when it launches', short: 'Get notified', href: 'mailto:raashid.arq@gmail.com?subject=KeepClose%3A%20notify%20me' };
-const img = (n: number, alt: string) => ({ src: `/products/keepclose/feature-${n}.webp`, fallback: `/products/keepclose/feature-${n}.png`, width: 1600, height: 1200, alt });
+const email = 'raashid.arq@gmail.com';
+const notify = `mailto:${email}?subject=KeepClose%3A%20notify%20me`;
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap';
+const shot = (n: string) => `/products/keepclose/screen-${n}.webp`;
 
-const product: Product = {
-  slug: 'keepclose',
-  name: 'KeepClose',
-  tagline: 'People. Relationships. The details worth remembering.',
-  promise: 'Remember the people in your life, and what matters to them.',
-  subline: 'An offline Android app for remembering people, recording memories, and understanding how your relationships connect.',
-  status: 'Android · In development · Not on the Play Store yet',
-  primary: notify,
-  secondary: { label: 'See what it does', href: '#features' },
-  heroAlt: 'KeepClose on an Android phone, showing a person profile with relationship details',
-  film: { label: 'See it in use', caption: 'A short silent film of the development build, using fictional people.' },
-  problem: {
-    heading: 'It starts with an awkward moment.',
-    paragraphs: [
-      'Someone calls my name. They recognise me, start talking, and I’m still trying to work out who they are. Sometimes a conversation mentions a distant relative I should remember, and I can’t quite place them.',
-      'I wanted a tool to help me remember. KeepClose keeps relationship context, memories, and follow-ups together on your phone.',
-    ],
-    attribution: 'Raashid Arquil, maker of KeepClose',
+// ---- Relationship graph geometry (viewBox 520 x 430) ----
+type P = { x: number; y: number };
+const R = 28;
+const nodes = {
+  sunil: { x: 260, y: 62, initials: 'SP', name: 'Sunil' },
+  mom: { x: 260, y: 212, initials: 'M', name: 'Mom' },
+  you: { x: 104, y: 352, initials: 'YOU', name: 'You' },
+  nisha: { x: 416, y: 352, initials: 'NP', name: 'Nisha' },
+  jamie: { x: 66, y: 150, initials: 'JL', name: 'Jamie' },
+} as const;
+type NodeId = keyof typeof nodes;
+
+/** Quadratic curve between two node rims. `bend` pushes the control point sideways. */
+function curve(a: P, b: P, bend = 0) {
+  const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
+  const ux = dx / len, uy = dy / len;
+  const p0 = { x: a.x + ux * (R + 6), y: a.y + uy * (R + 6) };
+  const p1 = { x: b.x - ux * (R + 6), y: b.y - uy * (R + 6) };
+  const c = { x: (a.x + b.x) / 2 - uy * bend, y: (a.y + b.y) / 2 + ux * bend };
+  const mid = { x: 0.25 * p0.x + 0.5 * c.x + 0.25 * p1.x, y: 0.25 * p0.y + 0.5 * c.y + 0.25 * p1.y };
+  const f = (n: number) => n.toFixed(1);
+  return {
+    d: `M${f(p0.x)} ${f(p0.y)} Q${f(c.x)} ${f(c.y)} ${f(p1.x)} ${f(p1.y)}`,
+    mid,
+  };
+}
+// Stored edges: "A is B's type" (RelationshipGraph.kt). Labels are lower-cased displayName values.
+const edges = [
+  { id: 'sunil-mom', a: 'sunil', b: 'mom', bend: 0, label: 'parent' },
+  { id: 'mom-you', a: 'mom', b: 'you', bend: -18, label: 'parent' },
+  { id: 'nisha-mom', a: 'nisha', b: 'mom', bend: -18, label: 'cousin' },
+  { id: 'jamie-you', a: 'jamie', b: 'you', bend: 22, label: 'friend' },
+].map((e) => ({ ...e, ...curve(nodes[e.a as NodeId], nodes[e.b as NodeId], e.bend) }));
+const edge = (id: string) => edges.find((e) => e.id === id)!;
+
+// Scenes walk a path towards "You", in the same order the app's Connection paths screen lists hops.
+const scenes = [
+  {
+    id: 'cousin',
+    tab: 'Mother’s cousin',
+    path: ['nisha', 'mom', 'you'],
+    hops: ['nisha-mom', 'mom-you'],
+    steps: ['Nisha is Mom’s cousin', 'Mom is your parent'],
+    resultLabel: 'How you’re connected',
+    result: 'Your mother’s cousin',
+    note: 'This is the line under Nisha’s name on her profile.',
   },
-  features: {
-    heading: 'From a name to something worth remembering.',
-    items: [
-      {
-        title: 'Start with just a name',
-        body: 'The first entry can be a name and nothing else. Add more when you have it: how you met, an interest, a conversation, or a connection to another person.',
-        image: img(1, 'A KeepClose person profile with how you met, interests, and connections'),
-      },
-      {
-        title: 'Keep memories, not just contacts',
-        body: 'A memory can hold a note, a photo, or a voice recording. Voice is transcribed in English right on the phone, and any memory can carry an optional follow-up reminder.',
-        image: img(2, 'Capturing a memory in KeepClose with a note, photo, voice recording, and reminder'),
-      },
-      {
-        title: 'See how people connect',
-        body: 'Link people to each other, not only to you. KeepClose can explain a path in plain terms such as “your mother’s cousin”.',
-        points: ['A family-tree view for exploring connections', 'Circles to group people your own way, with a reconnect cadence'],
-        image: img(3, 'A KeepClose family tree connecting people through their relationships'),
-      },
-      {
-        title: 'Share only what you choose',
-        body: 'Pick the people and the fields you want in a CSV export, then preview the result before you share it.',
-        screen: true,
-        image: { src: '/images/keepclose-export.png', width: 360, height: 800, alt: 'KeepClose export screen with person and field selection, using fictional records' },
-      },
-    ],
-    extras: ['Typo-tolerant search', 'Nicknames with symbols still searchable', 'CSV import with duplicate review', 'ZIP backup of records and media'],
+  {
+    id: 'suggest',
+    tab: 'A suggestion',
+    path: ['sunil', 'mom', 'you'],
+    hops: ['sunil-mom', 'mom-you'],
+    steps: ['Sunil is Mom’s parent', 'Mom is your parent'],
+    resultLabel: 'Possible relationship',
+    result: 'Sunil may be your grandparent. Please check this before saving.',
+    note: 'KeepClose suggests only simple two-step family patterns, and saves nothing until you confirm.',
   },
-  how: {
-    id: 'privacy', nav: 'Privacy', eyebrow: 'Privacy',
-    heading: 'Offline by design. Sharing only when you choose.',
-    items: [
-      { title: 'No internet permission', body: 'The app doesn’t ask for Internet access. Speech recognition uses a model bundled with the app. There are no cloud accounts and no automatic sync.' },
-      { title: 'Encrypted records', body: 'Your records are stored in an encrypted database, with the key held by Android’s Keystore. Photos and audio are kept in the app’s private files, which that database encryption doesn’t cover.' },
-      { title: 'A lock that suits you', body: 'Lock the app with a PIN, a pattern, biometrics, or your Android device credentials.' },
-      { title: 'Backups you control', body: 'A ZIP backup holds your records and media. It isn’t encrypted, so keep it as carefully as any personal file. CSV exports are readable by design, which is why you choose and preview what goes in.' },
-    ],
-  },
-  availability: {
-    heading: 'In development, and not on the Play Store yet.',
-    intro: 'The screenshots and film use fictional records from the development build.',
-    today: [
-      'Add people, record memories with attachments, and revisit profiles and reminders',
-      'Link people with relationships, explore family connections, and organise people into circles',
-      'Choose people and fields for CSV export, review imports and possible duplicates, or create a ZIP archive',
-      'Lock the app with a PIN, pattern, biometrics, or device credentials',
-    ],
-    nextLabel: 'Not in the first version',
-    next: [
-      'Cloud sync',
-      'Facial recognition',
-      'Cloud AI processing of notes',
-      'Live collaborative editing',
-    ],
-    note: 'These are left out on purpose: each would add data handling and permissions beyond keeping your own records on your own phone.',
-  },
-  faq: [
-    { q: 'Does KeepClose need an internet connection?', a: 'No. The app doesn’t request Internet permission, and voice transcription runs offline with a bundled English model.' },
-    { q: 'Is there an account or cloud sync?', a: 'No. There are no cloud accounts or automatic sync. Sharing is always an export you make yourself, through another app.' },
-    { q: 'How do I back up or move my data?', a: 'Create a ZIP backup of your records and media, or export the people and fields you choose as CSV. The ZIP backup isn’t encrypted, so store it carefully. CSV import includes field mapping and a review of possible duplicates.' },
-    { q: 'Will search find an unusual nickname?', a: 'Yes. Names and nicknames with punctuation or symbols are treated as plain text, and search is typo-tolerant.' },
-    { q: 'When can I get it?', a: 'KeepClose is an Android app in development and isn’t on the Play Store yet. Ask to be notified and you’ll hear when it launches.' },
-  ],
-  closing: {
-    heading: 'Be the first to know when it launches.',
-    body: 'Send a quick email and I’ll let you know when KeepClose is ready to download.',
-    primary: notify,
-    secondary: { label: 'Read how it’s built', href: '/work/keepclose/' },
-  },
-};
+];
+
+const faq = [
+  { q: 'Does KeepClose need an internet connection?', a: 'No. The app doesn’t request Internet permission, and voice transcription runs offline with a bundled English model.' },
+  { q: 'Is there an account or cloud sync?', a: 'No. There are no cloud accounts or automatic sync. Sharing is always an export you make yourself, through another app.' },
+  { q: 'How do I back up or move my data?', a: 'Create a ZIP backup of your records and media, or export the people and fields you choose as CSV. The ZIP backup isn’t encrypted, so store it carefully. CSV import includes field mapping and a review of possible duplicates.' },
+  { q: 'Which phones will it run on?', a: 'Android phones running Android 8.0 or later. KeepClose is an Android app; there isn’t an iPhone version.' },
+  { q: 'Will search find an unusual nickname?', a: 'Yes. Names and nicknames with punctuation or symbols are treated as plain text, and search is typo-tolerant.' },
+  { q: 'When can I get it?', a: 'KeepClose is an Android app in development and isn’t on the Play Store yet. Ask to be notified and you’ll hear when it launches.' },
+];
 ---
-<ProductLayout title="KeepClose: remember the people in your life" description={product.subline} palette={palette} brand="keepclose" product={product} />
+<ProductShell
+  title="KeepClose: remember the people in your life"
+  description="An offline Android app for remembering people, recording memories, and understanding how your relationships connect."
+  slug="keepclose"
+  scheme="light"
+  themeColor="#f6f0e4"
+  fonts={fonts}
+  bodyClass="kc"
+>
+  <header class="kc-header" data-kc-header>
+    <div class="kc-header-row">
+      <a class="kc-brand" href="#top" aria-label="KeepClose, back to top">
+        <span>KeepClose</span>
+      </a>
+      <nav class="kc-nav" aria-label="Page sections">
+        <a href="#moment">Why</a>
+        <a href="#connections">Connections</a>
+        <a href="#memories">Memories</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="kc-btn kc-btn-sm" href={notify}>Get notified</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="kc-hero" id="top" aria-labelledby="kc-title">
+      <div class="kc-wrap kc-hero-grid">
+        <div class="kc-hero-copy">
+          <h1 id="kc-title">Remember the people in your life, <em>and what matters to them.</em></h1>
+          <p class="kc-lede">
+            KeepClose helps you remember who someone is, what you last talked about, and exactly how they’re
+            related to you, in plain words like “your mother’s cousin”. Your records stay on your Android phone
+            in an encrypted database, with no account and no Internet access.
+          </p>
+          <div class="kc-actions">
+            <a class="kc-btn" href={notify}>Get notified when it launches</a>
+            <a class="kc-btn kc-btn-ghost" href="#connections">See how it works</a>
+          </div>
+          <p class="kc-cta-note">Opens your email app. KeepClose is in development and isn’t on the Play Store yet.</p>
+          <ul class="kc-trust" aria-label="Privacy at a glance">
+            <li>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0M12 19h.01M3 3l18 18" /></svg>
+              No Internet permission
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" /></svg>
+              Encrypted records
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20a7 7 0 0 1 14 0M3 3l18 18" /></svg>
+              No account
+            </li>
+          </ul>
+        </div>
+
+        <div class="kc-hero-visual">
+          <svg class="kc-orbits" viewBox="0 0 600 600" aria-hidden="true">
+            <circle cx="300" cy="300" r="290" />
+            <circle cx="300" cy="300" r="220" />
+            <circle cx="300" cy="300" r="150" />
+          </svg>
+          <figure class="kc-phone kc-phone-hero">
+            <div class="kc-screen">
+              <img src={shot('profile')} width="720" height="1558" alt="KeepClose person profile for Nisha Patel, labelled “Your mother’s cousin”, with Connections showing she is linked through your mother, Mom, and family rows for her parent Vikram Patel and her cousin Mom" fetchpriority="high" />
+            </div>
+          </figure>
+          <div class="kc-float kc-float-a" aria-hidden="true">
+            <span class="kc-float-k">Memory · Note</span>
+            <span class="kc-float-t">Ceramics</span>
+            <span class="kc-float-s">About Nisha Patel</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The moment -->
+    <section class="kc-moment" id="moment" aria-labelledby="kc-moment-h">
+      <div class="kc-wrap">
+        <p class="kc-eyebrow kc-reveal">Why it exists</p>
+        <h2 id="kc-moment-h" class="kc-reveal">It starts with an awkward moment.</h2>
+        <p class="kc-story kc-reveal">
+          Someone calls your name. They recognise you, start talking, and you’re still trying to work out
+          who they are. Then the conversation mentions a relative you should remember, and you can’t quite place them.
+        </p>
+        <ol class="kc-cards">
+          <li class="kc-card kc-reveal">
+            <span class="kc-card-n" aria-hidden="true">01</span>
+            <h3>“Who is this, again?”</h3>
+            <p>Start a profile with just a name. Add how you met, their interests, and a description when you have them.</p>
+          </li>
+          <li class="kc-card kc-reveal">
+            <span class="kc-card-n" aria-hidden="true">02</span>
+            <h3>“How are we related?”</h3>
+            <p>Link people to each other, not only to you, and KeepClose puts the path into plain words: your mother’s cousin.</p>
+          </li>
+          <li class="kc-card kc-reveal">
+            <span class="kc-card-n" aria-hidden="true">03</span>
+            <h3>“What did we talk about last time?”</h3>
+            <p>Keep memories with a note, a photo or your voice, and add a gentle follow-up for next time.</p>
+          </li>
+        </ol>
+        <blockquote class="kc-letter kc-reveal">
+          <p>I’m building KeepClose for myself, and for anyone who knows that frustration. It remembers relationships between people, not just with me, because that’s where I kept getting lost.</p>
+          <footer>Raashid Arquil, maker of KeepClose</footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Connections -->
+    <section class="kc-connect" id="connections" aria-labelledby="kc-connect-h">
+      <div class="kc-wrap kc-connect-grid">
+        <div class="kc-connect-copy">
+          <p class="kc-eyebrow kc-reveal">Connections</p>
+          <h2 id="kc-connect-h" class="kc-reveal">Relationships between people, <em>not just with you.</em></h2>
+          <p class="kc-reveal">
+            Each connection is saved between two people, with a direction. Mom is your parent; you are Mom’s child.
+            That’s one connection, read from either side, so KeepClose can walk the path from anyone back to you
+            and say it the way you would.
+          </p>
+          <ul class="kc-ticks kc-reveal">
+            <li>Every step comes from a connection you saved</li>
+            <li>Suggestions are clearly marked, and you confirm them</li>
+            <li>Circles stay separate from family structure</li>
+          </ul>
+        </div>
+
+        <div class="kc-graph kc-reveal" data-kc-graph>
+          <div class="kc-tabs" role="tablist" aria-label="Example connection paths">
+            {scenes.map((s, i) => (
+              <button type="button" role="tab" id={`kc-tab-${s.id}`} aria-controls={`kc-panel-${s.id}`}
+                aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-scene={s.id}>{s.tab}</button>
+            ))}
+          </div>
+
+          <svg class="kc-graph-svg" viewBox="0 0 520 430" role="img" aria-labelledby="kc-graph-title kc-graph-desc">
+            <title id="kc-graph-title">Relationship graph</title>
+            <desc id="kc-graph-desc">Five fictional people. Mom is your parent. Nisha is Mom’s cousin. Sunil is Mom’s parent. Jamie is your friend. The highlighted path is described in the steps below.</desc>
+            <g class="kc-g-edges">
+              {edges.map((e) => <path d={e.d} />)}
+            </g>
+            {scenes.map((s) => (
+              <g class="kc-g-hops" data-hops={s.id}>
+                {s.hops.map((h, i) => <path d={edge(h).d} pathLength="1" style={`--i:${i}`} />)}
+              </g>
+            ))}
+            <g class="kc-g-labels">
+              {edges.map((e) => (
+                <g class="kc-g-label" data-edge={e.id} transform={`translate(${e.mid.x.toFixed(1)} ${e.mid.y.toFixed(1)})`}>
+                  <g class="kc-g-pop">
+                    <g class="kc-g-sc">
+                      <rect x={-(e.label.length * 4.6 + 12)} y="-13" width={e.label.length * 9.2 + 24} height="26" rx="13" />
+                      <text y="5">{e.label}</text>
+                    </g>
+                  </g>
+                </g>
+              ))}
+            </g>
+            <g class="kc-g-nodes">
+              {(Object.keys(nodes) as NodeId[]).map((k) => (
+                <g class={`kc-g-node${k === 'you' ? ' is-you' : ''}`} data-node={k} transform={`translate(${nodes[k].x} ${nodes[k].y})`}>
+                  <g class="kc-g-sc">
+                    <circle class="kc-g-halo" r={R + 9} />
+                    <circle r={R} />
+                    <text class="kc-g-init" y={k === 'you' ? 5 : 6}>{nodes[k].initials}</text>
+                    {k === 'mom'
+                      ? <text class="kc-g-name" x={R + 14} y="6" text-anchor="start">{nodes[k].name}</text>
+                      : <text class="kc-g-name" y={k === 'sunil' || k === 'jamie' ? -(R + 12) : R + 24}>{nodes[k].name}</text>}
+                  </g>
+                </g>
+              ))}
+            </g>
+          </svg>
+
+          {scenes.map((s, i) => (
+            <div class="kc-panel" role="tabpanel" id={`kc-panel-${s.id}`} aria-labelledby={`kc-tab-${s.id}`} hidden={i !== 0} data-panel={s.id}>
+              <ol class="kc-steps">
+                {s.steps.map((t, j) => (
+                  <li style={`--i:${j}`}><span class="kc-step-k">Step {j + 1}</span>{t}</li>
+                ))}
+              </ol>
+              <div class={`kc-result kc-result-${s.id}`}>
+                <span class="kc-result-k">{s.resultLabel}</span>
+                <span class="kc-result-t">{s.result}</span>
+              </div>
+              <p class="kc-panel-note">{s.note}</p>
+            </div>
+          ))}
+          <div class="kc-graph-foot">
+            <button type="button" class="kc-replay" data-replay>
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" /></svg>
+              Replay path
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memories -->
+    <section class="kc-feature" id="memories" aria-labelledby="kc-mem-h">
+      <div class="kc-wrap kc-feature-grid">
+        <div class="kc-feature-visual kc-reveal">
+          <figure class="kc-phone">
+            <div class="kc-screen">
+              <img src={shot('memory')} width="720" height="1558" loading="lazy" decoding="async" alt="KeepClose Add a memory screen about Nisha Patel, with Note, Moment and Life event types, Add by voice and Attach photo buttons, and a gentle follow-up option" />
+            </div>
+          </figure>
+          <div class="kc-voice" aria-hidden="true">
+            <span class="kc-voice-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span>Transcribed on the phone</span>
+          </div>
+        </div>
+        <div class="kc-feature-copy">
+          <p class="kc-eyebrow kc-reveal">Memories</p>
+          <h2 id="kc-mem-h" class="kc-reveal">Keep the moments, <em>not just the contacts.</em></h2>
+          <p class="kc-reveal">A memory can be a note, a moment or a life event, filed against the person it’s about.</p>
+          <dl class="kc-points">
+            <div class="kc-reveal">
+              <dt>Add by voice</dt>
+              <dd>Speak instead of typing. English speech is transcribed right on the phone by a bundled offline model, with no connection needed.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>Attach a photo</dt>
+              <dd>Add a photo to the memory. Photos and recordings are kept in the app’s private files on the phone.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>A gentle follow-up</dt>
+              <dd>Any memory can carry an optional reminder, so you remember to ask about it next time.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Family and circles -->
+    <section class="kc-feature kc-feature-alt" id="family" aria-labelledby="kc-fam-h">
+      <div class="kc-wrap kc-feature-grid kc-flip">
+        <div class="kc-feature-copy">
+          <p class="kc-eyebrow kc-reveal">Family and circles</p>
+          <h2 id="kc-fam-h" class="kc-reveal">See the whole family, <em>or just your people.</em></h2>
+          <dl class="kc-points">
+            <div class="kc-reveal">
+              <dt>A family tree</dt>
+              <dd>Explore how relatives connect. Pinch to zoom, drag to explore, and tap + to add a relative.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>Circles and reconnecting</dt>
+              <dd>Group people your own way, apart from family structure. Circles carry a reconnect cadence, and KeepClose can quietly suggest who to reach out to. You can turn suggestions off.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>Search that forgives</dt>
+              <dd>Search is typo-tolerant, and nicknames with punctuation or symbols are still found.</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="kc-feature-visual kc-reveal">
+          <figure class="kc-duo">
+            <div class="kc-phone">
+              <div class="kc-screen">
+                <img src={shot('family-tree')} width="720" height="1558" loading="lazy" decoding="async" alt="KeepClose family tree, zoomed out, with fictional relatives across three generations: Sunil above Mom and Dad, their daughter Anika below, and Vikram Patel above his daughter Nisha Patel, each card with an add-relative button" />
+              </div>
+            </div>
+            <div class="kc-phone">
+              <div class="kc-screen">
+                <img src={shot('reconnect')} width="720" height="1558" loading="lazy" decoding="async" alt="KeepClose Reconnect screen, “Whenever you are ready”, suggesting Nisha Patel: last recorded contact 120 days ago, last thing to remember “Ask about the new ceramics studio”, with Reach out and I reached out buttons" />
+              </div>
+            </div>
+            <figcaption>The family tree, and a reconnect suggestion based on your circles</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy -->
+    <section class="kc-privacy" id="privacy" aria-labelledby="kc-priv-h">
+      <div class="kc-wrap">
+        <div class="kc-privacy-head">
+          <svg class="kc-lock" viewBox="0 0 220 220" aria-hidden="true">
+            <circle class="kc-lock-ring" cx="110" cy="110" r="100" pathLength="1" />
+            <circle class="kc-lock-ring kc-lock-ring2" cx="110" cy="110" r="78" pathLength="1" />
+            <rect class="kc-lock-phone" x="72" y="44" width="76" height="132" rx="16" pathLength="1" />
+            <path class="kc-lock-shackle" d="M98 112v-12a12 12 0 0 1 24 0v12" />
+            <rect class="kc-lock-body" x="91" y="110" width="38" height="30" rx="7" />
+            <circle class="kc-lock-key" cx="110" cy="124" r="3.2" />
+          </svg>
+          <div>
+            <p class="kc-eyebrow kc-reveal">Privacy</p>
+            <h2 id="kc-priv-h" class="kc-reveal">Offline by design. <em>Sharing only when you choose.</em></h2>
+            <p class="kc-reveal">
+              Many relationship apps keep your people in a cloud account. KeepClose is built the other way round:
+              there’s nothing to sign up for, and nothing syncs.
+            </p>
+          </div>
+        </div>
+        <ul class="kc-privacy-grid">
+          <li class="kc-reveal">
+            <h3>No Internet permission</h3>
+            <p>The app doesn’t ask for Internet access. Speech recognition uses a model bundled with the app. There are no cloud accounts and no automatic sync.</p>
+          </li>
+          <li class="kc-reveal">
+            <h3>Encrypted records</h3>
+            <p>Your records are stored in an encrypted database, with the key held by Android’s Keystore. Photos and audio are kept in the app’s private files, which that database encryption doesn’t cover.</p>
+          </li>
+          <li class="kc-reveal">
+            <h3>A lock that suits you</h3>
+            <p>Lock the app with a PIN, a pattern, biometrics, or your Android device credentials.</p>
+          </li>
+          <li class="kc-reveal">
+            <h3>Backups you control</h3>
+            <p>A ZIP backup holds your records and media. It isn’t encrypted, so keep it as carefully as any personal file.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Your data -->
+    <section class="kc-feature" id="data" aria-labelledby="kc-data-h">
+      <div class="kc-wrap kc-feature-grid">
+        <div class="kc-feature-visual kc-reveal">
+          <figure class="kc-phone">
+            <div class="kc-screen">
+              <img src={shot('export')} width="720" height="1558" loading="lazy" decoding="async" alt="KeepClose Export / Share screen: all 7 fictional people selected, with Full Name and Relationship switched on, other fields off, and a Preview button" />
+            </div>
+          </figure>
+        </div>
+        <div class="kc-feature-copy">
+          <p class="kc-eyebrow kc-reveal">Import and export</p>
+          <h2 id="kc-data-h" class="kc-reveal">Share only <em>what you choose.</em></h2>
+          <p class="kc-reveal">Moving data is always a file you make on purpose, never a background sync.</p>
+          <dl class="kc-points">
+            <div class="kc-reveal">
+              <dt>Selective CSV export</dt>
+              <dd>Pick the people and the fields, then preview the result before you share it. CSV is readable by design, which is why you choose what goes in.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>CSV import</dt>
+              <dd>Map columns to fields, then review possible duplicates before anything is added.</dd>
+            </div>
+            <div class="kc-reveal">
+              <dt>Full ZIP backup</dt>
+              <dd>Your records and media together in one archive, ready to keep somewhere safe.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <section class="kc-status-sec" id="status" aria-labelledby="kc-status-h">
+      <div class="kc-wrap">
+        <p class="kc-eyebrow kc-reveal">Status</p>
+        <h2 id="kc-status-h" class="kc-reveal">In development, and not on the Play Store yet.</h2>
+        <p class="kc-reveal kc-muted">The screenshots on this page use fictional records from the development build.</p>
+        <div class="kc-status-grid">
+          <div class="kc-status-card kc-reveal">
+            <h3>Working in the build today</h3>
+            <ul>
+              <li>People, memories with photos and voice, and follow-up reminders</li>
+              <li>Relationships, connection paths, the family tree and circles</li>
+              <li>Selective CSV export, CSV import with duplicate review, and ZIP backup</li>
+              <li>App lock with PIN, pattern, biometrics or device credentials</li>
+            </ul>
+          </div>
+          <div class="kc-status-card kc-status-out kc-reveal">
+            <h3>Not in the first version</h3>
+            <ul>
+              <li>Cloud sync</li>
+              <li>Facial recognition</li>
+              <li>Cloud AI processing of notes</li>
+              <li>Live collaborative editing</li>
+            </ul>
+            <p>These are left out on purpose: each would add data handling and permissions beyond keeping your own records on your own phone.</p>
+          </div>
+        </div>
+        <div class="kc-stack kc-reveal">
+          <p><strong>Built with</strong> Kotlin and Jetpack Compose, Hilt, Room on SQLCipher with a Keystore-backed key, and Vosk for offline English speech recognition.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="kc-faq" id="faq" aria-labelledby="kc-faq-h">
+      <div class="kc-wrap kc-faq-grid">
+        <div>
+          <p class="kc-eyebrow kc-reveal">Questions</p>
+          <h2 id="kc-faq-h" class="kc-reveal">Before you ask.</h2>
+        </div>
+        <div class="kc-faq-list">
+          {faq.map((f) => (
+            <details class="kc-reveal">
+              <summary>{f.q}<span class="kc-faq-icon" aria-hidden="true"></span></summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="kc-close" aria-labelledby="kc-close-h">
+      <div class="kc-wrap kc-close-inner kc-reveal">
+        <svg class="kc-mark kc-mark-lg" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true">
+          <circle cx="12" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <circle cx="20" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <circle cx="16" cy="16" r="2" fill="var(--kc-clay)" />
+        </svg>
+        <h2 id="kc-close-h">Be the first to know <em>when it launches.</em></h2>
+        <p>Send a quick email and I’ll let you know when KeepClose is ready to download.</p>
+        <div class="kc-actions">
+          <a class="kc-btn" href={notify}>Get notified when it launches</a>
+        </div>
+        <p class="kc-close-alt">No email app? Write to <a href={notify}>{email}</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    root.classList.add('kc-js');
+
+    // Header: hairline once the page scrolls.
+    const header = document.querySelector<HTMLElement>('[data-kc-header]');
+    const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Scroll reveals.
+    const reveals = document.querySelectorAll<HTMLElement>('.kc-reveal');
+    if (reduce.matches || !('IntersectionObserver' in window)) {
+      reveals.forEach((el) => el.classList.add('is-in'));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      reveals.forEach((el) => io.observe(el));
+    }
+
+    // Privacy lock draws when it comes into view.
+    const lock = document.querySelector('.kc-lock');
+    if (lock) {
+      if (reduce.matches || !('IntersectionObserver' in window)) lock.classList.add('is-in');
+      else {
+        const lio = new IntersectionObserver(([e]) => {
+          if (e.isIntersecting) { lock.classList.add('is-in'); lio.disconnect(); }
+        }, { threshold: 0.4 });
+        lio.observe(lock);
+      }
+    }
+
+    // Pause ambient loops (orbits, voice bars, lock ring) while their section is off screen.
+    if ('IntersectionObserver' in window) {
+      const pio = new IntersectionObserver((entries) => {
+        entries.forEach((e) => e.target.classList.toggle('kc-off', !e.isIntersecting));
+      });
+      document.querySelectorAll('.kc main > section').forEach((s) => pio.observe(s));
+    }
+
+    // Relationship graph: tabs + path animation.
+    const graph = document.querySelector<HTMLElement>('[data-kc-graph]');
+    if (graph) {
+      const tabs = Array.from(graph.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+      const svg = graph.querySelector('svg')!;
+      const paths: Record<string, string[]> = {
+        cousin: ['nisha', 'mom', 'you'],
+        suggest: ['sunil', 'mom', 'you'],
+      };
+      const hopEdges: Record<string, string[]> = {
+        cousin: ['nisha-mom', 'mom-you'],
+        suggest: ['sunil-mom', 'mom-you'],
+      };
+      let current = 'cousin';
+      let played = false;
+
+      const play = (id: string) => {
+        current = id;
+        graph.dataset.scene = id;
+        tabs.forEach((t) => {
+          const on = t.dataset.scene === id;
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+        });
+        graph.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== id; });
+        svg.querySelectorAll('[data-hops]').forEach((g) => g.classList.toggle('is-active', (g as HTMLElement).dataset.hops === id));
+        svg.querySelectorAll<SVGGElement>('[data-node]').forEach((n) => {
+          const o = paths[id].indexOf(n.dataset.node!);
+          n.classList.toggle('on-path', o > -1);
+          n.style.setProperty('--o', String(Math.max(o, 0)));
+        });
+        svg.querySelectorAll<SVGGElement>('[data-edge]').forEach((l) => {
+          const o = hopEdges[id].indexOf(l.dataset.edge!);
+          l.classList.toggle('on-path', o > -1);
+          l.style.setProperty('--o', String(Math.max(o, 0)));
+        });
+        // Restart the CSS timeline.
+        graph.classList.remove('is-playing', 'is-done');
+        if (reduce.matches) { graph.classList.add('is-done'); return; }
+        void graph.offsetWidth;
+        graph.classList.add('is-playing');
+      };
+
+      tabs.forEach((t, i) => {
+        t.addEventListener('click', () => play(t.dataset.scene!));
+        t.addEventListener('keydown', (e) => {
+          if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+          e.preventDefault();
+          let n = i;
+          if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+          if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+          if (e.key === 'Home') n = 0;
+          if (e.key === 'End') n = tabs.length - 1;
+          tabs[n].focus();
+          play(tabs[n].dataset.scene!);
+        });
+      });
+      graph.querySelector('[data-replay]')?.addEventListener('click', () => play(current));
+
+      if (reduce.matches || !('IntersectionObserver' in window)) play('cousin');
+      else {
+        graph.classList.add('is-idle');
+        const gio = new IntersectionObserver(([e]) => {
+          if (e.isIntersecting && !played) {
+            played = true;
+            graph.classList.remove('is-idle');
+            play('cousin');
+            gio.disconnect();
+          }
+        }, { threshold: 0.45 });
+        gio.observe(graph);
+      }
+    }
+  </script>
+</ProductShell>

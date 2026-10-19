@@ -1,0 +1,59 @@
+---
+// src/components/YouTubeLite.astro
+// A click-to-play YouTube embed. Shows the video's thumbnail and loads the privacy-enhanced
+// (youtube-nocookie) player only when someone presses play, so pages stay light and
+// YouTube sets no cookies until then. Without JavaScript it is a plain link to YouTube.
+interface Props {
+  id: string;
+  title: string;
+  /** Shown under the play button, e.g. "Watch the presentation · 6 min". */
+  label?: string;
+  class?: string;
+  /** Use YouTube's 1280x720 thumbnail (only when the video has one). */
+  hd?: boolean;
+}
+const { id, title, label = 'Play video', class: className, hd = false } = Astro.props;
+const thumb = hd ? { file: 'maxresdefault', w: 1280, h: 720 } : { file: 'hqdefault', w: 480, h: 360 };
+const watchUrl = `https://www.youtube.com/watch?v=${id}`;
+---
+
+<div class:list={['yt-lite', className]} data-yt-id={id} data-yt-title={title}>
+  <a class="yt-lite-btn" href={watchUrl} target="_blank" rel="noopener noreferrer" aria-label={`Play: ${title} (YouTube)`}>
+    <img src={`https://i.ytimg.com/vi/${id}/${thumb.file}.jpg`} alt="" width={thumb.w} height={thumb.h} loading="lazy" decoding="async" />
+    <span class="yt-lite-play" aria-hidden="true">
+      <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#e00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg>
+    </span>
+    <span class="yt-lite-label">{label}</span>
+  </a>
+</div>
+
+<style>
+  .yt-lite{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:inherit;background:#0b0b0b}
+  .yt-lite-btn{position:absolute;inset:0;display:block;color:#fff;text-decoration:none}
+  .yt-lite-btn img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease,filter .3s ease}
+  .yt-lite-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.55))}
+  .yt-lite-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;transition:transform .25s ease}
+  .yt-lite-label{position:absolute;left:18px;bottom:14px;z-index:1;font:600 14px/1.3 system-ui,sans-serif;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .yt-lite-btn:hover img{transform:scale(1.02);filter:brightness(1.05)}
+  .yt-lite-btn:hover .yt-lite-play,.yt-lite-btn:focus-visible .yt-lite-play{transform:translate(-50%,-50%) scale(1.08)}
+  .yt-lite-btn:focus-visible{outline:3px solid #fff;outline-offset:-6px}
+  .yt-lite iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  @media (prefers-reduced-motion:reduce){.yt-lite-btn img,.yt-lite-play{transition:none}}
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.yt-lite').forEach((box) => {
+    const btn = box.querySelector('a');
+    btn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${box.dataset.ytId}?autoplay=1&rel=0`;
+      f.title = box.dataset.ytTitle || 'YouTube video';
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+      f.focus();
+    });
+  });
+</script>

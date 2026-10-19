@@ -9,7 +9,7 @@ Designed as an editorial technical showcase highlighting software engineering de
 ## 🚀 Key Features
 
 - **Static-First Architecture**: Fast page loads, zero unnecessary client JavaScript, optimal Core Web Vitals.
-- **Deep Technical Case Studies**: Markdown-based case studies detailing system architecture, trade-offs, and lessons learned.
+- **Product pages**: a standalone page for each product (Tally, CropCare, KeepClose, SmartDrive) under `/products/`.
 - **Flagship Project Showcase**: Dedicated launch presentation for **CropCare** (Mobile & Edge ML platform).
 - **Astro Content Collections**: Strongly typed frontmatter validated via Zod schemas.
 - **Authoritative Design Contract**: Governed by [`design.md`](./design.md) for visual consistency.

@@ -1,4 +1,5 @@
 ---
+import BackToTop from '../components/BackToTop.astro';
 // src/layouts/BaseLayout.astro
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
@@ -14,6 +15,8 @@ interface Props {
   articleDate?: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  /** 'dark' makes dark the default when the visitor hasn't picked a theme. */
+  defaultTheme?: 'system' | 'dark';
 }
 
 const {
@@ -24,6 +27,7 @@ const {
   articleDate,
   type = 'website',
   noindex = false,
+  defaultTheme = 'system',
 } = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.toString() : 'https://raashidarq.github.io';
@@ -98,15 +102,16 @@ const jsonLd = {
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <!-- Prevent FOUC Theme Script -->
-    <script is:inline>
+    <script is:inline define:vars={{ defaultTheme }}>
       try {
         const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const prefersDark = defaultTheme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && prefersDark));
       } catch {
-        document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', defaultTheme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches);
       }
     </script>
+    <slot name="head" />
   </head>
   <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg relative">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -114,6 +119,7 @@ const jsonLd = {
     <main id="main-content" class="flex-1" tabindex="-1">
       <slot />
     </main>
+    <BackToTop />
     <Footer />
   </body>
 </html>

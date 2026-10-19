@@ -4,7 +4,9 @@ import { getCollection, render } from 'astro:content';
 import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
+  // The four products have their own pages under /products/; /work/<product>/ redirects there.
+  const products = ['keepclose', 'cropcare', 'smartdrive', 'tally'];
+  const projects = (await getCollection('projects')).filter((p) => !products.includes(p.id));
   return projects.map((project) => ({
     params: { slug: project.id },
     props: { project },

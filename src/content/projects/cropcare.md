@@ -9,33 +9,9 @@ order: 2
 technologies: ["Flutter", "MobileNetV3 / TensorFlow Lite", "FastAPI", "Drift / SQLite", "Supabase", "Google Gemini API"]
 category: "Ascentic Launchpad project"
 githubUrl: "https://github.com/raashidarq/cropcare"
-heroImage: "/images/cropcare-thumbnail.png"
-gallery:
-  - url: "/images/cropcare-home.png"
-    width: 302
-    height: 610
-    title: "Start a scan"
-    caption: "Development capture of the home screen and recent scan records."
-    alt: "CropCare home screen with plant scan action and history"
-  - url: "/images/cropcare-result.png"
-    width: 303
-    height: 508
-    title: "Inspect a result"
-    caption: "Partial development capture showing the result and a low-confidence message. Scores shown are model outputs."
-    alt: "CropCare result screen with a low-confidence warning"
-  - url: "/images/cropcare-language.png"
-    width: 303
-    height: 605
-    title: "Choose a language"
-    caption: "English, Sinhala, and Tamil language selection in the development interface."
-    alt: "CropCare language selection dialog"
-  - url: "/images/cropcare-storage.png"
-    width: 304
-    height: 439
-    title: "Manage local and cloud records"
-    caption: "Partial development capture showing pending synchronization, account status, and restore controls."
-    alt: "CropCare offline storage and synchronization controls"
-
+youtubeId: "Bp4e-0Tyqxw"
+youtubeTitle: "Presenting CropCare at TRACE · 12 min"
+youtubeCaption: "My CropCare presentation as an Ascentic AI Launchpad Top 10 finalist at TRACE, Sri Lanka, on 19 September 2026. Published by Ascentic on YouTube."
 ---
 ## From an agricultural problem to a mobile MVP
 
@@ -86,6 +62,6 @@ It works. Real world, it could do better, which is why it isn't on the Play Stor
 
 ## The programme and presentation
 
-[Ascentic's eight-week AI Launchpad](https://ascentic.se/ailaunchpad/) combined practical sessions with mentorship. The programme's finalist listing includes CropCare and my mentor, Bamisan.
+[Ascentic's eight-week AI Launchpad](https://ascentic.se/ailaunchpad/) combined practical sessions with mentorship. The programme's finalist listing includes CropCare and my mentor, Bamisan. Ascentic published my presentation at TRACE: [watch it here](#video) (12 minutes).
 
 The experience changed how I approach a project: start with the problem and existing solutions, then decide where the technology belongs. [Read my reflection on Launchpad](/notes/problem-before-technology/).

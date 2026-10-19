@@ -1,9 +1,19 @@
+---
+interface Props {
+  /** Hide the Services link (on the Services page itself). */
+  servicesLink?: boolean;
+}
+const { servicesLink = true } = Astro.props;
+---
 <section class="contact-banner">
-<div>
-<p class="eyebrow mb-5">Work together</p>
-<h2 class="section-title">Have something<br/>you'd like to build?</h2>
-<p class="lead">Tell me about the problem and what you have in mind. We can discuss the scope and whether I'm the right person to help.</p>
-</div>
+<p class="eyebrow contact-banner-eyebrow">Work together</p>
+<h2 class="section-title contact-banner-title">Have something<br/>you'd like to build?</h2>
+<div class="contact-banner-body">
+<p class="lead">A business website, a web app, or a mobile prototype. Tell me about the problem and we can discuss the scope. I'm also open to engineering roles.</p>
+<div class="contact-banner-actions">
 <a href="/contact/" class="button"><span>Start a conversation</span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 18 18 6M6 6h12v12"/></svg>
 </a>
+{servicesLink && <a href="/services/" class="text-link">How I can help →</a>}
+</div>
+</div>
 </section>

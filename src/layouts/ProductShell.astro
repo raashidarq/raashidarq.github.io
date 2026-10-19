@@ -1,0 +1,99 @@
+---
+import BackToTop from '../components/BackToTop.astro';
+// src/layouts/ProductShell.astro
+// Bare document shell for a standalone product page: <head>, metadata, fonts and a small
+// "Built by" footer. Each product page owns everything inside <main> (header included),
+// so every product can have its own typography, graphics and motion.
+interface Props {
+  title: string;
+  description: string;
+  /** Product slug; used for the default share image and the case-study link. */
+  slug?: string;
+  /** Absolute or root-relative share image. Defaults to /products/<slug>/og.jpg. */
+  image?: string;
+  scheme?: 'light' | 'dark';
+  themeColor: string;
+  /** Google Fonts stylesheet URL for this page's type. */
+  fonts?: string;
+  /** Class on <body>, used to scope the page's stylesheet. */
+  bodyClass?: string;
+  /** Case-study link in the footer. Defaults to /work/<slug>/. Pass '' to hide. */
+  caseStudy?: string;
+}
+
+const { title, description, slug, image, scheme = 'light', themeColor, fonts, bodyClass } = Astro.props;
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://raashidarq.github.io';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const ogPath = image || (slug ? `/products/${slug}/og.jpg` : '/images/portfolio-sharing-thumbnail.png');
+const ogImage = new URL(ogPath, siteUrl).toString();
+const ownOg = !!(image || slug);
+const caseStudy = Astro.props.caseStudy ?? '';
+---
+
+<!doctype html>
+<html lang="en" style={`color-scheme:${scheme}`}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content={scheme} />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Raashid Arquil" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    {ownOg && <meta property="og:image:width" content="1200" />}
+    {ownOg && <meta property="og:image:height" content="630" />}
+    <meta property="og:site_name" content="Raashid Arquil" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@raashidarq" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {fonts && (
+      <>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href={fonts} rel="stylesheet" />
+      </>
+    )}
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="ps-skip" href="#main">Skip to content</a>
+    <slot />
+    <BackToTop />
+    <footer class="ps-footer">
+      <div class="ps-footer-row">
+        <p>Built by <a href="/">Raashid Arquil</a>, an independent developer in Sri Lanka.</p>
+        <nav aria-label="About the maker">
+          {caseStudy && <a href={caseStudy}>Read the case study</a>}
+          <a href="/products/">All products</a>
+          <a href="/">Portfolio</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+      </div>
+    </footer>
+    <style is:global>
+      .ps-skip{position:absolute;left:12px;top:-60px;z-index:100;padding:10px 14px;border-radius:8px;background:#111;color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none}
+      .ps-skip:focus{top:12px}
+      .ps-footer{border-top:1px solid color-mix(in srgb,currentColor 14%,transparent);font-size:14px}
+      .ps-footer-row{max-width:1200px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center}
+      .ps-footer p{margin:0;opacity:.75}
+      .ps-footer nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+      .ps-footer a{color:inherit;text-underline-offset:3px}
+      .ps-footer nav a{opacity:.8;text-decoration:none}
+      .ps-footer nav a:hover{opacity:1;text-decoration:underline}
+    </style>
+  </body>
+</html>

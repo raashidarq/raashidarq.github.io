@@ -5,7 +5,9 @@ Astro static site with TypeScript content collections, Tailwind utilities, and e
 ## Pages
 - src/pages/index.astro: introduction, selected products, services, earlier work, actual experiences.
 - src/pages/work/index.astro: featured products and secondary archive.
-- src/pages/work/[...slug].astro: collection-driven project pages.
+- src/pages/work/[...slug].astro: collection-driven pages for earlier projects; the four products redirect to /products/<slug>/.
+- src/pages/products/: standalone product pages (Tally, CropCare, KeepClose, SmartDrive) on src/layouts/ProductShell.astro, plus the products index.
+- studio/resume-pdf.mjs: prints /resume/ to public/resume.pdf.
 - src/pages/services.astro: scoped service offers and intended delivery process.
 - src/pages/contact.astro: email and prefilled enquiry prompts; no backend form.
 - src/pages/about.astro: personal story, working method, background.

@@ -4,10 +4,13 @@ import ProductCover from './ProductCover.astro';
 interface Props{project:CollectionEntry<'projects'>;}
 const {project}=Astro.props;
 const {title,shortDescription,category,thumbnail,status}=project.data;
+const isProduct=['keepclose','cropcare','smartdrive','tally'].includes(project.id);
+const href=isProduct?`/products/${project.id}/`:`/work/${project.id}/`;
+const newTab=isProduct?{target:'_blank',rel:'noopener'}:{};
 const state=project.id==='smartdrive'?'Prototype':status==='in-development'?'In development':status==='live'?'Demo available':status==='archived'?'Earlier work':status;
 ---
 <article class="project-card">
-<a href={`/work/${project.id}/`} aria-label={`View ${title}: ${state}`}>
+<a href={href} {...newTab} aria-label={`View ${title}: ${state}${isProduct?' (opens in a new tab)':''}`}>
 {project.id==='keepclose'||project.id==='cropcare'||project.id==='smartdrive'||project.id==='tally'?<ProductCover kind={project.id}/>:<div class="project-image">{thumbnail?<img src={thumbnail} alt={`${title} project preview`} loading="lazy"/>:<span class="serif text-5xl">{title}</span>}</div>}
 <div class="project-meta">
 <span>{category}</span>

@@ -1,0 +1,35 @@
+---
+// A crisp HTML recreation of the CropCare camera screen (the real screenshot's preview is
+// black), with the real result leaf photo composited into the frame.
+// `live` adds the pieces the hero animates: flash, status pill and scan beam.
+interface Props { live?: boolean }
+const { live = false } = Astro.props;
+const A = '/products/cropcare';
+---
+<div class:list={['cc-cam', { 'cc-cam--live': live }]}>
+  <div class="cc-cam-view">
+    <img class="cc-cam-bg" src={`${A}/leaf.webp`} width="516" height="252" alt="" decoding="async" />
+    <div class="cc-cam-frame">
+      <img class="cc-cam-focus" src={`${A}/leaf-frame.webp`} width="300" height="246" alt="" decoding="async" />
+      {live && <span class="cc-cam-scan"><span></span></span>}
+      <svg class="cc-cam-brackets" viewBox="0 0 220 220" aria-hidden="true" focusable="false">
+        <path d="M2 50V24L24 2h26M170 2h26l22 22v26M218 170v26l-22 22h-26M50 218H24L2 196v-26" />
+      </svg>
+    </div>
+    <span class="cc-cam-hint">Fill the frame with one leaf</span>
+  </div>
+  <span class="cc-cam-close" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></span>
+  <div class="cc-cam-controls">
+    <span class="cc-cam-gallery"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="12" height="12" rx="2" /><path d="M8 20h11a1 1 0 0 0 1-1V8M7.5 14l2.5-3 2 2 1.5-1.5 2.5 2.5" /></svg></span>
+    <span class="cc-cam-shutter"><span></span></span>
+  </div>
+  {live && (
+    <>
+      <span class="cc-cam-flash"></span>
+      <span class="cc-cam-pill">
+        <i></i>
+        <span class="cc-pill-txt"><span data-p="check">Checking the photo</span><span data-p="scan">Scanning on the phone</span></span>
+      </span>
+    </>
+  )}
+</div>

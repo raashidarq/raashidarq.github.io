@@ -1,94 +1,573 @@
 ---
-import ProductLayout from '../../layouts/ProductLayout.astro';
-import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+import ProductShell from '../../layouts/ProductShell.astro';
+import Browser from '../../components/products/smartdrive/Browser.astro';
+import '../../styles/products/smartdrive.css';
 
-const palette: Palette = {
-  scheme: 'light', bg: '#e6ecf1', surface: '#ffffff', ink: '#16304a', muted: '#44566a',
-  accent: '#2f6fd6', accentInk: '#2559b0', onAccent: '#ffffff', line: '#c6d2dd',
-};
-const demo = { label: 'Try the live demo', short: 'Live demo', href: 'https://raashidarq.github.io/smartdrive/' };
-const talk = { label: 'Run a driving school? Let’s talk', href: '/contact/' };
-const img = (n: number, alt: string) => ({ src: `/products/smartdrive/feature-${n}.webp`, fallback: `/products/smartdrive/feature-${n}.png`, width: 1600, height: 1200, alt });
+const DEMO = 'https://raashidarq.github.io/smartdrive/';
+const fonts = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..112,400..800&family=IBM+Plex+Mono:wght@500;600&display=swap';
 
-const product: Product = {
-  slug: 'smartdrive',
-  name: 'SmartDrive',
-  tagline: 'The school. In one place.',
-  promise: 'A driving school in one system, not in phone calls and record books.',
-  subline: 'Scheduling, learning materials, and fleet management for administrators, instructors, and students, with a dashboard for each.',
-  status: 'Prototype · Live demo with fictional data',
-  primary: demo,
-  secondary: talk,
-  heroAlt: 'SmartDrive dashboards for a driving school on a laptop',
-  film: { label: 'See the demo', caption: 'A short silent film of the prototype. All records are fictional.' },
-  problem: {
-    heading: 'I went through the process myself.',
-    paragraphs: [
-      'Getting my driving licence involved bookings by phone, records kept in books, and queues without a clear order. People waited around.',
-      'It felt like a process software could make much better, so I built SmartDrive to explore that.',
+const roles = [
+  {
+    id: 'student',
+    shot: 'book',
+    label: 'Student',
+    kicker: 'Student portal',
+    title: 'Know what’s next, and book the drive yourself.',
+    body: 'Students see how far along the licence they are and what to study next, then book a practical lesson without phoning anyone.',
+    points: [
+      'Licensing completion bar tied to a 12-stage roadmap',
+      'Theory courses with video lectures and timed quizzes',
+      'Book a practical lesson: course, instructor, transmission, date, one of that instructor’s slots and a pickup point',
+      'Recent activity and notifications in one place',
     ],
-    attribution: 'Raashid Arquil, maker of SmartDrive',
+    alt: 'SmartDrive student booking form with fictional data: a training syllabus, instructor Mr. David Miller, Manual transmission, a lesson date, a 09:00 AM time slot and pickup at Academy Main Gate, Bay 3, with a Confirm Appointment button beside the instructor’s profile.',
+    url: 'smartdrive / student / book',
   },
-  features: {
-    heading: 'One place for everyone at the school.',
-    items: [
-      {
-        title: 'For students',
-        body: 'See your learning progress and upcoming sessions at a glance.',
-        image: img(1, 'The SmartDrive student dashboard with progress and upcoming sessions'),
-      },
-      {
-        title: 'Book a lesson',
-        body: 'Request a practical session in one form: course, instructor, date, time, transmission, and pickup location.',
-        image: img(2, 'Booking a practical driving lesson in SmartDrive'),
-      },
-      {
-        title: 'For instructors',
-        body: 'Review session requests and record evaluations in one workspace.',
-        image: img(3, 'The SmartDrive instructor workspace with session requests'),
-      },
-      {
-        title: 'For the office',
-        body: 'Administrators manage members, courses, and announcements from their own dashboard.',
-        image: { src: '/images/smartdrive-admin.jpg', width: 1434, height: 992, alt: 'SmartDrive administration dashboard with fictional demo data' },
-      },
+  {
+    id: 'instructor',
+    shot: 'instructor',
+    label: 'Instructor',
+    kicker: 'Instructor workspace',
+    title: 'Requests, schedule and sign-off on one list.',
+    body: 'Instructors see their sessions with date, time, vehicle and pickup point, and act on each one where it sits.',
+    points: [
+      'Accept a pending session, or use Reschedule to cancel it with a reason',
+      'Log an evaluation after the drive: a grade and feedback notes',
+      'Signed-off sessions are marked Completed, with the evaluation shown on the session',
     ],
+    alt: 'SmartDrive instructor workspace with fictional data: summary cards for drives scheduled today, assigned learners, hours taught and the assigned car, above a list of sessions: Alex Rivera Confirmed with a Complete and Log Evaluation button, Michael Chen Pending with Accept Session and Reschedule buttons, and a Completed session.',
+    url: 'smartdrive / instructor',
   },
-  how: {
-    nav: 'How it works', eyebrow: 'How it works',
-    heading: 'One booking, reflected everywhere.',
-    items: [
-      { title: 'Connected screens', body: 'When a student books a session, the dashboard adds the session, creates a notification, and logs the activity, instead of each screen standing alone.' },
-      { title: 'A dashboard per role', body: 'Accounts use email sign-in, and administrators, instructors, and students each land on their own dashboard.' },
-      { title: 'Try every role, no account', body: 'The public demo runs on fictional records kept in your browser, so changes survive a reload and you can try every role without signing up.' },
+  {
+    id: 'admin',
+    shot: 'admin',
+    label: 'Admin',
+    kicker: 'Operations console',
+    title: 'Run the school, not a stack of record books.',
+    body: 'Administrators get their own console for the people, the courses and the notices that keep a school running.',
+    points: [
+      'A member directory: add, edit and remove students, instructors and administrators',
+      'Publish courses, with a price and a lead instructor',
+      'Broadcast bulletins to the school',
     ],
+    alt: 'SmartDrive admin operations console with fictional data: Add Member and Publish Course buttons, summary cards for students, instructors and published modules, a table of recent members with their roles and join dates, and a list of academy bulletins.',
+    url: 'smartdrive / admin',
   },
-  availability: {
-    heading: 'A prototype, honestly.',
-    intro: 'It started as my final-year project, and it was more hopeful than finished.',
-    today: [
-      'A live demo of every role: student, instructor, and administrator',
-      'Lesson booking connected to notifications and activity',
-      'Fictional demo data, saved in your browser',
-    ],
-    next: [
-      'Move bookings to the server, so double-booked instructors and permissions are checked there rather than in the browser',
-      'After that, a learner-facing app (PWA)',
-    ],
-    note: 'Before a school could rely on it, the server needs to own bookings. When it’s ready for real use, I’d like to take it back to the driving school I attended.',
-  },
-  faq: [
-    { q: 'Can my driving school use SmartDrive today?', a: 'Not yet. It’s a prototype. Before a school relies on it, bookings need to move to the server so conflicts and permissions are enforced there. If you run a school, I’d like to hear from you.' },
-    { q: 'Do I need an account to try the demo?', a: 'No. The demo runs on fictional records and browser-local state, so you can try every role without an account.' },
-    { q: 'Is any of the data real?', a: 'No. Everything in the demo is fictional, and your changes are stored only in your own browser.' },
-    { q: 'Who is it for?', a: 'Driving schools: administrators, instructors, and students, each with their own dashboard.' },
-  ],
-  closing: {
-    heading: 'Run a driving school? Let’s talk.',
-    body: 'Try the demo, then tell me how your school handles bookings today.',
-    primary: talk,
-    secondary: demo,
-  },
-};
+] as const;
+
+const steps = [
+  { t: 'A student books', d: 'They choose the course, instructor, transmission, date, one of that instructor’s slots and a pickup point. The booking is saved as Confirmed.' },
+  { t: 'Three records, written together', d: 'The session, a notification and an activity entry are created in one step, so the instructor’s list, the student’s bell and their feed all agree.' },
+  { t: 'The instructor works the list', d: 'Pending requests (seeded examples in the demo) get Accept Session, or Reschedule, which cancels the session and records the reason.' },
+  { t: 'The lesson is signed off', d: 'After the drive the instructor logs a grade and notes, and the session is marked Completed.' },
+];
+
+const carry = [
+  { k: 'Roles', t: 'Everyone lands on their own screen', d: 'Sign-in decides whether you see the client, staff or admin dashboard.' },
+  { k: 'Booking', t: 'Booking against real availability', d: 'Clients pick a provider, a date and one of that provider’s open slots.' },
+  { k: 'Workflow', t: 'A status everyone can read', d: 'Pending, Confirmed, Completed, or Cancelled with a reason, shown to both sides.' },
+  { k: 'Records', t: 'One action, every screen updated', d: 'A booking writes the session, the notification and the activity entry together.' },
+  { k: 'Admin', t: 'A console for the business', d: 'Add and remove people, publish services with a price and an owner, post notices.' },
+];
+
+const faq = [
+  { q: 'Can my driving school use SmartDrive today?', a: 'Not yet. It’s a prototype. Before a school relies on it, bookings need to move to the server so conflicts and permissions are enforced there. If you run a school, I’d like to hear from you.' },
+  { q: 'Do I need an account to try the demo?', a: 'No. The demo runs on fictional records and browser-local state, so you can try every role without an account.' },
+  { q: 'Is any of the data real?', a: 'No. Everything in the demo is fictional, including the figures on its sample academy homepage, and your changes are stored only in your own browser.' },
+  { q: 'Could you build something like this for my business?', a: 'Probably. Bookings, roles, schedules and notifications are the same problem whether you teach driving or run a clinic, a tutoring service or a studio. Tell me how bookings work for you today and I’ll tell you honestly what it would take.' },
+  { q: 'What is it built with?', a: 'React, Tailwind CSS and Vite. Supabase handles email sign-in and looks up each person’s role; sessions, courses, members and notifications are kept in the browser for now.' },
+];
 ---
-<ProductLayout title="SmartDrive: the driving school, in one place" description={product.subline} palette={palette} brand="smartdrive" product={product} />
+<ProductShell
+  title="SmartDrive: the driving school, in one place"
+  description="A driving school prototype that replaces phone bookings and record books with one system: students book and track progress, instructors manage sessions, admins run the school. Live demo with fictional data."
+  slug="smartdrive"
+  scheme="light"
+  themeColor="#f5f6f2"
+  fonts={fonts}
+  bodyClass="sd"
+>
+  <script is:inline slot="head">document.documentElement.classList.add('sd-js')</script>
+
+  <header class="sd-header">
+    <div class="sd-wrap sd-header-row">
+      <a class="sd-logo" href="#main" aria-label="SmartDrive, back to top">
+        <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+          <rect width="32" height="32" rx="9" fill="#10243a" />
+          <circle cx="16" cy="16" r="9" fill="none" stroke="#f5b800" stroke-width="2.6" />
+          <circle cx="16" cy="16" r="2.6" fill="#f5b800" />
+          <path d="M7.4 14.2h6.4M18.2 14.2h6.4M16 18.6v6.2" stroke="#f5b800" stroke-width="2.6" stroke-linecap="round" />
+        </svg>
+        <span>SmartDrive</span>
+      </a>
+      <nav class="sd-nav" aria-label="SmartDrive">
+        <a href="#roles">Roles</a>
+        <a href="#booking">Booking</a>
+        <a href="#status">Status</a>
+        <a href="#build">For your business</a>
+      </nav>
+      <a class="sd-btn sd-btn-sm sd-btn-primary" href={DEMO}>Live demo<span class="sd-arrow" aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="sd-hero" aria-labelledby="hero-title">
+      <div class="sd-wrap sd-hero-copy">
+        <h1 id="hero-title" class="rv">The driving school, off the phone and <span class="sd-hl">out of the diary.</span></h1>
+        <p class="sd-lede rv">One system for a driving school’s bookings, lessons and records. Students book from an instructor’s open slots, instructors accept and sign off sessions, and admins run the school.</p>
+        <div class="sd-ctas rv">
+          <a class="sd-btn sd-btn-primary" href={DEMO}>Try the live demo<span class="sd-arrow" aria-hidden="true">→</span></a>
+          <a class="sd-btn sd-btn-ghost" href="#booking">See a booking go through</a>
+        </div>
+        <p class="sd-fine rv">A working prototype with fictional data. No account needed.</p>
+      </div>
+
+      <div class="sd-hero-stage">
+        <div class="sd-road" aria-hidden="true"><span class="sd-lane"></span></div>
+        <div class="sd-wrap sd-hero-visual">
+          <Browser shot="student" eager url="smartdrive / student" sizes="(min-width: 1180px) 1080px, 94vw" class="sd-hero-shot rv rv-up"
+            alt="SmartDrive student dashboard with fictional data: a welcome for Alex Rivera, licensing completion at 50%, the next theory lesson to continue, an upcoming confirmed practical session with Mr. David Miller, and recent learning activity." />
+          <div class="sd-float sd-float-a rv" aria-hidden="true">
+            <p class="sd-mono sd-float-k">Instructor · request</p>
+            <p class="sd-float-t">Michael Chen</p>
+            <p class="sd-float-m">Tue 1 Sep · 11:00 AM · Downtown Station</p>
+            <div class="sd-float-row"><span class="sd-chip sd-chip-pending">Pending</span><span class="sd-mini-btn">Accept Session</span></div>
+          </div>
+          <div class="sd-float sd-float-b rv" aria-hidden="true">
+            <span class="sd-bell"></span>
+            <div>
+              <p class="sd-float-t">Practical Driving Session Booked</p>
+              <p class="sd-float-m">with Mr. David Miller · Just now</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEFORE / AFTER -->
+    <section class="sd-section sd-problem" aria-labelledby="problem-title">
+      <div class="sd-wrap sd-problem-grid">
+        <div class="sd-problem-copy">
+          <p class="sd-sign rv">The problem</p>
+          <h2 id="problem-title" class="rv">I went through the process myself.</h2>
+          <p class="rv">Getting my driving licence involved bookings by phone, records kept in books, and queues without a clear order. People waited around.</p>
+          <p class="rv">It felt like a process software could make much better, so I built SmartDrive to explore that.</p>
+          <p class="sd-attrib rv">Raashid Arquil, maker of SmartDrive</p>
+        </div>
+        <ol class="sd-swap" aria-label="What changes">
+          <li class="rv">
+            <span class="sd-mono sd-swap-n">01</span>
+            <div><p class="sd-was">Bookings by phone, written into a diary</p><p class="sd-now">Students book a slot from the instructor’s available times</p></div>
+          </li>
+          <li class="rv">
+            <span class="sd-mono sd-swap-n">02</span>
+            <div><p class="sd-was">Records kept in books</p><p class="sd-now">Progress, sessions and evaluations on each person’s dashboard</p></div>
+          </li>
+          <li class="rv">
+            <span class="sd-mono sd-swap-n">03</span>
+            <div><p class="sd-was">Queues without a clear order</p><p class="sd-now">Every session has a date, a time, an instructor and a pickup point</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ROLES -->
+    <section class="sd-section sd-roles" id="roles" aria-labelledby="roles-title">
+      <div class="sd-wrap">
+        <div class="sd-head">
+          <p class="sd-sign rv">One system, three views</p>
+          <h2 id="roles-title" class="rv">Everyone at the school gets their own dashboard.</h2>
+          <p class="rv">Accounts use email sign-in, and each role lands on its own screen. Switch roles to see what each one gets.</p>
+        </div>
+
+        <div class="sd-tabs rv" role="tablist" aria-label="Choose a role">
+          {roles.map((r, i) => (
+            <button class="sd-tab" role="tab" id={`tab-${r.id}`} aria-controls={`panel-${r.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} type="button">
+              <span class="sd-mono">0{i + 1}</span>{r.label}
+            </button>
+          ))}
+          <span class="sd-tab-ink" aria-hidden="true"></span>
+        </div>
+
+        <div class="sd-panels">
+          {roles.map((r, i) => (
+            <div class="sd-panel" role="tabpanel" id={`panel-${r.id}`} aria-labelledby={`tab-${r.id}`} tabindex="0" hidden={i !== 0}>
+              <div class="sd-panel-copy">
+                <p class="sd-mono sd-kicker">{r.kicker}</p>
+                <h3>{r.title}</h3>
+                <p>{r.body}</p>
+                <ul class="sd-checks">
+                  {r.points.map((pt) => <li>{pt}</li>)}
+                </ul>
+                <a class="sd-link" href={DEMO}>Try the {r.label.toLowerCase()} view<span class="sd-arrow" aria-hidden="true">→</span></a>
+              </div>
+              <Browser shot={r.shot} url={r.url} alt={r.alt} sizes="(min-width: 1180px) 700px, 94vw" class="sd-panel-shot" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOKING FLOW -->
+    <section class="sd-section sd-booking" id="booking" aria-labelledby="booking-title">
+      <div class="sd-wrap">
+        <div class="sd-head">
+          <p class="sd-sign sd-sign-dark rv">How a booking moves</p>
+          <h2 id="booking-title" class="rv">One booking, reflected everywhere.</h2>
+          <p class="rv">When a student books, SmartDrive writes the session, a notification and an activity entry together, so no screen is left out of date.</p>
+        </div>
+
+        <div class="sd-flow" data-step="0">
+          <ol class="sd-steps" aria-label="Booking steps">
+            {steps.map((s, i) => (
+              <li>
+                <button type="button" class="sd-step" data-go={i + 1} aria-describedby="flow-ctl-note">
+                  <span class="sd-step-n sd-mono">{i + 1}</span>
+                  <span class="sd-step-t">{s.t}</span>
+                  <span class="sd-step-d">{s.d}</span>
+                </button>
+              </li>
+            ))}
+            <li class="sd-flow-ctl">
+              <button type="button" class="sd-play" data-playing="true"><span class="sd-play-i" aria-hidden="true"></span><span class="sd-play-l">Pause</span></button>
+              <span class="sd-mono sd-flow-note" id="flow-ctl-note">Pick a step to show it in the illustration</span>
+            </li>
+          </ol>
+
+          <figure class="sd-cal-wrap rv" aria-labelledby="cal-cap">
+            <div class="sd-cal" role="img" aria-label="Illustration of one instructor's week. A student books a Friday 9:00 AM lesson, which is saved as Confirmed. The session, a notification and an activity entry are created together. The instructor accepts a seeded pending request on Tuesday, and a Wednesday lesson is marked Completed with an evaluation.">
+              <div class="sd-cal-top">
+                <div>
+                  <p class="sd-mono sd-cal-k">Mr. David Miller · week of 31 Aug</p>
+                  <p class="sd-cal-t">Booking flow, step by step</p>
+                </div>
+                <span class="sd-chip sd-chip-mono">Illustration</span>
+              </div>
+              <div class="sd-grid">
+                <span class="sd-corner"></span>
+                <span class="sd-day d1">Mon <b>31</b></span>
+                <span class="sd-day d2">Tue <b>1</b></span>
+                <span class="sd-day d3">Wed <b>2</b></span>
+                <span class="sd-day d4">Thu <b>3</b></span>
+                <span class="sd-day d5">Fri <b>4</b></span>
+                {['9 AM', '10 AM', '11 AM', '12 PM'].map((h, i) => (
+                  <span class="sd-hour" style={`grid-row:${i + 2}`}>{h}</span>
+                ))}
+                {[1, 2, 3, 4].map((r) => [1, 2, 3, 4, 5].map((c) => (
+                  <span class={`sd-cell d${c}`} style={`grid-row:${r + 1};grid-column:${c + 1}`}></span>
+                )))}
+                <span class="sd-slot" style="grid-row:2;grid-column:6"></span>
+
+                <div class="sd-ev sd-ev-req" style="grid-row:4 / span 1;grid-column:3">
+                  <p class="sd-ev-t">Michael Chen</p>
+                  <p class="sd-ev-m">11:00 <span>· Manual</span></p>
+                  <div class="sd-ev-s">
+                    <span class="sd-chip sd-chip-pending sd-s-pending">Pending</span>
+                    <span class="sd-chip sd-chip-ok sd-s-ok">Confirmed</span>
+                    <span class="sd-ev-accept">Accept</span>
+                  </div>
+                </div>
+                <div class="sd-ev sd-ev-done" style="grid-row:3 / span 1;grid-column:4">
+                  <p class="sd-ev-t">Alex Rivera</p>
+                  <p class="sd-ev-m">10:00 <span>· Manual</span></p>
+                  <div class="sd-ev-s">
+                    <span class="sd-chip sd-chip-ok sd-s-ok">Confirmed</span>
+                    <span class="sd-chip sd-chip-done sd-s-done">Completed</span>
+                  </div>
+                </div>
+                <div class="sd-ev sd-ev-new" style="grid-row:2 / span 1;grid-column:6">
+                  <p class="sd-ev-t">Alex Rivera</p>
+                  <p class="sd-ev-m">09:00 <span>· Manual</span></p>
+                  <div class="sd-ev-s"><span class="sd-chip sd-chip-ok">Confirmed</span></div>
+                </div>
+
+                <div class="sd-toast">
+                  <span class="sd-bell"></span>
+                  <div>
+                    <p class="sd-toast-t">Practical Driving Session Booked</p>
+                    <p class="sd-toast-m">Session scheduled on 2026-09-04 at 09:00 AM with Mr. David Miller.</p>
+                  </div>
+                </div>
+                <div class="sd-evalnote">
+                  <p class="sd-mono">Evaluation logged</p>
+                  <p>Satisfactory (95% Minor Mirror Fault)</p>
+                </div>
+              </div>
+
+              <ul class="sd-ledger">
+                <li class="l1"><span class="sd-mono">Session</span>Instructor’s list</li>
+                <li class="l2"><span class="sd-mono">Notification</span>Student’s bell</li>
+                <li class="l3"><span class="sd-mono">Activity entry</span>Student’s feed</li>
+              </ul>
+            </div>
+            <figcaption id="cal-cap">An illustration built from the demo’s fictional records and status labels. In the demo the instructor’s view is a list, not a calendar. A student’s own booking is saved as Confirmed; Pending requests are seeded examples.</figcaption>
+          </figure>
+          <p class="sd-sr" aria-live="polite" data-flow-live></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MORE -->
+    <section class="sd-section sd-more" aria-labelledby="more-title">
+      <div class="sd-wrap sd-more-grid">
+        <div class="sd-more-copy">
+          <p class="sd-sign rv">For learners</p>
+          <h2 id="more-title" class="rv">From registration to licence card, one step at a time.</h2>
+          <p class="rv">The student roadmap lays out twelve stages, from registration and the medical check to the practical trial and the licence card. Steps are cleared in order, and the dashboard’s progress bar follows along.</p>
+          <ul class="sd-tiles">
+            <li class="rv"><span class="sd-mono sd-tile-n">12</span><p>stages on the licensing roadmap</p></li>
+            <li class="rv">
+              <svg class="sd-tile-i" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg>
+              <p>video lectures in each theory course</p>
+            </li>
+            <li class="rv">
+              <svg class="sd-tile-i" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13.5V9.5M9.5 2.8h5M12 2.8V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <p>timed quizzes with scores and explanations</p>
+            </li>
+          </ul>
+        </div>
+        <Browser shot="journey" url="smartdrive / student / journey" sizes="(min-width: 1180px) 640px, 94vw" class="sd-more-shot rv rv-up"
+          alt="SmartDrive 12-stage licensing roadmap with fictional data: 6 of 12 milestones cleared at 50%, with the first steps, Registration and Documentation and Curriculum and Transmission Selection, marked Cleared." />
+      </div>
+    </section>
+
+    <!-- DEMO BAND -->
+    <section class="sd-band" aria-labelledby="band-title">
+      <div class="sd-road sd-road-band" aria-hidden="true"><span class="sd-lane"></span></div>
+      <div class="sd-wrap sd-band-row">
+        <div>
+          <h2 id="band-title" class="rv">Try every role. No account.</h2>
+          <p class="rv">The demo opens on a sample academy homepage. Its figures are placeholders, so pick a portal to start. Once you’re in, a banner at the top switches persona or resets the demo. Records are fictional and kept in your browser, so your changes survive a reload.</p>
+        </div>
+        <dl class="sd-band-roles rv" aria-label="Demo personas">
+          <div><dt class="sd-mono">Student</dt><dd>Alex Rivera</dd></div>
+          <div><dt class="sd-mono">Instructor</dt><dd>David Miller</dd></div>
+          <div><dt class="sd-mono">Admin</dt><dd>Sarah Connor</dd></div>
+        </dl>
+        <a class="sd-btn sd-btn-primary sd-band-cta rv" href={DEMO}>Open the live demo<span class="sd-arrow" aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <!-- STATUS -->
+    <section class="sd-section sd-status" id="status" aria-labelledby="status-title">
+      <div class="sd-wrap">
+        <div class="sd-head">
+          <p class="sd-sign rv">Status</p>
+          <h2 id="status-title" class="rv">A prototype, honestly.</h2>
+          <p class="rv">It started as my final-year project (2024–2025). The flows work end to end in the demo. The data layer is the part a real school would need rebuilt.</p>
+        </div>
+        <div class="sd-status-grid">
+          <div class="sd-card rv">
+            <h3 class="sd-mono sd-card-k"><span class="sd-dot sd-dot-ok" aria-hidden="true"></span>Works in the demo today</h3>
+            <ul class="sd-checks">
+              <li>Every role: student, instructor and administrator</li>
+              <li>Booking that writes the session, a notification and an activity entry together</li>
+              <li>Accept, reschedule with a reason, and sign off with an evaluation</li>
+              <li>Members, courses and bulletins managed from the admin console</li>
+            </ul>
+          </div>
+          <div class="sd-card sd-card-limit rv">
+            <h3 class="sd-mono sd-card-k"><span class="sd-dot sd-dot-limit" aria-hidden="true"></span>Known limits</h3>
+            <ul class="sd-limits">
+              <li>Supabase handles sign-in and role lookup only. Sessions, courses and members live in the browser.</li>
+              <li>The instructor view is tied to the demo instructor, David Miller.</li>
+              <li>Handbook PDF buttons are placeholders that show an alert.</li>
+              <li>There is no fleet or vehicle management.</li>
+            </ul>
+          </div>
+          <div class="sd-card sd-card-next rv">
+            <h3 class="sd-mono sd-card-k"><span class="sd-dot sd-dot-next" aria-hidden="true"></span>What a real school would need</h3>
+            <ol class="sd-todo">
+              <li>Move bookings and records to the server, so double-booked instructors and permissions are checked there, not in the browser</li>
+              <li>Give every instructor their own schedule</li>
+              <li>After that, a learner-facing app (PWA)</li>
+            </ol>
+          </div>
+        </div>
+        <p class="sd-status-note rv">When it’s ready for real use, I’d like to take it back to the driving school I attended.</p>
+      </div>
+    </section>
+
+    <!-- CARRY OVER -->
+    <section class="sd-section sd-build" id="build" aria-labelledby="build-title">
+      <div class="sd-wrap">
+        <div class="sd-build-head">
+          <div class="sd-head">
+            <p class="sd-sign sd-sign-dark rv">Beyond driving schools</p>
+            <h2 id="build-title" class="rv">Not a driving school? The parts carry over.</h2>
+            <p class="rv">Underneath, SmartDrive is a booking system with roles. Clinics, tutors, studios and rental desks run on the same pieces, and these are the parts I’d build for you.</p>
+          </div>
+          <div class="sd-build-links rv">
+            <a class="sd-btn sd-btn-ghost" href="/services/">How I work with clients<span class="sd-arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <ul class="sd-carry">
+          {carry.map((c, i) => (
+            <li class="rv">
+              <span class="sd-mono sd-carry-k">0{i + 1} · {c.k}</span>
+              <h3>{c.t}</h3>
+              <p>{c.d}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sd-section sd-faq" id="faq" aria-labelledby="faq-title">
+      <div class="sd-wrap sd-faq-grid">
+        <div>
+          <p class="sd-sign rv">FAQ</p>
+          <h2 id="faq-title" class="rv">Questions, answered plainly.</h2>
+        </div>
+        <div class="sd-faq-list">
+          {faq.map((f) => (
+            <details class="rv">
+              <summary><span>{f.q}</span><span class="sd-plus" aria-hidden="true"></span></summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="sd-close" aria-labelledby="close-title">
+      <div class="sd-wrap sd-close-box rv">
+        <h2 id="close-title">Run a driving school? Let’s talk.</h2>
+        <p>Try the demo, then tell me how your school handles bookings today.</p>
+        <div class="sd-ctas">
+          <a class="sd-btn sd-btn-primary" href={DEMO}>Try the live demo<span class="sd-arrow" aria-hidden="true">→</span></a>
+          <a class="sd-btn sd-btn-ghost sd-btn-ghost-dark" href="/contact/">Get in touch</a>
+        </div>
+        <p class="sd-close-alt">Different kind of booking business? <a href="/services/">See how I work with clients</a>.</p>
+      </div>
+    </section>
+  </main>
+</ProductShell>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Scroll reveals
+  const items = document.querySelectorAll<HTMLElement>('.rv');
+  if ('IntersectionObserver' in window && !reduce.matches) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    items.forEach((el, i) => {
+      const sib = el.parentElement ? Array.from(el.parentElement.children).indexOf(el) : 0;
+      el.style.setProperty('--d', `${Math.min(sib, 5) * 70}ms`);
+      io.observe(el);
+    });
+  } else {
+    items.forEach((el) => el.classList.add('in'));
+  }
+
+  // Role tabs (ARIA tab pattern, automatic activation)
+  const tablist = document.querySelector<HTMLElement>('.sd-tabs');
+  if (tablist) {
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const ink = tablist.querySelector<HTMLElement>('.sd-tab-ink');
+    const moveInk = (t: HTMLElement) => {
+      if (!ink) return;
+      ink.style.width = `${t.offsetWidth}px`;
+      ink.style.transform = `translateX(${t.offsetLeft}px)`;
+    };
+    const select = (t: HTMLButtonElement, focus = false) => {
+      for (const o of tabs) {
+        const on = o === t;
+        o.setAttribute('aria-selected', String(on));
+        o.tabIndex = on ? 0 : -1;
+        const p = document.getElementById(o.getAttribute('aria-controls')!);
+        if (p) {
+          p.hidden = !on;
+          if (on) { p.classList.remove('show'); void p.offsetWidth; p.classList.add('show'); }
+        }
+      }
+      moveInk(t);
+      if (focus) t.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        let n = -1;
+        if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = tabs.length - 1;
+        if (n > -1) { e.preventDefault(); select(tabs[n], true); }
+      });
+    });
+    const sync = () => moveInk(tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0]);
+    sync();
+    window.addEventListener('resize', sync);
+    document.fonts?.ready.then(sync);
+
+    // Warm the hidden panels' screenshots before the first switch, so a tab never opens on an empty frame.
+    const roleSection = document.getElementById('roles');
+    const warm = () => document.querySelectorAll<HTMLImageElement>('.sd-panel img[loading="lazy"]').forEach((img) => { img.loading = 'eager'; });
+    if (roleSection && 'IntersectionObserver' in window) {
+      const wio = new IntersectionObserver(([e]) => { if (e.isIntersecting) { warm(); wio.disconnect(); } }, { rootMargin: '600px 0px' });
+      wio.observe(roleSection);
+    }
+    tabs.forEach((t) => t.addEventListener('pointerenter', warm, { once: true }));
+  }
+
+  // Booking flow player
+  const flow = document.querySelector<HTMLElement>('.sd-flow');
+  if (flow) {
+    const btns = Array.from(flow.querySelectorAll<HTMLButtonElement>('.sd-step'));
+    const play = flow.querySelector<HTMLButtonElement>('.sd-play')!;
+    const playLabel = play.querySelector('.sd-play-l')!;
+    const live = flow.querySelector<HTMLElement>('[data-flow-live]');
+    const figure = flow.querySelector<HTMLElement>('.sd-cal-wrap') || flow;
+    const LAST = btns.length;
+    let step = 0;
+    let playing = !reduce.matches;
+    let visible = false;
+    let timer: number | undefined;
+
+    const render = (announce = false) => {
+      flow.dataset.step = String(step);
+      btns.forEach((b, i) => {
+        if (i + 1 === step) b.setAttribute('aria-current', 'step');
+        else b.removeAttribute('aria-current');
+        b.classList.toggle('past', i + 1 < step);
+      });
+      play.dataset.playing = String(playing);
+      playLabel.textContent = playing ? 'Pause' : 'Play';
+      flow.classList.toggle('playing', playing);
+      // Only announce changes the visitor asked for; autoplay stays quiet.
+      if (announce && live && step > 0) {
+        const b = btns[step - 1];
+        live.textContent = `Step ${step} of ${LAST}: ${b.querySelector('.sd-step-t')?.textContent}. ${b.querySelector('.sd-step-d')?.textContent}`;
+      }
+    };
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (!playing || !visible) return;
+      const wait = step === 0 ? 1400 : step === LAST ? 4200 : 3000;
+      timer = window.setTimeout(() => { step = step >= LAST ? 0 : step + 1; render(); schedule(); }, wait);
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      step = Number(b.dataset.go); playing = false; render(true); schedule();
+    }));
+    play.addEventListener('click', () => {
+      playing = !playing;
+      if (playing && step >= LAST) step = 0;
+      render(); schedule();
+    });
+
+    if (reduce.matches) { step = LAST; playing = false; }
+    render();
+    if ('IntersectionObserver' in window) {
+      // Watch the illustration itself: on narrow screens the step list is long,
+      // and the animation should only run while the calendar can be seen.
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; schedule(); }, { threshold: 0.5 }).observe(figure);
+    }
+  }
+</script>

@@ -1,92 +1,717 @@
 ---
-import ProductLayout from '../../layouts/ProductLayout.astro';
-import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+// Tally product page. Standalone: owns its header, <main>, type and motion.
+// Every claim is grounded in the Tally repo (F:\Projects\prod) and src/content/projects/tally.md.
+import ProductShell from '../../layouts/ProductShell.astro';
+import '../../styles/products/tally.css';
 
-const palette: Palette = {
-  scheme: 'dark', bg: '#121714', surface: '#1c241f', ink: '#eef3ef', muted: '#a9b5ad',
-  accent: '#1f7a4d', accentInk: '#7cc6a0', onAccent: '#ffffff', line: '#2c3a31',
-};
-const notify = { label: 'Get notified', href: 'mailto:raashid.arq@gmail.com?subject=Tally%3A%20notify%20me' };
-const img = (n: number, alt: string) => ({ src: `/products/tally/feature-${n}.webp`, fallback: `/products/tally/feature-${n}.png`, width: 1600, height: 1200, alt });
+const email = 'raashid.arq@gmail.com';
+const notify = `mailto:${email}?subject=${encodeURIComponent('Tally: notify me')}&body=${encodeURIComponent('Hi Raashid, please let me know when Tally is released.')}`;
+const img = (name: string, small: number, large: number) => ({
+  src: `/products/tally/${name}-${large}.webp`,
+  srcset: `/products/tally/${name}-${small}.webp ${small}w, /products/tally/${name}-${large}.webp ${large}w`,
+});
 
-const product: Product = {
-  slug: 'tally',
-  name: 'Tally',
-  tagline: 'Habits. Focus. Tasks. Reflection. All on your own device.',
-  promise: 'One place for the day.',
-  subline: 'Habits, focus sessions, tasks, reflection, and energy in a single desktop dashboard. It works offline, doesn’t ask you to sign up, and keeps everything on your device.',
-  status: 'Desktop · Windows, macOS & Linux · In development',
-  primary: notify,
-  secondary: { label: 'See what’s inside', href: '#features' },
-  heroAlt: 'The Tally desktop dashboard with habits, tasks, a focus timer, and a journal',
-  film: { label: 'See it in use', caption: 'A short silent film of Tally in development.' },
-  problem: {
-    heading: 'Four apps, and none of them sees the whole day.',
-    paragraphs: [
-      'Habits in one app, a focus timer in another, tasks somewhere else, and a journal in a notebook. Each one wants its own account.',
-      'Tally brings them into a single desktop dashboard that opens instantly, works offline, and doesn’t ask you to sign up.',
-    ],
-    attribution: 'Raashid Arquil, maker of Tally',
-  },
-  features: {
-    heading: 'Everything for the day, side by side.',
-    items: [
-      {
-        title: 'Tasks and focus',
-        body: 'Plan in a list, on a board, or across the week. Then focus with a timer that logs your time.',
-        points: ['An inbox, projects, quick add, and a morning review', 'Focus reports, plus a small always-available timer window'],
-        image: img(1, 'Tally tasks in a board view next to a focus timer'),
-      },
-      {
-        title: 'Habits, energy and mood',
-        body: 'Track daily habits with a streak heatmap, and log quick energy and mood check-ins on a timeline across the day.',
-        image: img(2, 'A Tally habit streak heatmap and an energy and mood timeline'),
-      },
-      {
-        title: 'Journal, goals and trends',
-        body: 'Write daily notes with prompts and bookmarks. Set weekly goals with a workload bar, and see an overview and trends across everything.',
-        image: img(3, 'The Tally journal beside weekly goals and analytics'),
-      },
-    ],
-    extras: ['Command palette', 'A dashboard you can rearrange', 'Global quick-capture shortcut', 'System-tray menu'],
-  },
-  how: {
-    nav: 'Under the hood', eyebrow: 'Under the hood',
-    heading: 'Small, local, and built to last.',
-    items: [
-      { title: 'Light on your machine', body: 'Tally uses your system’s own webview with a small Rust shell, rather than shipping a full browser. The Windows installer is around 2.5 MB.' },
-      { title: 'Your data stays on your device', body: 'The app’s security policy blocks external connections, so keeping your data local is enforced by the app, not just promised.' },
-      { title: 'Safe updates', body: 'Database upgrades are versioned and tested, and the app’s identifier is fixed, so an update never moves where your data lives.' },
-      { title: 'Forgiving by default', body: 'Changes apply instantly and can be undone. Two open windows stay in sync, and turning a feature off hides it without deleting its data.' },
-    ],
-  },
-  availability: {
-    heading: 'In development. A first public release is coming.',
-    today: [
-      'Habits, tasks, focus, energy and mood, journal, goals, and analytics',
-      'Backups, a trash, and CSV, Markdown, and JSON export',
-      '73 unit test files and 24 end-to-end specs, including automated accessibility checks',
-      'A CI workflow set up to build for Windows, macOS, and Linux',
-    ],
-    next: [
-      'Hands-on checks of the tray, notifications, and shortcuts on each platform',
-      'Proper screenshots with demo data',
-      'The first public release',
-    ],
-  },
-  faq: [
-    { q: 'Do I need an account?', a: 'No. Tally doesn’t ask you to sign up, and everything stays on your device.' },
-    { q: 'Does it work offline?', a: 'Yes. Tally is local-first. Your data lives on your computer, and the app blocks external connections.' },
-    { q: 'Which platforms will it run on?', a: 'Tally is a desktop app for Windows, macOS, and Linux.' },
-    { q: 'Can I get my data out?', a: 'Yes. There are backups and a trash, plus export to CSV, Markdown, and JSON, so your data is never locked in.' },
-    { q: 'When can I try it?', a: 'Tally is in development, with a first public release coming next. Ask to be notified and you’ll hear when it’s out.' },
-  ],
-  closing: {
-    heading: 'Hear when Tally’s first release is ready.',
-    body: 'Send a quick email and I’ll let you know when you can download it.',
-    primary: notify,
-    secondary: { label: 'Read how it’s built', href: '/work/tally/' },
-  },
-};
+const hubs = [
+  { name: 'Today', note: 'Now and next, priorities, routines, check-in, timer' },
+  { name: 'Tasks', note: 'Inbox, list, week, board, projects, goals' },
+  { name: 'Calendar', note: 'Planned and recorded time, day and week' },
+  { name: 'Journal', note: 'Daily notes, linked notes, folders and tags' },
+  { name: 'Insights', note: 'Overview, habits, time, goals, trends' },
+];
+const tools = ['To-do list', 'Calendar', 'Habit tracker', 'Notes and journal', 'Pomodoro timer', 'Mood log'];
+
+const insightTabs = [
+  { id: 'overview', label: 'Overview', title: 'Observations in plain language',
+    body: 'Summary figures against the period before, and sentences like “Thursdays had the most recorded focus”, each with what it’s based on.',
+    image: img('overview', 1000, 1600), alt: 'Tally Insights overview: focus, tasks done, routines kept and average mood, above a list of plain-language observations' },
+  { id: 'habits', label: 'Habits', title: 'Which routines actually stick',
+    body: 'Every routine’s last 30 days at a glance, with kept, missed, paused and rest days told apart, and a year-long heatmap below.',
+    image: img('habits', 1000, 1600), alt: 'Tally Insights habits view with a 30-day strip per routine and a yearly completion heatmap' },
+  { id: 'time', label: 'Time', title: 'Where your focus went',
+    body: 'Focus totals, sessions, your average and your busiest day, with a per-day breakdown you can filter by tag and project.',
+    image: img('time', 1000, 1600), alt: 'Tally Insights time report with focus totals and a per-day table of sessions and focus time' },
+  { id: 'trends', label: 'Trends', title: 'Your peak hours',
+    body: 'Focus, energy, mood and motivation averaged by hour of the day. The hours where you tend to be at your best are shaded on the day timeline.',
+    image: img('by-hour', 1000, 1600), alt: 'Tally Trends by hour: a focus-by-hour bar chart and energy, mood and motivation lines across the day' },
+];
+
+const features = [
+  { id: 'tasks', name: 'Tasks', desc: 'To-dos with quick add, projects, subtasks and repeats.', on: true },
+  { id: 'habits', name: 'Habits', desc: 'Daily habits with flexible schedules, targets and rest days.', on: true },
+  { id: 'timer', name: 'Focus timer', desc: 'Pomodoro and stopwatch sessions, logged automatically.', on: true },
+  { id: 'energy', name: 'Energy and mood', desc: 'Quick check-ins, and how they move through the day.', on: true },
+  { id: 'eod', name: 'Journal', desc: 'Daily notes, linked notes and an evening review.', on: true },
+  { id: 'goals', name: 'Weekly goals', desc: 'Goals for the day, week, quarter, year and long term, with tasks linked to them.', on: false },
+  { id: 'planner', name: 'Planner', desc: 'Plan my day: goals for the day, breaks, time blocks and a workload bar.', on: false, requires: 'tasks' },
+  { id: 'analytics', name: 'Analytics', desc: 'Observations and trends across what you track.', on: true },
+];
+
+const moreCustom = [
+  'Widget sizes: small, medium or large',
+  'Your own task statuses, which become the board’s columns',
+  'Journal prompts, prompt groups and your daily template',
+  'Parts of your day, for routine time windows',
+  'Every keyboard shortcut, rebindable',
+  'Pomodoro lengths and cycles',
+  'Daily capacity for the workload bar',
+  'Reminder times for Plan my day, the Daily review and the Weekly review',
+  'Week start and date format',
+  'Light, dark or follow the system',
+];
+
+const tiles: { title: string; body: string; kbd?: string }[] = [
+  { title: 'Lives in the tray', body: 'Start or stop focus, log energy or open quick capture from the tray. Its tooltip shows the focus time left.' },
+  { title: 'Undo, not “Are you sure?”', body: 'Changes apply instantly, and anything reversible comes with an Undo instead of a confirmation dialog.' },
+  { title: 'Rituals for the day and week', body: 'Optional guided steps: plan your day in the morning, review it in the evening, review the week.' },
+  { title: 'Backups, a trash and export', body: 'Automatic backups, a trash for deleted items, and export to CSV, Markdown and JSON.' },
+];
+
+const faq = [
+  { q: 'Is Tally just a to-do app?', a: 'No. Tasks are one part. Tally also has a calendar of planned and recorded time, habits, a journal with notes, a focus timer, energy and mood check-ins, goals, and insights that compare them all.' },
+  { q: 'Do I need an account?', a: 'No. There’s no sign-up. Everything is stored on your computer, and the app blocks external connections.' },
+  { q: 'Does it sync to my phone?', a: 'No. Tally is a desktop app for Windows, macOS and Linux, and there’s no mobile app or sync service. Two windows on the same computer stay in sync.' },
+  { q: 'Can I turn off the parts I don’t use?', a: 'Yes. Each feature can be turned off in Settings. Turning one off hides it everywhere, and its data is kept in case you turn it back on.' },
+  { q: 'Can I get my data out?', a: 'Yes. There are backups and a trash, and you can export to CSV, Markdown and JSON.' },
+  { q: 'When can I try it?', a: 'Tally is in development, with a first public release coming next. Ask to be notified and you’ll hear when it’s out.' },
+];
 ---
-<ProductLayout title="Tally: one place for the day" description={product.subline} palette={palette} brand="tally" product={product} />
+<ProductShell
+  title="Tally: one desktop app for the whole day"
+  description="Tasks, calendar, habits, journal, focus and insights in one local-first desktop app for Windows, macOS and Linux. No account, works offline. In development."
+  slug="tally"
+  themeColor="#fbfbfa"
+  scheme="light"
+  bodyClass="tl"
+  fonts="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap"
+>
+  <script is:inline slot="head">document.documentElement.classList.add('tl-js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('tl-motion');</script>
+
+  <header class="tl-header">
+    <div class="tl-wrap tl-header-row">
+      <a class="tl-brand" href="#main" aria-label="Tally, back to top">
+        <img src="/products/tally/logo.svg" alt="" width="99" height="32" />
+      </a>
+      <nav class="tl-nav" aria-label="Tally page">
+        <a href="#system">One system</a>
+        <a href="#views">Features</a>
+        <a href="#insights">Insights</a>
+        <a href="#customise">Customise</a>
+        <a href="#status">Status</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="tl-btn tl-btn-sm" href={notify}>Get notified</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="tl-hero" aria-labelledby="tl-title">
+      <div class="tl-wrap tl-hero-copy">
+        <h1 id="tl-title" class="tl-h1">One app for <span class="tl-nowrap">the whole day.</span></h1>
+        <p class="tl-lede">Tasks, calendar, habits, a journal and a focus timer in one desktop app. They’re connected, so Tally can show you how your days actually go. Switch on only the parts you need.</p>
+        <div class="tl-ctas">
+          <a class="tl-btn" href={notify}>Get notified</a>
+          <a class="tl-btn tl-btn-ghost" href="#system">See how it fits together</a>
+        </div>
+        <ul class="tl-facts" aria-label="At a glance">
+          <li>Windows, macOS and Linux</li><li>No account</li><li>Works offline</li>
+        </ul>
+      </div>
+      <div class="tl-wrap">
+        <div class="tl-stage">
+          <figure class="tl-win tl-win-main">
+            <picture>
+              <source media="(max-width: 600px)" srcset="/products/tally/today-m-700.webp 700w, /products/tally/today-m-1200.webp 1200w" sizes="94vw" width="1200" height="643" />
+              <img src={img('today', 1000, 2000).src} srcset={img('today', 1000, 2000).srcset} sizes="(min-width: 1200px) 1120px, 94vw"
+                width="2000" height="1250" fetchpriority="high"
+                alt="Tally's Today view: what's on now and next, today's priorities, an energy, mood and motivation check-in, routines and a running focus timer" />
+            </picture>
+          </figure>
+          <figure class="tl-win tl-float tl-float-capture">
+            <img src="/products/tally/capture-1040.webp" srcset="/products/tally/capture-520.webp 520w, /products/tally/capture-1040.webp 1040w" sizes="(min-width: 900px) 420px, 60vw"
+              width="1040" height="270" alt="Quick capture window: the text 'Draft pricing FAQ fri 10am !high #launch' parsed into Fri, 10am, High priority and #launch" />
+            <figcaption>Quick capture <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Space</kbd></figcaption>
+          </figure>
+          <figure class="tl-win tl-float tl-float-timer">
+            <img src="/products/tally/mini-timer-680.webp" srcset="/products/tally/mini-timer-340.webp 340w, /products/tally/mini-timer-680.webp 680w" sizes="300px"
+              width="680" height="192" alt="Mini timer window showing 12:10 left in a focus session, with pause and stop buttons" />
+            <figcaption>Mini timer, above other apps</figcaption>
+          </figure>
+        </div>
+        <p class="tl-note">Screens from a development build, with fictional demo data.</p>
+      </div>
+    </section>
+
+    <!-- One system -->
+    <section id="system" class="tl-section tl-system" aria-labelledby="tl-system-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">One system</p>
+          <h2 id="tl-system-title" class="tl-h2">Stop running your day across five apps.</h2>
+          <p class="tl-sub">A list here, a calendar there, a habit tracker, a notes app and a timer. Each one sees a slice of your day. Tally puts them in five places in one window, so they can finally see each other.</p>
+        </div>
+
+        <div class="tl-merge tl-rv" data-merge>
+          <ul class="tl-merge-tools" aria-label="The apps Tally replaces">
+            {tools.map((t, i) => <li style={`--i:${i}`}>{t}</li>)}
+          </ul>
+          <svg class="tl-merge-lines" viewBox="0 0 200 360" preserveAspectRatio="none" aria-hidden="true">
+            {[30, 90, 150, 210, 270, 330].map((y, i) => (
+              <path style={`--i:${i}`} d={`M0 ${y} C 110 ${y}, 90 180, 200 180`} pathLength="1" />
+            ))}
+          </svg>
+          <div class="tl-merge-app" role="group" aria-label="Tally's five places">
+            <div class="tl-merge-bar"><img src="/products/tally/logo.svg" alt="Tally" width="74" height="24" /></div>
+            <ul>
+              {hubs.map((h, i) => (
+                <li style={`--i:${i}`} class={i === 0 ? 'is-on' : ''}><strong>{h.name}</strong><span>{h.note}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="tl-links">
+          <article class="tl-link tl-rv">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+            <h3>Focus logs itself</h3>
+            <p>Start a session on a task or a habit, and the time is recorded against it and shows up in your calendar.</p>
+          </article>
+          <article class="tl-link tl-rv">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 8h6M8 12h6"/></svg>
+            <h3>The journal knows your day</h3>
+            <p>Each daily note shows what you finished, how long you focused and which routines you kept, next to your mood and sleep.</p>
+          </article>
+          <article class="tl-link tl-rv">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+            <h3>Goals connect to the work</h3>
+            <p>Link tasks and projects to a goal, and Insights shows how much of your focus actually went towards it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Views -->
+    <section id="views" class="tl-section tl-views" aria-labelledby="tl-views-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">Everything in it</p>
+          <h2 id="tl-views-title" class="tl-h2">Each part of the day gets a proper view.</h2>
+        </div>
+
+        <!-- Tasks -->
+        <article class="tl-feature" aria-labelledby="f-tasks">
+          <div class="tl-feature-copy tl-rv">
+            <p class="tl-view">Tasks <span>Inbox · All · Week · Board · Projects</span></p>
+            <h3 id="f-tasks" class="tl-h3">Write it the way you’d say it.</h3>
+            <p>Type <code>Draft pricing FAQ fri 10am !high #launch</code> and Tally picks out the day, the time, the priority and the tag. Then see your tasks as a list, by week, or on a board.</p>
+            <ul class="tl-points">
+              <li>Quick capture from any app: <span class="tl-kbds"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Space</kbd></span>, type, Enter.</li>
+              <li>Name your own workflow statuses. They become the board’s columns.</li>
+              <li>Projects, subtasks, estimates and repeating tasks.</li>
+              <li>Unfinished tasks come back for a quick review each morning.</li>
+            </ul>
+          </div>
+          <div class="tl-feature-art tl-rv">
+            <figure class="tl-win tl-win-crop">
+              <img src={img('board', 700, 1200).src} srcset={img('board', 700, 1200).srcset} sizes="(min-width: 960px) 560px, 92vw"
+                width="1200" height="918" loading="lazy" decoding="async"
+                alt="Tally task board with Not started and In progress columns; each card shows its due day, estimate, tag and project" />
+            </figure>
+            <figure class="tl-win tl-float tl-art-capture">
+              <img src="/products/tally/capture-1040.webp" srcset="/products/tally/capture-520.webp 520w, /products/tally/capture-1040.webp 1040w" sizes="360px"
+                width="1040" height="270" loading="lazy" decoding="async" alt="" />
+            </figure>
+          </div>
+        </article>
+
+        <!-- Calendar -->
+        <article class="tl-feature tl-flip" aria-labelledby="f-cal">
+          <div class="tl-feature-copy tl-rv">
+            <p class="tl-view">Calendar <span>Day · Week · Log</span></p>
+            <h3 id="f-cal" class="tl-h3">What you planned, next to what really happened.</h3>
+            <p>Plan time blocks and breaks on the left. Your focus sessions fill in on the right as you work, beside lanes for energy, mood and habits, so a day you can look back on is a day you can learn from.</p>
+            <ul class="tl-points">
+              <li>Recorded time comes straight from the focus timer.</li>
+              <li>A workload bar weighs the day’s tasks against your capacity, and says when you’ll likely finish.</li>
+              <li>Planning is optional: turn on Planner when you want time blocks.</li>
+            </ul>
+          </div>
+          <div class="tl-feature-art tl-rv">
+            <figure class="tl-win tl-win-crop">
+              <img src={img('calendar-grid', 800, 1400).src} srcset={img('calendar-grid', 800, 1400).srcset} sizes="(min-width: 960px) 640px, 92vw"
+                width="1400" height="729" loading="lazy" decoding="async"
+                alt="Tally calendar Day view for Tuesday, Oct 13: planned blocks such as Deep work 9 to 11am in one column, the focus sessions actually recorded in the next, and energy, mood and habit lanes beside them" />
+            </figure>
+            <figure class="tl-win tl-float tl-art-workload">
+              <img src="/products/tally/calendar-workload-570.webp" srcset="/products/tally/calendar-workload-360.webp 360w, /products/tally/calendar-workload-570.webp 570w" sizes="300px"
+                width="570" height="236" loading="lazy" decoding="async"
+                alt="The day's workload card: 6h 27m of 5h 30m, about 57m more than your usual day. Focused 2h 57m, 3h 30m to go, finishing around 5:55pm at this pace." />
+            </figure>
+          </div>
+        </article>
+
+        <!-- Habits -->
+        <article class="tl-feature" aria-labelledby="f-habits">
+          <div class="tl-feature-copy tl-rv">
+            <p class="tl-view">Habits <span>Routines</span></p>
+            <h3 id="f-habits" class="tl-h3">Habits that fit real weeks.</h3>
+            <p>Not every habit is daily. Set a schedule, a target like 20 pages or 8 glasses, and rest days, and Tally only counts the days that were actually due.</p>
+            <ul class="tl-points">
+              <li>Check routines off from Today, or start a focus session on one.</li>
+              <li>Give a routine a time window and your own tips or checklist.</li>
+              <li>A 30-day strip for every routine and a year-long heatmap.</li>
+            </ul>
+          </div>
+          <div class="tl-feature-art tl-rv">
+            <figure class="tl-win tl-win-crop">
+              <img src={img('habits-crop', 800, 1300).src} srcset={img('habits-crop', 800, 1300).srcset} sizes="(min-width: 960px) 640px, 92vw"
+                width="1300" height="630" loading="lazy" decoding="async"
+                alt="Tally habit history: six routines with 30-day strips of kept and missed days, and a yearly heatmap" />
+            </figure>
+          </div>
+        </article>
+
+        <!-- Journal -->
+        <article class="tl-feature tl-flip" aria-labelledby="f-journal">
+          <div class="tl-feature-copy tl-rv">
+            <p class="tl-view">Journal <span>Daily notes · Notes</span></p>
+            <h3 id="f-journal" class="tl-h3">A page for every day, and notes that link up.</h3>
+            <p>One page per day from your own template, with mood and sleep at the top and what you did that day a click away. Alongside it, notes with their own titles, linked with <code>[[double brackets]]</code>.</p>
+            <ul class="tl-points">
+              <li>A full editor: headings, lists, checklists, quotes, tables and code.</li>
+              <li>Prompt groups, bookmarks, open tabs, folders and tags.</li>
+              <li>An evening review: mood, sleep and one question.</li>
+            </ul>
+          </div>
+          <div class="tl-feature-art tl-rv">
+            <figure class="tl-win tl-win-crop">
+              <img src={img('journal-crop', 800, 1400).src} srcset={img('journal-crop', 800, 1400).srcset} sizes="(min-width: 960px) 620px, 92vw"
+                width="1400" height="1050" loading="lazy" decoding="async"
+                alt="Tally journal: open notes and note folders on the left, and today's daily note with mood, sleep, a tag, an intention, notes, a checklist, a quote and an evening review" />
+            </figure>
+          </div>
+        </article>
+
+        <!-- Focus -->
+        <article class="tl-feature" aria-labelledby="f-focus">
+          <div class="tl-feature-copy tl-rv">
+            <p class="tl-view">Focus and goals <span>Pomodoro · Stopwatch · Week · Quarter · Year</span></p>
+            <h3 id="f-focus" class="tl-h3">Focus that adds up to something.</h3>
+            <p>Start a pomodoro or a stopwatch on a task or habit, and the session is logged for you. Link tasks and projects to goals for the week, quarter or year, and see how far each one has come.</p>
+            <ul class="tl-points">
+              <li>Set your own focus and break lengths, and cycles before a long break.</li>
+              <li>Pop the timer out into a mini window, or run it from the tray.</li>
+              <li>Goals nest: a weekly goal can be part of a quarterly one.</li>
+            </ul>
+          </div>
+          <div class="tl-feature-art tl-rv">
+            <figure class="tl-win tl-win-crop">
+              <img src={img('goals', 700, 1200).src} srcset={img('goals', 700, 1200).srcset} sizes="(min-width: 960px) 600px, 92vw"
+                width="1200" height="555" loading="lazy" decoding="async"
+                alt="Tally goals by horizon: a weekly goal that is part of a quarterly goal, with its goals for the day, linked project and tasks, and progress such as 11 of 19 tasks done" />
+            </figure>
+            <figure class="tl-win tl-float tl-art-timer">
+              <img src="/products/tally/mini-timer-680.webp" srcset="/products/tally/mini-timer-340.webp 340w, /products/tally/mini-timer-680.webp 680w" sizes="300px"
+                width="680" height="192" loading="lazy" decoding="async" alt="The mini timer window, 12:10 left in a focus session" />
+            </figure>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Insights tabs -->
+    <section id="insights" class="tl-section tl-insights" aria-labelledby="tl-insights-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">Insights</p>
+          <h2 id="tl-insights-title" class="tl-h2">Built around how you actually behave.</h2>
+          <p class="tl-sub">Because your tasks, focus, habits, energy and mood live in one place, Tally can compare them. Insights turns them into figures and observations you can check, worked out on your own computer.</p>
+        </div>
+        <div class="tl-tabs tl-rv" data-tabs>
+          <div class="tl-tablist" role="tablist" aria-label="Insights views">
+            {insightTabs.map((t, i) => (
+              <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.label}</button>
+            ))}
+          </div>
+          {insightTabs.map((t, i) => (
+            <div class="tl-panel" role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} hidden={i !== 0}>
+              <div class="tl-panel-copy">
+                <h3>{t.title}</h3>
+                <p>{t.body}</p>
+              </div>
+              <figure class="tl-win tl-win-crop">
+                <img src={t.image.src} srcset={t.image.srcset} sizes="(min-width: 1200px) 1040px, 92vw" width="1600" height="867" loading="lazy" decoding="async" alt={t.alt} />
+              </figure>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Customise -->
+    <section id="customise" class="tl-section tl-custom" aria-labelledby="tl-custom-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">Make it yours</p>
+          <h2 id="tl-custom-title" class="tl-h2">Shaped the way you work.</h2>
+          <p class="tl-sub">Each part of Tally is a feature you can switch on or off. Today is a dashboard of widgets you arrange yourself. Try it below. Turning a feature off hides it, and never deletes its data.</p>
+        </div>
+
+        <div class="tl-demo tl-rv" data-demo>
+          <div class="tl-demo-settings">
+            <p class="tl-demo-label">Settings · Features</p>
+            <ul>
+              {features.map((f) => (
+                <li>
+                  <div>
+                    <label for={`sw-${f.id}`}>{f.name}</label>{f.requires && <span class="tl-req-c" aria-hidden="true">Needs Tasks</span>}
+                    <p id={`sw-${f.id}-d`}>{f.desc}{f.requires && <span class="tl-req"> Requires Tasks.</span>}</p>
+                  </div>
+                  <button type="button" role="switch" class="tl-switch" id={`sw-${f.id}`} data-feature={f.id} data-requires={f.requires}
+                    aria-checked={f.on ? 'true' : 'false'} aria-describedby={`sw-${f.id}-d`}><span></span></button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="tl-demo-preview">
+            <div class="tl-demo-tools">
+              <button type="button" class="tl-chip-btn" data-rearrange>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>Rearrange widgets
+              </button>
+              <div class="tl-seg tl-seg-theme" role="radiogroup" aria-label="Preview theme">
+                <button type="button" role="radio" aria-checked="true" data-theme-set="light">Light</button>
+                <button type="button" role="radio" aria-checked="false" data-theme-set="dark">Dark</button>
+              </div>
+            </div>
+            <div class="tl-mini" data-mini data-theme="light" aria-live="polite">
+              <p class="tl-sr" data-mini-status></p>
+              <aside class="tl-mini-side" aria-label="Sidebar in the preview">
+                <span class="tl-mini-logo"><img class="lg-l" src="/products/tally/logo.svg" alt="" width="62" height="20" /><img class="lg-d" src="/products/tally/logo-dark.svg" alt="" width="62" height="20" loading="lazy" /></span>
+                <span class="is-on">Today</span>
+                <span data-needs="tasks">Tasks</span>
+                <span data-needs="timer planner">Calendar</span>
+                <span data-needs="eod">Journal</span>
+                <span data-needs="analytics habits timer goals">Insights</span>
+              </aside>
+              <div class="tl-mini-main">
+                <p class="tl-mini-title">Today <span>Tue, Oct 13</span></p>
+                <div class="tl-mini-grid" data-grid>
+                  <div class="w w-lg w-now" data-w="core"><i class="dot"></i><b>Now</b> Design tokens <span>1:30pm–3:00pm</span></div>
+                  <div class="w w-md" data-w="tasks"><b>Priorities</b><span class="ln c"></span><span class="ln c"></span><span class="ln c done"></span><span class="ln c done"></span></div>
+                  <div class="w w-sm" data-w="energy"><b>Check-in</b><span class="scale"><i></i><i></i><i class="on"></i><i></i><i></i></span><span class="scale"><i></i><i></i><i></i><i class="on"></i><i></i></span><span class="scale"><i></i><i></i><i></i><i></i><i class="on"></i></span></div>
+                  <div class="w w-sm" data-w="timer"><b>Focus timer</b><span class="ring"><em>12:39</em></span></div>
+                  <div class="w w-md" data-w="habits"><b>Routines</b><span class="ln c done"></span><span class="ln c"></span><span class="ln c done"></span></div>
+                  <div class="w w-md" data-w="goals"><b>This week’s goals</b><span class="ln c"></span><span class="ln c"></span><span class="ln c done"></span></div>
+                  <div class="w w-sm" data-w="eod"><b>Evening review</b><span class="ln"></span><span class="ln short"></span></div>
+                  <div class="w w-md" data-w="planner"><b>Today’s plan</b><span class="load"><i></i></span><span class="ln c"></span><span class="ln c"></span></div>
+                  <div class="w w-lg" data-w="energy"><b>Day timeline</b><span class="tline"><i style="--a:8%;--b:22%"></i><i style="--a:26%;--b:12%"></i><i style="--a:52%;--b:14%"></i></span></div>
+                </div>
+              </div>
+            </div>
+            <p class="tl-art-note">Interactive illustration of Settings → Features and the Today dashboard.</p>
+          </div>
+        </div>
+
+        <div class="tl-more tl-rv">
+          <h3>And the details, too</h3>
+          <ul>{moreCustom.map((c) => <li>{c}</li>)}</ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tiles -->
+    <section class="tl-section tl-tiles-sec" aria-labelledby="tl-tiles-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">On your desktop</p>
+          <h2 id="tl-tiles-title" class="tl-h2">Small things that keep it out of your way.</h2>
+        </div>
+        <div class="tl-tiles">
+          <article class="tl-tile tl-tile-palette tl-rv">
+            <div>
+              <h3>Command palette <kbd>Ctrl</kbd><kbd>K</kbd></h3>
+              <p>Go anywhere, run any command and search across tasks, habits, notes and the journal, without touching the mouse.</p>
+            </div>
+            <div class="tl-pal" data-palette aria-hidden="true">
+              <div class="tl-pal-input"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-typed></span><span class="tl-caret"></span><span class="tl-pal-ph" data-ph>Search commands and items…</span></div>
+              <ul data-results>
+                <li data-k="today">Go to Today<kbd>G</kbd><small>then</small><kbd>T</kbd></li>
+                <li data-k="tasks">Go to Tasks<kbd>G</kbd><small>then</small><kbd>K</kbd></li>
+                <li data-k="calendar">Go to Calendar<kbd>G</kbd><small>then</small><kbd>C</kbd></li>
+                <li data-k="journal">Go to Journal<kbd>G</kbd><small>then</small><kbd>J</kbd></li>
+                <li data-k="insights">Go to Insights<kbd>G</kbd><small>then</small><kbd>I</kbd></li>
+                <li data-k="journal">Open today’s journal</li>
+                <li data-k="journal note">New note</li>
+              </ul>
+            </div>
+          </article>
+          {tiles.map((t) => (
+            <article class="tl-tile tl-rv">
+              <h3>{t.title}{t.kbd && <span class="tl-kbds">{t.kbd.split(' ').map((k) => <kbd>{k}</kbd>)}</span>}</h3>
+              <p>{t.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Local first -->
+    <section id="local" class="tl-section tl-local" aria-labelledby="tl-local-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">Local-first</p>
+          <h2 id="tl-local-title" class="tl-h2">Your day stays on your desk.</h2>
+          <p class="tl-sub">Tally is a desktop app, not a website in a box. It opens without a network, needs no account, and keeps everything on your own computer.</p>
+        </div>
+        <ul class="tl-platforms tl-rv" aria-label="Platforms">
+          {['Windows', 'macOS', 'Linux'].map((p) => (
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>{p}</li>
+          ))}
+        </ul>
+        <div class="tl-local-grid">
+          <article class="tl-rv"><p class="tl-stat">3.4<small> MB</small></p><h3>A small installer</h3><p>A Rust shell around your system’s own webview, instead of shipping a whole browser. That’s the current Windows installer.</p></article>
+          <article class="tl-rv"><p class="tl-stat">0<small> accounts</small></p><h3>Nothing to sign up for</h3><p>Open it and start. There’s no account, no cloud and no sync service.</p></article>
+          <article class="tl-rv"><p class="tl-stat">Blocked</p><h3>No external connections</h3><p>The app’s security policy blocks connections to the outside, so “local” is enforced, not just promised.</p></article>
+          <article class="tl-rv"><p class="tl-stat">Safe</p><h3>Updates that keep your data</h3><p>Database upgrades are versioned and tested, and your data never moves when the app updates.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <section id="status" class="tl-section tl-status" aria-labelledby="tl-status-title">
+      <div class="tl-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">Status</p>
+          <h2 id="tl-status-title" class="tl-h2">In development, honestly.</h2>
+          <p class="tl-sub">There’s no public download yet. Here’s where things stand.</p>
+        </div>
+        <div class="tl-status-grid">
+          <div class="tl-status-col tl-rv">
+            <h3><span class="tl-badge is-done">Works today</span></h3>
+            <ul>
+              <li>Tasks, calendar, habits, focus timer, energy and mood, journal, goals and insights</li>
+              <li>Feature toggles, a rearrangeable dashboard, light and dark themes</li>
+              <li>Backups, a trash, and CSV, Markdown and JSON export</li>
+              <li>Keyboard-first, with a visible focus ring and rebindable shortcuts</li>
+              <li>94 unit test files and 30 end-to-end specs, including automated accessibility checks</li>
+              <li>A CI workflow set up to build for Windows, macOS and Linux</li>
+            </ul>
+          </div>
+          <div class="tl-status-col tl-rv">
+            <h3><span class="tl-badge">What’s next</span></h3>
+            <ul>
+              <li>Hands-on checks of the tray, notifications and shortcuts on each platform</li>
+              <li>Polishing a few rough edges in the calendar and task views</li>
+              <li>The first public release</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="tl-section tl-faq" aria-labelledby="tl-faq-title">
+      <div class="tl-wrap tl-faq-wrap">
+        <div class="tl-head tl-rv">
+          <p class="tl-eyebrow">FAQ</p>
+          <h2 id="tl-faq-title" class="tl-h2">Questions</h2>
+        </div>
+        <div class="tl-faq-list tl-rv">
+          {faq.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="tl-close" aria-labelledby="tl-close-title">
+      <div class="tl-wrap tl-close-inner tl-rv">
+        <svg class="tl-close-mark" viewBox="0 0 100 100" aria-hidden="true"><rect fill="#1f7a4d" width="100" height="100" rx="24"/><g fill="none" stroke-linecap="round"><path stroke="#fff" stroke-width="10" d="M29 27V73M43 27V73M57 27V73M71 27V73"/><path stroke="#1f7a4d" stroke-width="14" d="M19 64L81 36"/><path stroke="#fff" stroke-width="10" d="M19 64L81 36"/></g></svg>
+        <h2 id="tl-close-title" class="tl-h2">Hear when Tally is ready.</h2>
+        <p class="tl-sub">Send a quick email and I’ll let you know when the first release is out.</p>
+        <div class="tl-ctas">
+          <a class="tl-btn" href={notify}>Get notified</a>
+        </div>
+        <p class="tl-close-alt">No mail app? Write to <a href={`mailto:${email}`}>{email}</a></p>
+        <p class="tl-maker">Tally is designed and built by <a href="/">Raashid Arquil</a>, an independent developer, with Tauri, Rust, React and TypeScript. Want something like it built for you? <a href="/contact/">Get in touch</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  // Hero: link the window composition to scroll. --p runs 0 → 1 while the stage rises from
+  // the bottom of the screen to a third of the way up; reduced motion keeps it at the end state.
+  {
+    const stage = document.querySelector<HTMLElement>('.tl-stage');
+    if (stage && document.documentElement.classList.contains('tl-motion')) {
+      let raf = 0;
+      const set = () => {
+        raf = 0;
+        const r = stage.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.62)));
+        stage.style.setProperty('--p', p.toFixed(3));
+      };
+      const queue = () => { if (!raf) raf = requestAnimationFrame(set); };
+      set();
+      window.addEventListener('scroll', queue, { passive: true });
+      window.addEventListener('resize', queue);
+    }
+  }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Scroll reveals
+    const revealables = document.querySelectorAll<HTMLElement>('.tl-rv, [data-merge]');
+    if ('IntersectionObserver' in window && !reduce) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+      revealables.forEach((el) => io.observe(el));
+    } else {
+      revealables.forEach((el) => el.classList.add('is-in'));
+    }
+
+    // Tabs (ARIA tab pattern, automatic activation)
+    document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+      const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+      const select = (tab: HTMLButtonElement, focus = true) => {
+        for (const t of tabs) {
+          const on = t === tab;
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+          const panel = document.getElementById(t.getAttribute('aria-controls')!)!;
+          panel.hidden = !on;
+          if (on && !reduce) panel.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'ease-out' });
+        }
+        if (focus) tab.focus();
+      };
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => select(tab, false));
+        tab.addEventListener('keydown', (e) => {
+          let n = -1;
+          if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') n = 0;
+          else if (e.key === 'End') n = tabs.length - 1;
+          if (n >= 0) { e.preventDefault(); select(tabs[n]); }
+        });
+      });
+    });
+
+    // Customise demo: feature switches, rearranging and theme
+    const demo = document.querySelector<HTMLElement>('[data-demo]');
+    if (demo) {
+      const grid = demo.querySelector<HTMLElement>('[data-grid]')!;
+      const mini = demo.querySelector<HTMLElement>('[data-mini]')!;
+      const status = demo.querySelector<HTMLElement>('[data-mini-status]')!;
+      const switches = [...demo.querySelectorAll<HTMLButtonElement>('[data-feature]')];
+      const isOn = (id: string) => switches.find((s) => s.dataset.feature === id)?.getAttribute('aria-checked') === 'true';
+
+      const flip = (change: () => void) => {
+        const items = [...grid.children] as HTMLElement[];
+        const before = new Map(items.map((el) => [el, el.getBoundingClientRect()]));
+        change();
+        if (reduce) return;
+        for (const el of items) {
+          if (el.hidden) continue;
+          const a = before.get(el)!;
+          const b = el.getBoundingClientRect();
+          if (a.width === 0) { el.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'ease-out' }); continue; }
+          const dx = a.left - b.left, dy = a.top - b.top;
+          if (dx || dy || a.width !== b.width) {
+            el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' });
+          }
+        }
+      };
+
+      const apply = () => {
+        for (const s of switches) {
+          const req = s.dataset.requires;
+          if (req) {
+            const ok = isOn(req);
+            s.disabled = !ok;
+            if (!ok) s.setAttribute('aria-checked', 'false');
+          }
+        }
+        grid.querySelectorAll<HTMLElement>('[data-w]').forEach((w) => {
+          const f = w.dataset.w!;
+          w.hidden = f !== 'core' && !isOn(f);
+        });
+        mini.querySelectorAll<HTMLElement>('[data-needs]').forEach((n) => {
+          n.hidden = !n.dataset.needs!.split(' ').some(isOn);
+        });
+      };
+      apply();
+
+      switches.forEach((s) => s.addEventListener('click', () => {
+        if (s.disabled) return;
+        const next = s.getAttribute('aria-checked') !== 'true';
+        flip(() => { s.setAttribute('aria-checked', String(next)); apply(); });
+        const name = demo.querySelector(`label[for="${s.id}"]`)?.textContent;
+        status.textContent = `${name} turned ${next ? 'on' : 'off'} in the preview.`;
+      }));
+
+      const orders = [
+        ['core', 'tasks', 'energy', 'timer', 'habits', 'goals', 'eod', 'planner', 'energy-lg'],
+        ['core', 'timer', 'habits', 'energy-lg', 'tasks', 'energy', 'planner', 'goals', 'eod'],
+        ['core', 'energy-lg', 'tasks', 'timer', 'goals', 'eod', 'habits', 'energy', 'planner'],
+      ];
+      const all = [...grid.children] as HTMLElement[];
+      const key = (el: HTMLElement) => (el.dataset.w === 'energy' && el.classList.contains('w-lg') ? 'energy-lg' : el.dataset.w!);
+      let o = 0;
+      demo.querySelector('[data-rearrange]')!.addEventListener('click', () => {
+        o = (o + 1) % orders.length;
+        flip(() => { for (const k of orders[o]) { const el = all.find((x) => key(x) === k); if (el) grid.appendChild(el); } });
+        status.textContent = 'Widgets rearranged in the preview.';
+      });
+
+      demo.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((b) => b.addEventListener('click', () => {
+        mini.dataset.theme = b.dataset.themeSet;
+        demo.querySelectorAll('[data-theme-set]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+      }));
+    }
+
+    // Command palette typing loop (only while visible, never with reduced motion)
+    const pal = document.querySelector<HTMLElement>('[data-palette]');
+    if (pal) {
+      const typed = pal.querySelector<HTMLElement>('[data-typed]')!;
+      const ph = pal.querySelector<HTMLElement>('[data-ph]')!;
+      const items = [...pal.querySelectorAll<HTMLElement>('[data-results] li')];
+      const word = 'journal';
+      const render = (q: string) => {
+        typed.textContent = q;
+        ph.hidden = q.length > 0;
+        let first = true;
+        for (const li of items) {
+          const show = q ? li.textContent!.toLowerCase().includes(q) || li.dataset.k!.includes(q) : li.dataset.k !== 'journal note' && li.textContent !== 'Open today’s journal';
+          li.hidden = !show;
+          li.classList.toggle('is-active', show && first);
+          if (show) first = false;
+        }
+      };
+      render(reduce ? 'journ' : '');
+      if (!reduce && 'IntersectionObserver' in window) {
+        let timer = 0, step = 0, visible = false;
+        const tick = () => {
+          if (!visible) return;
+          step++;
+          const n = step <= 2 ? 0 : Math.min(step - 2, word.length);
+          render(word.slice(0, n));
+          if (step > word.length + 9) step = 0;
+          timer = window.setTimeout(tick, step <= 2 ? 600 : n === word.length ? 450 : 160);
+        };
+        new IntersectionObserver(([e]) => {
+          visible = e.isIntersecting;
+          window.clearTimeout(timer);
+          if (visible) tick();
+        }).observe(pal);
+      }
+    }
+  </script>
+</ProductShell>

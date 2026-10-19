@@ -1,11 +1,12 @@
 ---
 import ProjectGallery from '../components/ProjectGallery.astro';
+import YouTubeLite from '../components/YouTubeLite.astro';
 import BaseLayout from './BaseLayout.astro';
 import ProductCover from '../components/ProductCover.astro';
 import type {CollectionEntry} from 'astro:content';
 interface Props{project:CollectionEntry<'projects'>;}
 const {project}=Astro.props;
-const {title,shortDescription,role,date,category,status,technologies,githubUrl,liveUrl,gallery,heroImage,productUrl,demoUrl,youtubeId}=project.data;
+const {title,shortDescription,role,date,category,status,technologies,githubUrl,liveUrl,gallery,heroImage,productUrl,demoUrl,youtubeId,youtubeTitle,youtubeCaption}=project.data;
 const state=project.id==='smartdrive'?'Prototype':status==='in-development'?'In development':status==='live'?'Demo available':status==='archived'?'Earlier work':status;
 const hasVideo = !!youtubeId && /^[a-zA-Z0-9_-]{11}$/.test(youtubeId);
 const flagship=['keepclose','cropcare','smartdrive','tally'].includes(project.id);
@@ -15,6 +16,6 @@ const flagship=['keepclose','cropcare','smartdrive','tally'].includes(project.id
 <section class="case-overview" aria-label="Project at a glance"><dl><div><dt>My contribution</dt><dd>{role}</dd></div><div><dt>Current state</dt><dd>{state}</dd></div>{date!=='In active development'&&date!=='In development'&&<div><dt>Timeline</dt><dd>{date}</dd></div>}<div><dt>Built with</dt><dd>{technologies.join(' / ')}</dd></div></dl><div class="case-links">{flagship&&<a class="button product-page-link" href={`/products/${project.id}/`}>View the product page →</a>}{githubUrl&&<a class="text-link" href={githubUrl} target="_blank" rel="noopener noreferrer">Source code ↗</a>}{(demoUrl||liveUrl)&&<a class="text-link" href={demoUrl||liveUrl} target="_blank" rel="noopener noreferrer">Explore demo ↗</a>}{productUrl&&<a class="text-link" href={productUrl} target="_blank" rel="noopener noreferrer">Open product ↗</a>}</div></section>
 {gallery&&gallery.length>0?<ProjectGallery items={gallery} title={title} demo={project.id==='smartdrive'}/>:flagship&&<div class="case-cover compact-cover"><ProductCover kind={project.id as 'keepclose'|'cropcare'|'smartdrive'|'tally'}/></div>}
 
-{hasVideo&&<div class="video-frame"><iframe src={`https://www.youtube-nocookie.com/embed/${youtubeId}`} title={`${title} demonstration`} loading="lazy" allowfullscreen></iframe></div>}
+{hasVideo&&<figure class="case-video" id="video"><div class="video-frame"><YouTubeLite id={youtubeId!} hd title={youtubeTitle||`${title} video`} label={youtubeTitle||'Play video'}/></div>{youtubeCaption&&<figcaption>{youtubeCaption} <a class="text-link" href={`https://youtu.be/${youtubeId}`} target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></figcaption>}</figure>}
 <div class="case-story"><p class="eyebrow">The project</p><article class="article-body"><slot/></article></div>
 <div class="case-end"><a class="text-link" href="/work/">Explore the other projects ↗</a><a class="text-link" href="/contact/">Discuss a related project ↗</a></div></div></BaseLayout>

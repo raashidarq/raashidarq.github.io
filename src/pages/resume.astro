@@ -10,12 +10,12 @@ const projects = [
     name: 'CropCare', kind: 'Offline crop-disease diagnosis app · Top 10, Ascentic AI Launchpad',
     stack: 'Flutter · TensorFlow Lite · Drift/SQLite · FastAPI · Supabase · Gemini API',
     when: 'In development',
-    links: [{ label: 'github.com/raashidarq/cropcare', href: 'https://github.com/raashidarq/cropcare' }],
+    links: [{ label: 'Product page', href: `${site}/products/cropcare/` }, { label: 'Source', href: 'https://github.com/raashidarq/cropcare' }],
     bullets: [
       'Trained a MobileNetV3 classifier covering <strong>34 categories across 6 crops</strong> and shipped it on-device as a 6.06 MB TFLite model, so diagnosis works without connectivity.',
       'Flagged uncertain predictions with normalized Shannon entropy and confidence thresholds, and rejected unsuitable photos with blur, exposure and vegetation checks before inference.',
-      'Built offline treatment guidance for 28 disease and pest categories in English, Sinhala and Tamil on a 14-table Drift schema, backed by 227 automated tests including localization-parity checks.',
-      'Made Gemini recommendations opt-in and cached, avoiding repeat API requests and a lifecycle crash caused by automatic calls.',
+      'Built offline treatment guidance for 28 disease and pest categories in English, Sinhala and Tamil on a 14-table Drift schema, backed by 242 automated tests including localization-parity checks.',
+      'Made Gemini recommendations opt-in and cached, avoiding repeat API calls.',
     ],
   },
   {
@@ -25,8 +25,8 @@ const projects = [
     links: [{ label: 'Product page', href: `${site}/products/tally/` }],
     bullets: [
       'Built a desktop app unifying habits, tasks, focus timing, journaling and energy tracking; no account, and a content security policy blocks all external connections.',
-      'Chose Tauri over Electron for a ~2.5 MB Windows installer; the Rust shell handles the tray, a global quick-capture shortcut, a mini timer window and single-instance behaviour.',
-      'Split 7 features into modules with lint-enforced import boundaries; tested with 73 unit test files, 24 Playwright end-to-end specs (with axe accessibility checks) and versioned-migration tests.',
+      'Chose Tauri over Electron for a ~3.4 MB Windows installer; the Rust shell handles the tray, a global quick-capture shortcut, a mini timer window and single-instance behaviour.',
+      'Split 7 features into modules with lint-enforced import boundaries; tested with 94 unit test files, 30 Playwright end-to-end specs (with axe accessibility checks) and versioned-migration tests.',
     ],
   },
   {
@@ -35,7 +35,7 @@ const projects = [
     when: 'In development',
     links: [{ label: 'Product page', href: `${site}/products/keepclose/` }],
     bullets: [
-      'Modelled relationships as a directional graph that explains indirect links in plain language (“your mother’s cousin”) and renders a family tree.',
+      'Modelled relationships as a directional graph that explains indirect links in plain language and renders a family tree.',
       'Kept all data on the device: SQLCipher-encrypted database with Keystore-backed keys, on-device speech-to-text via Vosk, and no Internet permission.',
       'Built CSV import with field mapping and duplicate review, selective CSV export, and full ZIP backup.',
     ],
@@ -44,18 +44,20 @@ const projects = [
     name: 'SmartDrive', kind: 'Driving-school management system (final-year project)',
     stack: 'React · Supabase · Tailwind CSS',
     when: '2024 – 2025',
-    links: [{ label: 'Live demo', href: `${site}/smartdrive/` }],
+    links: [{ label: 'Product page', href: `${site}/products/smartdrive/` }, { label: 'Live demo', href: `${site}/smartdrive/` }],
     bullets: [
-      'Built role-based dashboards for students, instructors and administrators (scheduling, learning progress, fleet management) with Supabase email authentication and a no-account public demo mode.',
+      'Built role-based dashboards for students, instructors and administrators (lesson booking, learning progress, course and member administration) with Supabase email authentication and a no-account public demo mode.',
     ],
   },
 ];
 const skills = [
-  ['Languages', 'Kotlin, TypeScript, JavaScript, Dart, Python, SQL, Rust (Tauri)'],
-  ['Mobile & desktop', 'Jetpack Compose, Room, Flutter, Tauri'],
-  ['Web & backend', 'React, Astro, Node.js/Express, FastAPI, Tailwind CSS'],
-  ['Data & ML', 'TensorFlow Lite, Supabase/PostgreSQL, SQLite, IndexedDB, Gemini API'],
-  ['Testing & tools', 'Vitest, Playwright, Git, GitHub Actions, Figma'],
+  ['Languages', 'Kotlin, TypeScript/JavaScript, Dart, Python, Java, SQL, PHP, C#, Rust, HTML/CSS'],
+  ['Mobile & desktop', 'Jetpack Compose, Hilt, Flutter, Tauri, offline-first design'],
+  ['Web', 'React, Astro, Vite, Tailwind CSS, Bootstrap, Zustand, React Router'],
+  ['Backend', 'Node.js/Express, FastAPI, REST APIs, Supabase'],
+  ['Data & ML', 'TensorFlow/TFLite (MobileNetV3), Gemini API, Pandas, Matplotlib, Seaborn, Power BI'],
+  ['Databases', 'PostgreSQL, MySQL, SQLite (Room, Drift, SQLCipher), IndexedDB, SQL Server, Oracle PL/SQL'],
+  ['Testing & tools', 'Vitest, Playwright, axe, Git, GitHub Actions, Postman, Figma, Vercel, Render, Notion, Linear'],
 ];
 ---
 <BaseLayout title="Resume — Raashid Arquil" description="Résumé of Raashid Arquil, software engineer building web, mobile and desktop products.">
@@ -74,13 +76,13 @@ const skills = [
         <a href={site}>raashidarq.github.io</a><span>·</span>
         <a href="https://github.com/raashidarq">github.com/raashidarq</a><span>·</span>
         <a href="https://www.linkedin.com/in/raashid-arquil/">linkedin.com/in/raashid-arquil</a><span>·</span>
-        <span>Sri Lanka (GMT+5:30), open to remote</span>
+        <span>Sri Lanka (GMT+5:30) · open to onsite, hybrid and remote work</span>
       </p>
     </header>
 
     <section>
       <h2>Summary</h2>
-      <p>First-Class Computer Science graduate and independent developer building offline-first products across Android (Kotlin), Flutter, desktop (Tauri) and React, from problem research and scoping to tested builds. Available for freelance projects and graduate or junior engineering roles.</p>
+      <p>First-Class Computer Science graduate and independent developer building offline-first products across Android (Kotlin), Flutter, desktop (Tauri) and React, from problem research and scoping to tested builds.</p>
     </section>
 
     <section>
@@ -101,7 +103,7 @@ const skills = [
       <h2>Programmes &amp; awards</h2>
       <div class="cv-entry">
         <div class="cv-entry-head"><h3>Ascentic AI Launchpad <span class="cv-kind">— Finalist, Top 10</span></h3><span class="cv-when">Sep 2026</span></div>
-        <p class="cv-meta">Eight-week mentored programme; took CropCare from problem research to a working MVP and presented it at TRACE, Sri Lanka.</p>
+        <p class="cv-meta">Eight-week mentored programme; took CropCare from problem research to a working MVP and <a href="https://youtu.be/Bp4e-0Tyqxw">presented it at TRACE, Sri Lanka</a>.</p>
       </div>
       <div class="cv-entry">
         <div class="cv-entry-head"><h3>ESOFT Intercampus Hackathon <span class="cv-kind">— Software Engineering category winner</span></h3><span class="cv-when">Oct 2023</span></div>

@@ -1,103 +1,724 @@
 ---
-import ProductLayout from '../../layouts/ProductLayout.astro';
-import type { Product, Palette } from '../../layouts/ProductLayout.astro';
+// /products/cropcare/ — standalone product page for CropCare.
+// Copy is grounded in src/content/projects/cropcare.md and the CropCare repos.
+// Sinhala and Tamil strings are copied verbatim from the app's
+// lib/presentation/onboarding/localization/app_localizations.dart.
+import ProductShell from '../../layouts/ProductShell.astro';
+import YouTubeLite from '../../components/YouTubeLite.astro';
+import CameraScreen from '../../components/products/cropcare/CameraScreen.astro';
+import ResultScreen from '../../components/products/cropcare/ResultScreen.astro';
+import '../../styles/products/cropcare.css';
 
-const palette: Palette = {
-  scheme: 'dark', bg: '#16392b', surface: '#1f4a38', ink: '#f2efe3', muted: '#cdd6c6',
-  accent: '#b9d98a', accentInk: '#b9d98a', onAccent: '#16392b', line: '#35624e',
-};
-const follow = { label: 'Follow its progress', short: 'Follow', href: 'mailto:raashid.arq@gmail.com?subject=CropCare%3A%20follow%20progress' };
-const source = { label: 'View the source', href: 'https://github.com/raashidarq/cropcare' };
-const img = (n: number, alt: string) => ({ src: `/products/cropcare/feature-${n}.webp`, fallback: `/products/cropcare/feature-${n}.png`, width: 1600, height: 1200, alt });
+const A = '/products/cropcare';
+const mail = (subject: string, body: string) =>
+  `mailto:raashid.arq@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+const follow = mail(
+  'CropCare: follow progress',
+  'Hi Raashid,\n\nPlease let me know how CropCare is coming along.\n\nI am a (farmer / extension officer / researcher / partner / other):\n',
+);
+const pilot = mail(
+  'CropCare: field testing',
+  'Hi Raashid,\n\nI might be able to help test CropCare with real field photographs.\n\nWho I am and where I work:\n',
+);
+const source = 'https://github.com/raashidarq/cropcare';
+// Latin faces load with the page. Sinhala and Tamil (~240 KB) are only needed by the language
+// demo far down the page, so the script below adds them when that section comes near
+// (a <noscript> link covers no-JS). Until then the system's Sinhala/Tamil font stands in.
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@700..800&family=Noto+Sans:wght@400..800&display=swap';
+const indicFonts =
+  'https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400..700&family=Noto+Sans+Tamil:wght@400..700&display=swap';
 
-const product: Product = {
-  slug: 'cropcare',
-  name: 'CropCare',
-  tagline: 'A closer look at crop health.',
-  promise: 'Photograph a plant. See what might be wrong, and what to do next.',
-  subline: 'An offline-first mobile app for possible crop pest and disease identification, local guidance, and sharing uncertain cases with an expert.',
-  status: 'Working MVP · Top 10, Ascentic AI Launchpad · Not on the Play Store yet',
-  primary: follow,
-  secondary: source,
-  heroAlt: 'CropCare on a phone, scanning a crop leaf',
-  film: { label: 'See a scan', caption: 'A short silent film of the MVP. Scores shown are model outputs, not a diagnosis.' },
-  problem: {
-    heading: 'Help with a sick plant, even with a weak signal.',
-    paragraphs: [
-      'When I joined Ascentic’s AI Launchpad, my dad suggested agriculture. Research narrowed that big subject to one question: could a farmer use a phone to identify a possible plant problem and find a useful next step, even with limited connectivity?',
-      'CropCare is my answer so far.',
-    ],
-    attribution: 'Raashid Arquil, maker of CropCare',
+// Strings from app_localizations.dart (en / si / ta), unchanged.
+const L = {
+  cta_title: { en: 'Check a plant', si: 'පැළයක් පරීක්ෂා කරන්න', ta: 'ஒரு செடியைச் சரிபார்க்கவும்' },
+  cta_sub: {
+    en: 'Take a photo of a leaf to spot disease early',
+    si: 'රෝග කල්තියා හඳුනා ගැනීමට පත්‍රයක ඡායාරූපයක් ගන්න',
+    ta: 'நோயை முன்கூட்டியே கண்டறிய இலையின் படம் எடுக்கவும்',
   },
-  features: {
-    heading: 'Scan, check, and act on the phone.',
-    items: [
-      {
-        title: 'Scan right on the phone',
-        body: 'Take a photo of the plant. CropCare first checks that the image is usable, then runs the classifier on the device. Results and your scan history are saved locally.',
-        points: ['Checks for blur, exposure, image size, and plant-like colour before scanning', 'Unsuitable photos are turned away instead of guessed at'],
-        image: img(1, 'Scanning a crop leaf with CropCare'),
-      },
-      {
-        title: 'Honest when it isn’t sure',
-        body: 'A confident-looking score isn’t proof the model understood the photo. When a result looks uncertain, CropCare says so instead of presenting a guess as a diagnosis.',
-        image: img(2, 'A CropCare result with a low-confidence message'),
-      },
-      {
-        title: 'Guidance first, AI when you ask',
-        body: 'Built-in guidance opens without a network request. If you want more, tap “Get AI Recommendation” for structured advice, which is saved so it isn’t fetched twice.',
-        points: ['Follow-up chat about your result (needs a connection)', 'Share the photo and case details with an expert on WhatsApp or another app'],
-        image: img(3, 'CropCare guidance and the Get AI Recommendation action'),
-      },
-      {
-        title: 'In your language',
-        body: 'Use CropCare in English, Sinhala, or Tamil, with text-to-speech and adjustable text settings.',
-        screen: true,
-        image: { src: '/images/cropcare-language.png', width: 303, height: 605, alt: 'CropCare language selection with English, Sinhala, and Tamil' },
-      },
-    ],
+  low_title: { en: 'Not confident about this', si: 'මෙය පිළිබඳ විශ්වාස නැත', ta: 'இதில் உறுதி இல்லை' },
+  low_msg: {
+    en: 'The result below may be wrong. Consider retaking the photo in better light, or asking an expert.',
+    si: 'පහත ප්‍රතිඵලය වැරදි විය හැක. හොඳ ආලෝකයක ඡායාරූපය නැවත ගන්න හෝ විශේෂඥයෙකුගෙන් අසන්න.',
+    ta: 'கீழுள்ள முடிவு தவறாக இருக்கலாம். நல்ல வெளிச்சத்தில் மீண்டும் படம் எடுக்கவும் அல்லது நிபுணரிடம் கேட்கவும்.',
   },
-  how: {
-    nav: 'How it works', eyebrow: 'How it works',
-    heading: 'The essentials work offline. The cloud is optional.',
-    items: [
-      { title: 'A model on your phone', body: 'The classifier is a MobileNetV3 model trained on 34 classes across six crops, and it runs on the device with TensorFlow Lite.' },
-      { title: 'No account needed to start', body: 'Start in guest mode with your records on the phone. Upgrade to an account later for queued sync and cloud restore.' },
-      { title: 'Online only on request', body: 'AI recommendations and follow-up chat are deliberate online actions. If the connection fails, the local guidance stays on screen.' },
-      { title: 'Tested on a real phone', body: 'Tested on a Samsung Galaxy A528B, including the camera, offline use, speech output, and sharing.' },
-    ],
-  },
-  availability: {
-    heading: 'It works. Real world, it could do better.',
-    intro: 'That’s why CropCare isn’t on the Play Store yet.',
-    today: [
-      'On-device scanning with image-quality checks first',
-      'Built-in guidance without a cloud request',
-      'Optional AI recommendation and follow-up chat',
-      'Guest mode, account upgrade, sync, and cloud restore',
-      'Sharing a case with an expert',
-      'English, Sinhala, and Tamil',
-    ],
-    next: [
-      'Measure accuracy on real field photographs',
-      'Calibrate the rejection thresholds against those results',
-      'Better guardrails on the treatment guidance',
-    ],
-    milestones: ['Top 20, then Top 10 in Ascentic’s AI Launchpad', 'Presented at TRACE, Sri Lanka, 19 September 2026'],
-  },
-  faq: [
-    { q: 'Does CropCare work without internet?', a: 'Scanning, results, history, and the built-in guidance all work on the phone. The AI recommendation and follow-up chat need a connection.' },
-    { q: 'Is the result a diagnosis?', a: 'No. CropCare identifies a possible pest or disease. Uncertain results are flagged as uncertain, and you can share a case with an expert.' },
-    { q: 'Do I need an account?', a: 'No. You can start in guest mode with records kept on your phone, and upgrade to an account later if you want sync and cloud restore.' },
-    { q: 'Which languages does it support?', a: 'English, Sinhala, and Tamil, with text-to-speech and adjustable text settings.' },
-    { q: 'Can I download it?', a: 'Not yet. It’s a working MVP that needs testing against real field photographs before it goes on the Play Store. The source code is public on GitHub.' },
-  ],
-  closing: {
-    heading: 'Follow CropCare as it gets ready for the field.',
-    body: 'Send a quick email to hear about progress, or look through the code yourself.',
-    primary: follow,
-    secondary: source,
-  },
+  do_now: { en: 'Do this now', si: 'දැන් මෙය කරන්න', ta: 'இப்போது இதைச் செய்யுங்கள்' },
+  offline: { en: 'On-Device Offline', si: 'උපාංගය තුළ නොබැඳි', ta: 'சாதன ஆஃப்லைன்' },
+  expert: { en: 'Ask your expert', si: 'ඔබගේ විශේෂඥයාගෙන් අසන්න', ta: 'உங்கள் நிபுணரிடம் கேளுங்கள்' },
 };
+const langs = [
+  { code: 'en', label: 'English' },
+  { code: 'si', label: 'සිංහල' },
+  { code: 'ta', label: 'தமிழ்' },
+] as const;
+
+// `focus` = which part of the real result page the phone shows (0 = the camera).
+const steps = [
+  {
+    n: '01', focus: 0, title: 'Photograph one leaf',
+    body: 'Point the camera at the plant and fill the frame with a single leaf, or pick a photo from the gallery. No account and no signal needed.',
+    alt: 'CropCare camera screen: a tomato leaf inside the frame guide, with the hint “Fill the frame with one leaf”',
+  },
+  {
+    n: '02', focus: 1, title: 'Checked, then scanned on the phone',
+    body: 'CropCare first checks the photo for blur, exposure, size and plant-like colour, and turns unsuitable photos away. Then the model runs on the device and names a possible problem.',
+    alt: 'CropCare result: Tomato Late Blight, low confidence, 31% sure, severity high, with a “Not confident about this” warning',
+  },
+  {
+    n: '03', focus: 2, title: 'Guidance that’s already on the phone',
+    body: 'Steps to take now, what to avoid and when to check again open without a network request. Want more? “Get AI Recommendation” is an opt-in online request, cached so it isn’t fetched twice.',
+    alt: 'CropCare guidance: Do this now steps, what to avoid, check again in 5 days, an On-Device Offline badge and a Retry AI button',
+  },
+  {
+    n: '04', focus: 3, title: 'Not sure? Share it with an expert',
+    body: 'If the result doesn’t match what you see, CropCare lists other possibilities. “Ask your expert” packages the photo and case details for WhatsApp or another app.',
+    alt: 'CropCare “Not what you see?” alternatives, including Tomato Early Blight, with “Ask about this result” and the “Ask your expert” button',
+  },
+] as const;
+
+const facts = [
+  { v: '34', unit: '', label: 'disease and pest categories across 6 crops' },
+  { v: '6.06', unit: 'MB', label: 'MobileNetV3 model that runs on the phone' },
+  { v: '28', unit: '', label: 'categories with offline guidance' },
+  { v: '3', unit: '', label: 'languages: English, Sinhala and Tamil' },
+  { v: '242', unit: '', label: 'automated tests in the app' },
+];
+const crops = ['Rice', 'Tomato', 'Cassava', 'Maize', 'Potato', 'Chili'];
+
+const bars = [
+  { name: 'Tomato Late Blight', clear: 88, spread: 31 },
+  { name: 'Tomato Early Blight', clear: 6, spread: 27 },
+  { name: 'Potato Early Blight', clear: 4, spread: 22 },
+  { name: 'Potato Late Blight', clear: 2, spread: 20 },
+];
+
+const faq = [
+  { q: 'Does CropCare work without internet?', a: 'Scanning, results, history, and the built-in guidance all work on the phone. The AI recommendation and follow-up chat need a connection.' },
+  { q: 'Is the result a diagnosis?', a: 'No. CropCare identifies a possible pest or disease. Uncertain results are flagged as uncertain, and you can share a case with an expert.' },
+  { q: 'Do I need an account?', a: 'No. You can start in guest mode with records kept on your phone, and upgrade to an account later if you want sync and cloud restore.' },
+  { q: 'Can I download it?', a: 'Not yet. It’s a working MVP that needs testing against real field photographs before it goes on the Play Store. The source code is public on GitHub.' },
+  { q: 'I work with farmers. Can we try it together?', a: 'Please get in touch. The next step for CropCare is testing against real field photographs, and that’s where extension officers, researchers and partners can help most.', link: { href: pilot, label: 'Email about field testing' } },
+];
+
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
-<ProductLayout title="CropCare: a closer look at crop health" description={product.subline} palette={palette} brand="cropcare" product={product} />
+
+<ProductShell
+  title="CropCare: offline help for crop pests and disease, in English, Sinhala and Tamil"
+  description="An offline-first mobile app for possible crop pest and disease identification, local guidance, and sharing uncertain cases with an expert."
+  slug="cropcare"
+  scheme="light"
+  themeColor="#fbfbf8"
+  fonts={fonts}
+  bodyClass="cc"
+>
+  <Fragment slot="head">
+    <script is:inline>(function(d){d.classList.add('cc-js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('cc-motion')})(document.documentElement)</script>
+    <noscript><link rel="stylesheet" href={indicFonts} /></noscript>
+  </Fragment>
+
+  <header class="cc-header">
+    <div class="cc-wrap cc-header-row">
+      <a class="cc-brand" href="#top" aria-label="CropCare, back to top">
+        <span>CropCare</span>
+      </a>
+      <nav class="cc-nav" aria-label="Page sections">
+        <a href="#how">How it works</a>
+        <a href="#not-sure">When it’s not sure</a>
+        <a href="#languages">Languages</a>
+        <a href="#offline">Offline</a>
+        <a href="#talk">The talk</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="cc-btn cc-btn--sm" href={follow}>Follow progress</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="cc-hero" id="top" aria-labelledby="hero-title">
+      <svg class="cc-hero-field" viewBox="0 0 1440 520" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 330 C 360 250, 1080 250, 1440 330 L1440 520 L0 520Z" fill="var(--sprout-wash)" />
+        <g fill="none" stroke="var(--furrow)" stroke-width="1.5">
+          <path d="M0 360 C 360 285, 1080 285, 1440 360" />
+          <path d="M0 395 C 360 325, 1080 325, 1440 395" />
+          <path d="M0 435 C 360 370, 1080 370, 1440 435" />
+          <path d="M0 480 C 360 420, 1080 420, 1440 480" />
+        </g>
+      </svg>
+      <div class="cc-wrap cc-hero-grid">
+        <div class="cc-hero-copy">
+          <h1 id="hero-title">Photograph a plant. See what might be wrong, and what to do next.</h1>
+          <p class="cc-lede">Photograph one leaf and CropCare suggests what might be wrong, right on the phone, even with no signal. You get next steps in English, Sinhala or Tamil, a plain “not sure” when it can’t tell, and a way to ask an expert.</p>
+          <div class="cc-actions">
+            <a class="cc-btn" href={follow}>Follow its progress</a>
+            <a class="cc-btn cc-btn--ghost" href={source} {...ext}>View the source <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="cc-avail">A working MVP. It isn’t on the Play Store yet.</p>
+          <div class="cc-hero-meta">
+            <a class="cc-talk-link" href="#talk">
+              <span class="cc-talk-play" aria-hidden="true"><svg viewBox="0 0 16 16" width="12" height="12"><path d="M4 2.5v11L13 8z" fill="currentColor"/></svg></span>
+              <span>Watch the talk from TRACE, Sri Lanka · 12 min<small>Top 10 finalist, Ascentic AI Launchpad</small></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="cc-hero-stage">
+          <div class="cc-hero-device" data-phase="aim" role="img" aria-label="Animated recreation of the CropCare camera: a tomato leaf is photographed, the photo is checked and scanned on the phone, then the Diagnosis Result page opens: Tomato Late Blight, low confidence, 31% sure, not confident about this, followed by its treatment guidance.">
+            <div class="cc-phone cc-phone--hero">
+              <div class="cc-screen"><CameraScreen live /><div class="cc-hero-res"><ResultScreen focus={1} lazy={false} /></div></div>
+            </div>
+          </div>
+          <p class="cc-tag cc-tag--a" aria-hidden="true"><span>On the phone</span>Checked before it’s scanned</p>
+          <p class="cc-tag cc-tag--b" aria-hidden="true"><span>Honest</span>Says when it isn’t sure</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FACTS -->
+    <section class="cc-facts" aria-label="CropCare in numbers">
+      <div class="cc-wrap">
+        <ul class="cc-facts-list">
+          {facts.map((f) => (
+            <li class="cc-rv">
+              <span class="cc-fact-v">{f.v}{f.unit && <small> {f.unit}</small>}</span>
+              <span class="cc-fact-l">{f.label}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="cc-crops"><span>Crops it covers:</span> {crops.map((c) => <span class="cc-chip">{c}</span>)}</p>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="cc-how" id="how" aria-labelledby="how-title">
+      <div class="cc-wrap">
+        <header class="cc-sec-head cc-rv">
+          <p class="cc-eyebrow">How it works</p>
+          <h2 id="how-title">From a photo to a next step, in four steps.</h2>
+          <p>Built for a farmer with a weak signal, or none. Every step below works on the phone; the extras that need the internet only run when you ask.</p>
+        </header>
+        <div class="cc-how-grid">
+          <ol class="cc-steps">
+            {steps.map((s, i) => (
+              <li class:list={['cc-step', { 'is-on': i === 0 }]} data-step={i}>
+                <span class="cc-step-n" aria-hidden="true">{s.n}</span>
+                <div class="cc-step-body">
+                  <h3>{s.title}</h3>
+                  <p>{s.body}</p>
+                  <figure class="cc-step-shot">
+                    <div class="cc-phone cc-phone--sm">
+                      <div class:list={['cc-screen', 'cc-screen--short', { 'cc-screen--cam': s.focus === 0 }]}>
+                        {s.focus === 0
+                          ? <div role="img" aria-label={s.alt}><CameraScreen /></div>
+                          : <ResultScreen focus={s.focus as 1 | 2 | 3} alt={s.alt} />}
+                      </div>
+                    </div>
+                  </figure>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div class="cc-how-stage" aria-hidden="true">
+            <div class="cc-how-sticky">
+              <div class="cc-phone cc-phone--how">
+                <div class="cc-screen cc-how-screen" data-step="0">
+                  <div class="cc-pane cc-pane--cam"><CameraScreen /></div>
+                  <div class="cc-pane cc-pane--res"><ResultScreen focus={1} /></div>
+                </div>
+              </div>
+              <div class="cc-how-progress">
+                <ol>{steps.map((_, i) => <li class:list={{ 'is-on': i === 0, 'is-done': false }} data-dot={i}></li>)}</ol>
+                <span class="cc-how-count"><b>01</b> / 04</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT SURE -->
+    <section class="cc-unsure" id="not-sure" aria-labelledby="unsure-title">
+      <div class="cc-wrap cc-unsure-grid">
+        <div class="cc-unsure-copy cc-rv">
+          <p class="cc-eyebrow">When it’s not sure</p>
+          <h2 id="unsure-title">An honest “not sure” beats a confident guess.</h2>
+          <p>A confident-looking score isn’t proof the model understood the photo. So CropCare checks twice, and when a result looks uncertain it says so instead of presenting a guess as a diagnosis.</p>
+          <ol class="cc-gates">
+            <li><strong>Before the model.</strong> File, size, exposure, blur and plant-like colour. Unsuitable photos are turned away instead of guessed at.</li>
+            <li><strong>After the model.</strong> Is the top match strong enough, and is the answer focused on one problem or spread across several? CropCare uses confidence and normalised entropy to tell.</li>
+            <li><strong>Then, a person.</strong> An uncertain case can go straight to an expert, with the photo and details attached.</li>
+          </ol>
+        </div>
+
+        <div class="cc-meter cc-rv" data-mode="spread">
+          <div class="cc-meter-top">
+            <p class="cc-meter-title" id="meter-label">Two answers from the same model</p>
+            <div class="cc-seg" role="group" aria-labelledby="meter-label">
+              <button type="button" data-set="clear" aria-pressed="false">A focused answer</button>
+              <button type="button" data-set="spread" aria-pressed="true">A spread-out answer</button>
+            </div>
+          </div>
+          <ul class="cc-bars">
+            {bars.map((b) => (
+              <li style={`--clear:${b.clear / 100};--spread:${b.spread / 100}`}>
+                <span class="cc-bar-name">{b.name}</span>
+                <span class="cc-bar-track"><span class="cc-bar-fill"></span></span>
+                <span class="cc-bar-val" data-clear={b.clear} data-spread={b.spread}>{b.spread}%</span>
+              </li>
+            ))}
+          </ul>
+          <div class="cc-verdict" aria-live="off">
+            <div class="cc-verdict-clear">
+              <span class="cc-badge cc-badge--ok">Likely match</span>
+              <p>Tomato Late Blight. The guidance opens on the phone.</p>
+            </div>
+            <div class="cc-verdict-spread">
+              <span class="cc-badge cc-badge--low">Low confidence</span>
+              <div class="cc-warn">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3 2 21h20L12 3Zm0 6v6m0 2.5v.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <div><strong>Not confident about this</strong>The result below may be wrong. Consider retaking the photo in better light, or asking an expert.</div>
+              </div>
+            </div>
+          </div>
+          <p class="cc-note">Illustration. Numbers are examples, not measured model output. Messages and labels are the app’s own.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LANGUAGES -->
+    <section class="cc-lang" id="languages" aria-labelledby="lang-title" data-indic-fonts={indicFonts}>
+      <div class="cc-wrap cc-lang-grid">
+        <div class="cc-lang-copy cc-rv">
+          <p class="cc-eyebrow">In your language</p>
+          <h2 id="lang-title">English, Sinhala or Tamil, from the first screen.</h2>
+          <p>The app’s screens, built-in guidance and warnings come in all three languages, with text-to-speech to read guidance aloud and adjustable text settings. An automated test checks that no string ships in one language and goes missing in another.</p>
+          <p class="cc-small">The translations haven’t yet been reviewed by a native speaker. That’s on the list.</p>
+        </div>
+        <div class="cc-lang-demo cc-rv" data-lang="en">
+          <div class="cc-seg cc-seg--lang" role="group" aria-label="Show the app text in">
+            {langs.map((l, i) => (
+              <button type="button" data-set={l.code} aria-pressed={i === 0 ? 'true' : 'false'} lang={l.code}>{l.label}</button>
+            ))}
+          </div>
+          <div class="cc-app" aria-live="off">
+            <div class="cc-app-bar"><span>CropCare</span><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/><circle cx="12" cy="10" r="3.5" fill="#16531e"/><path d="M5.5 18.5a8 8 0 0 1 13 0" fill="#16531e"/></svg></div>
+            <div class="cc-app-body">
+              <div class="cc-app-cta">
+                <span class="cc-app-cam" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="#fff" stroke-width="1.8"/></svg></span>
+                <div>
+                  <b class="cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.cta_title[l.code]}</span>)}</b>
+                  <small class="cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.cta_sub[l.code]}</span>)}</small>
+                </div>
+                <span class="cc-app-arrow" aria-hidden="true">→</span>
+              </div>
+              <div class="cc-warn cc-warn--app">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3 2 21h20L12 3Zm0 6v6m0 2.5v.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <div>
+                  <strong class="cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.low_title[l.code]}</span>)}</strong>
+                  <span class="cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.low_msg[l.code]}</span>)}</span>
+                </div>
+              </div>
+              <div class="cc-app-row">
+                <b class="cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.do_now[l.code]}</span>)}</b>
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-1.5a6 6 0 0 1 0 9" fill="none" stroke="#16531e" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="cc-app-badge cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.offline[l.code]}</span>)}</span>
+              <span class="cc-app-btn cc-tx">{langs.map((l) => <span lang={l.code} data-l={l.code}>{L.expert[l.code]}</span>)}</span>
+            </div>
+          </div>
+          <p class="cc-note">A recreation of CropCare screens, using the app’s own strings.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OFFLINE -->
+    <section class="cc-offline" id="offline" aria-labelledby="offline-title">
+      <div class="cc-wrap">
+        <header class="cc-sec-head cc-rv">
+          <p class="cc-eyebrow">Offline first</p>
+          <h2 id="offline-title">The essentials work offline. The cloud is optional.</h2>
+          <p>Turn the signal off and see what keeps working.</p>
+        </header>
+
+        <div class="cc-arch cc-rv" data-signal="on">
+          <button type="button" class="cc-switch" role="switch" aria-checked="true">
+            <span class="cc-switch-track" aria-hidden="true"><span></span></span>
+            <span>Signal <b class="cc-swap" aria-hidden="true"><span class="s-on">on</span><span class="s-off">off</span></b></span>
+          </button>
+          <p class="cc-sr" aria-live="polite" data-signal-msg></p>
+          <div class="cc-arch-grid">
+            <div class="cc-lane cc-lane--phone">
+              <p class="cc-lane-title"><span>On the phone</span><em>Works with no signal</em></p>
+              <ol class="cc-chain">
+                <li><b>Photo</b><span>Camera or gallery</span></li>
+                <li><b>Image checks</b><span>Blur, exposure, size, plant-like colour</span></li>
+                <li><b>MobileNetV3 model</b><span>TensorFlow Lite, 6.06 MB, 34 categories</span></li>
+                <li><b>Built-in guidance</b><span>28 categories in English, Sinhala and Tamil</span></li>
+                <li><b>Scan history</b><span>Drift and SQLite, 14 tables</span></li>
+              </ol>
+            </div>
+            <div class="cc-link-line" aria-hidden="true"><span></span></div>
+            <div class="cc-lane cc-lane--cloud">
+              <p class="cc-lane-title"><span>Online, only when you ask</span><em class="cc-swap"><span class="s-on">Connected</span><span class="s-off">Waiting for a connection</span></em></p>
+              <ul class="cc-cloud">
+                <li><b>AI recommendation</b><span class="cc-swap"><span class="s-on">Gemini, opt-in, saved on the phone so it isn’t fetched twice</span><span class="s-off">The built-in guidance stays on screen</span></span></li>
+                <li><b>Follow-up chat</b><span class="cc-swap"><span class="s-on">Questions about your result</span><span class="s-off">Needs a connection</span></span></li>
+                <li><b>Sync and cloud restore</b><span class="cc-swap"><span class="s-on">For an account; guest mode keeps records on the phone</span><span class="s-off">Changes wait in a queue</span></span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <p class="cc-gallery-hint" aria-hidden="true">Swipe for more screens <span>→</span></p>
+        <div class="cc-gallery" role="region" aria-label="More CropCare screens">
+          <figure class="cc-rv">
+            <div class="cc-phone cc-phone--sm"><div class="cc-screen cc-sb"><img src={`${A}/shot-history.webp`} width="600" height="1232" alt="CropCare history: a Tomato Late Blight scan, not yet uploaded, with filters for all scans, needs attention and looks healthy" loading="lazy" decoding="async" /></div></div>
+            <figcaption><b>History</b> Every scan stays on the phone.</figcaption>
+          </figure>
+          <figure class="cc-rv">
+            <div class="cc-phone cc-phone--sm"><div class="cc-screen cc-sb"><img src={`${A}/shot-chat.webp`} width="600" height="1232" alt="CropCare “Ask about this result” chat with suggested questions and a note that AI answers can be wrong" loading="lazy" decoding="async" /></div></div>
+            <figcaption><b>Ask about this result</b> Follow-up chat, with a reminder that answers can be wrong.</figcaption>
+          </figure>
+          <figure class="cc-rv">
+            <div class="cc-phone cc-phone--sm"><div class="cc-screen cc-sb"><img src={`${A}/shot-storage.webp`} width="600" height="832" alt="CropCare Offline and Storage screen in guest mode: scans waiting to sync, a Sync Now button, auto-sync waiting for a linked account, and Delete Local Scans" loading="lazy" decoding="async" /></div></div>
+            <figcaption><b>Offline &amp; storage</b> Queued sync; auto-sync needs a linked account.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- TALK -->
+    <section class="cc-talk" id="talk" aria-labelledby="talk-title">
+      <div class="cc-wrap">
+        <header class="cc-sec-head cc-sec-head--wide cc-rv">
+          <p class="cc-eyebrow">The presentation</p>
+          <h2 id="talk-title">Help with a sick plant, even with a weak signal.</h2>
+          <p>When I joined Ascentic’s AI Launchpad, my dad suggested agriculture. Research narrowed that big subject to one question: could a farmer use a phone to identify a possible plant problem and find a useful next step, even with limited connectivity? CropCare is my answer so far, and this is the talk where I presented it.</p>
+        </header>
+        <div class="cc-talk-grid">
+          <div class="cc-talk-video cc-rv">
+            <YouTubeLite id="Bp4e-0Tyqxw" hd title="CropCare presentation at TRACE, Sri Lanka (Ascentic AI Launchpad)" label="Watch the presentation · 12 min" />
+            <div class="cc-talk-meta">
+              <p><strong>Crop Care - Raashid Arquil</strong><span>Published by Ascentic on YouTube, 13 October 2026 · 11 min 38 s</span></p>
+              <a class="cc-link" href="https://youtu.be/Bp4e-0Tyqxw" {...ext}>Watch on YouTube <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <aside class="cc-talk-side cc-rv" aria-label="The road to TRACE">
+            <figure class="cc-talk-photo">
+              <img src={`${A}/trace.webp`} width="720" height="1080" alt="Raashid Arquil on stage at TRACE, Sri Lanka, holding a microphone in front of a green CropCare presentation slide" loading="lazy" decoding="async" />
+              <figcaption>Presenting CropCare at TRACE, 19 September 2026.</figcaption>
+            </figure>
+            <ol class="cc-timeline">
+              <li><b>Top 20</b> in Ascentic’s AI Launchpad</li>
+              <li><b>Top 10</b> finalist</li>
+              <li><b>19 Sep 2026</b> Presented at TRACE, Sri Lanka</li>
+              <li><b>13 Oct 2026</b> Talk published on YouTube</li>
+            </ol>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATUS -->
+    <section class="cc-status-sec" id="status" aria-labelledby="status-title">
+      <div class="cc-wrap">
+        <div class="cc-status-card cc-rv">
+          <header>
+            <p class="cc-eyebrow">Where it stands</p>
+            <h2 id="status-title">It works. Real world, it could do better.</h2>
+            <p>The model hasn’t yet been measured against real field photographs. That’s why CropCare isn’t on the Play Store yet.</p>
+            <div class="cc-ask">
+              <h3>Work with farmers, or with crop photos?</h3>
+              <p>If you’re an extension officer, researcher or partner who could help test CropCare in the field, I’d like to hear from you.</p>
+              <a class="cc-btn cc-btn--sm" href={pilot}>Email about field testing</a>
+            </div>
+          </header>
+          <div class="cc-status-cols">
+            <div>
+              <h3>Works today</h3>
+              <ul class="cc-check">
+                <li>On-device scanning, with image-quality checks first</li>
+                <li>Built-in guidance without a cloud request</li>
+                <li>Optional AI recommendation and follow-up chat</li>
+                <li>Guest mode, account upgrade, sync and cloud restore</li>
+                <li>Sharing a case with an expert</li>
+                <li>English, Sinhala and Tamil</li>
+                <li>Tested on a Samsung Galaxy A528B: camera, offline use, speech output and sharing</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Next</h3>
+              <ul class="cc-next">
+                <li>Measure accuracy on real field photographs</li>
+                <li>Calibrate the rejection thresholds against those results</li>
+                <li>Better guardrails on the treatment guidance</li>
+                <li>A native speaker’s review of the Sinhala and Tamil</li>
+              </ul>
+              <h3>Who built it</h3>
+              <p class="cc-built">Raashid Arquil: research, product scope, user flows, system design and model training, with AI-assisted implementation.</p>
+              <p class="cc-stack">Flutter · TensorFlow Lite · FastAPI · Drift / SQLite · Supabase · Gemini</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="cc-faq" id="faq" aria-labelledby="faq-title">
+      <div class="cc-wrap cc-faq-grid">
+        <header class="cc-rv">
+          <p class="cc-eyebrow">FAQ</p>
+          <h2 id="faq-title">Questions, answered plainly.</h2>
+        </header>
+        <div class="cc-faq-list">
+          {faq.map((f) => (
+            <details class="cc-rv">
+              <summary>{f.q}<span class="cc-plus" aria-hidden="true"></span></summary>
+              <p>{f.a}{'link' in f && f.link && <> <a class="cc-link" href={f.link.href}>{f.link.label}</a></>}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="cc-close" aria-labelledby="close-title">
+      <svg class="cc-close-rows" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M0 240 C 300 170, 900 170, 1200 240" /><path d="M0 270 C 300 205, 900 205, 1200 270" /><path d="M0 300 C 300 240, 900 240, 1200 300" />
+        </g>
+      </svg>
+      <div class="cc-wrap cc-close-inner cc-rv">
+        <img src={`${A}/icon.webp`} width="56" height="56" alt="" loading="lazy" />
+        <h2 id="close-title">Follow CropCare as it gets ready for the field.</h2>
+        <p>Send a quick email to hear when it’s ready, or look through the code yourself.</p>
+        <div class="cc-actions">
+          <a class="cc-btn cc-btn--light" href={follow}>Follow its progress</a>
+          <a class="cc-btn cc-btn--ghost-light" href={source} {...ext}>View the source <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+</ProductShell>
+
+<script>
+  const root = document.documentElement;
+  const motion = root.classList.contains('cc-motion');
+  const hasIO = 'IntersectionObserver' in window;
+  const outQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+  // Calls cb(true/false) as the element enters and leaves the viewport.
+  function watch(el: Element, cb: (on: boolean) => void, threshold = 0, rootMargin = '0px') {
+    if (!hasIO) { cb(true); return; }
+    new IntersectionObserver(([e]) => cb(e.isIntersecting), { threshold, rootMargin }).observe(el);
+  }
+
+  // Sinhala and Tamil faces: fetched only when the language demo comes near (see `indicFonts`).
+  const langSec = document.getElementById('languages');
+  const indicHref = langSec?.dataset.indicFonts;
+  if (indicHref && langSec) {
+    let loaded = false;
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
+      const l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = indicHref;
+      document.head.appendChild(l);
+    };
+    if (hasIO) {
+      const fio = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { load(); fio.disconnect(); } }, { rootMargin: '1200px 0px' });
+      fio.observe(langSec);
+    } else load();
+  }
+
+  // Tween a number in an element's text.
+  function tween(el: HTMLElement, from: number, to: number, dec: number, dur: number, delay: number, suffix = '') {
+    const t0 = performance.now() + delay;
+    const run = (t: number) => {
+      const p = Math.min(1, Math.max(0, (t - t0) / dur));
+      el.textContent = (from + (to - from) * outQuart(p)).toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(run);
+    };
+    requestAnimationFrame(run);
+  }
+
+  // Scroll reveals
+  const rv = document.querySelectorAll<HTMLElement>('.cc-rv');
+  if (hasIO) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+    rv.forEach((el) => io.observe(el));
+  } else {
+    rv.forEach((el) => el.classList.add('is-in'));
+  }
+
+  // Pause decorative loops while they're off screen.
+  document.querySelectorAll('.cc-hero-stage, .cc-arch').forEach((el) => watch(el, (on) => el.classList.toggle('is-vis', on)));
+
+  // HERO: aim, shutter, check, scan, then the result page opens and scrolls to its guidance; then back to aim. Pauses off screen.
+  const dev = document.querySelector<HTMLElement>('.cc-hero-device');
+  if (dev && motion) {
+    const seq: [string, number][] = [['shot', 200], ['check', 360], ['scan', 700], ['result', 2600], ['guide', 3000], ['aim', 1500]];
+    let i = -1;
+    let timer: number | undefined;
+    let running = false;
+    let inView = true;
+    const next = () => {
+      i = (i + 1) % seq.length;
+      const [phase, ms] = seq[i];
+      dev.dataset.phase = phase;
+      timer = window.setTimeout(next, ms);
+    };
+    const sync = () => {
+      const go = inView && !document.hidden;
+      if (go && !running) { running = true; timer = window.setTimeout(next, i < 0 ? 200 : 500); }
+      if (!go && running) { running = false; window.clearTimeout(timer); }
+    };
+    watch(dev, (on) => { inView = on; sync(); }, 0.2);
+    document.addEventListener('visibilitychange', sync);
+  }
+
+  // HOW IT WORKS: the active step is the last one whose top has passed the middle of the screen.
+  const stepEls = Array.from(document.querySelectorAll<HTMLElement>('.cc-step'));
+  const stepList = document.querySelector<HTMLElement>('.cc-steps');
+  const howScreen = document.querySelector<HTMLElement>('.cc-how-screen');
+  const howRes = howScreen?.querySelector<HTMLElement>('.cc-res');
+  const howPort = howScreen?.querySelector<HTMLElement>('.cc-res-port');
+  const howScroll = howScreen?.querySelector<HTMLElement>('.cc-res-scroll');
+  const dots = document.querySelectorAll<HTMLElement>('[data-dot]');
+  const howCount = document.querySelector<HTMLElement>('.cc-how-count b');
+  const GUIDE_AT = 725 / 2149; // "Do this now" in result-scroll.webp
+  let active = -1;
+  const place = () => {
+    if (!howScroll || !howPort || active < 0) return;
+    const max = Math.max(0, howScroll.offsetHeight - howPort.offsetHeight);
+    const y = active <= 1 ? 0 : active === 2 ? Math.min(max, howScroll.offsetHeight * GUIDE_AT) : max;
+    howScroll.style.transform = `translate3d(0, ${-Math.round(y)}px, 0)`;
+  };
+  const setStep = (n: number) => {
+    if (n === active) return;
+    active = n;
+    stepEls.forEach((s, k) => s.classList.toggle('is-on', k === n));
+    dots.forEach((d, k) => { d.classList.toggle('is-on', k === n); d.classList.toggle('is-done', k < n); });
+    if (howCount) howCount.textContent = String(n + 1).padStart(2, '0');
+    if (howScreen) howScreen.dataset.step = String(n);
+    if (howRes) howRes.dataset.focus = String(Math.max(1, n));
+    if (stepList && stepEls.length > 1) {
+      const span = stepEls[stepEls.length - 1].offsetTop - stepEls[0].offsetTop;
+      stepList.style.setProperty('--rail-span', span + 'px');
+      stepList.style.setProperty('--rail', String(span ? (stepEls[n].offsetTop - stepEls[0].offsetTop) / span : 0));
+    }
+    place();
+  };
+  if (stepEls.length) {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.5;
+      let n = 0;
+      stepEls.forEach((s, k) => { if (s.getBoundingClientRect().top < line) n = k; });
+      setStep(n);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', () => { const a = active; active = -1; setStep(Math.max(0, a)); queue(); });
+    howScroll?.querySelector('img')?.addEventListener('load', place);
+  }
+
+  // Segmented controls that play through their options once while visible (motion only).
+  // Hovering or focusing the demo pauses it; choosing an option stops it for good.
+  function segmented(el: HTMLElement, attr: string, values: string[], period: number, onApply?: (v: string) => void) {
+    const btns = el.querySelectorAll<HTMLButtonElement>('[data-set]');
+    let idx = Math.max(0, values.indexOf(el.getAttribute(attr) || ''));
+    let timer: number | undefined;
+    let done = !motion;
+    let inView = false;
+    let hold = false;
+    let steps = 0;
+    el.style.setProperty('--period', period + 'ms');
+    const apply = (v: string) => {
+      if (el.getAttribute(attr) === v) return;
+      el.setAttribute(attr, v);
+      btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.set === v)));
+      onApply?.(v);
+    };
+    const stop = () => { window.clearTimeout(timer); timer = undefined; el.classList.remove('is-auto'); };
+    const schedule = () => {
+      stop();
+      if (done || !inView || hold) return;
+      void el.offsetWidth;
+      el.classList.add('is-auto');
+      timer = window.setTimeout(() => {
+        idx = (idx + 1) % values.length;
+        apply(values[idx]);
+        steps += 1;
+        if (steps >= values.length) { done = true; stop(); } else schedule();
+      }, period);
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      done = true;
+      stop();
+      idx = values.indexOf(b.dataset.set!);
+      apply(b.dataset.set!);
+    }));
+    if (done) return;
+    el.addEventListener('pointerenter', () => { hold = true; schedule(); });
+    el.addEventListener('pointerleave', () => { hold = el.contains(document.activeElement); schedule(); });
+    el.addEventListener('focusin', () => { hold = true; schedule(); });
+    el.addEventListener('focusout', (e) => { if (!el.contains(e.relatedTarget as Node)) { hold = el.matches(':hover'); schedule(); } });
+    watch(el, (on) => { inView = on; schedule(); }, 0.5);
+  }
+
+  const meter = document.querySelector<HTMLElement>('.cc-meter');
+  if (meter) {
+    const vals = meter.querySelectorAll<HTMLElement>('.cc-bar-val');
+    segmented(meter, 'data-mode', ['spread', 'clear'], 4200, (mode) => {
+      vals.forEach((v, k) => {
+        const to = Number(mode === 'clear' ? v.dataset.clear : v.dataset.spread);
+        const from = parseFloat(v.textContent || '0');
+        if (motion) tween(v, from, to, 0, 800, k * 70, '%');
+        else v.textContent = to + '%';
+      });
+    });
+  }
+  const lang = document.querySelector<HTMLElement>('.cc-lang-demo');
+  if (lang) segmented(lang, 'data-lang', ['en', 'si', 'ta'], 3800);
+
+  // Signal switch
+  const arch = document.querySelector<HTMLElement>('.cc-arch');
+  const sw = arch?.querySelector<HTMLButtonElement>('.cc-switch');
+  const swMsg = arch?.querySelector<HTMLElement>('[data-signal-msg]');
+  sw?.addEventListener('click', () => {
+    const on = arch!.dataset.signal !== 'on';
+    arch!.dataset.signal = on ? 'on' : 'off';
+    sw.setAttribute('aria-checked', String(on));
+    sw.classList.remove('is-hint');
+    if (swMsg) swMsg.textContent = on
+      ? 'Signal on. The AI recommendation, follow-up chat and sync are available when you ask.'
+      : 'Signal off. Photo checks, the model, built-in guidance and history keep working. The AI recommendation and chat wait for a connection, and sync changes wait in a queue.';
+  });
+
+  // The screen gallery scrolls sideways on small screens: only then is it a keyboard stop.
+  const gallery = document.querySelector<HTMLElement>('.cc-gallery');
+  if (gallery) {
+    const sync = () => {
+      if (gallery.scrollWidth > gallery.clientWidth + 2) gallery.tabIndex = 0;
+      else gallery.removeAttribute('tabindex');
+    };
+    sync();
+    window.addEventListener('resize', sync);
+  }
+  if (sw && motion) {
+    let hinted = false;
+    watch(sw, (on) => { if (on && !hinted) { hinted = true; sw.classList.add('is-hint'); } }, 1, '0px 0px -25% 0px');
+  }
+</script>

@@ -1,0 +1,20 @@
+---
+// The real CropCare result page (result, guidance and "Not what you see?" stitched into one
+// long screenshot, public/products/cropcare/result-scroll.webp, 600 x 2149) inside a phone
+// viewport. `focus` picks the region in view: 1 = the result, 2 = guidance, 3 = the expert options.
+// The sticky stage on desktop moves between them; inline (mobile) copies use a fixed focus.
+interface Props { focus?: 1 | 2 | 3; alt?: string; lazy?: boolean }
+const { focus = 1, alt = '', lazy = true } = Astro.props;
+const A = '/products/cropcare';
+---
+<div class="cc-res" data-focus={focus}>
+  <span class="cc-res-bar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5m6-7-7 7 7 7" /></svg>Diagnosis Result</span>
+  <div class="cc-res-port">
+    <div class="cc-res-scroll">
+      <img src={`${A}/result-scroll.webp`} width="600" height="2149" alt={alt} loading={lazy ? 'lazy' : undefined} decoding="async" />
+      <span class="cc-res-ring" data-ring="1"></span>
+      <span class="cc-res-ring" data-ring="2"></span>
+      <span class="cc-res-ring" data-ring="3"></span>
+    </div>
+  </div>
+</div>

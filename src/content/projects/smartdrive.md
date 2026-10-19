@@ -11,33 +11,6 @@ category: "Web application prototype"
 githubUrl: "https://github.com/raashidarq/smartdrive"
 liveUrl: "https://raashidarq.github.io/smartdrive/"
 thumbnail: "/images/smartdrive-student-new.jpg"
-heroImage: "/images/smartdrive-student-new.jpg"
-gallery:
-  - url: "/images/smartdrive-student-new.jpg"
-    title: "Student dashboard"
-    width: 1434
-    height: 992
-    caption: "Student dashboard: learning progress and upcoming sessions. Fictional demo data."
-    alt: "SmartDrive student dashboard in demo mode"
-  - url: "/images/smartdrive-schedule.jpg"
-    title: "Book a lesson"
-    width: 1440
-    height: 996
-    caption: "Booking interface: course, instructor, vehicle, date, and time. Fictional demo data."
-    alt: "SmartDrive practical lesson scheduling interface"
-  - url: "/images/smartdrive-instructor-new.jpg"
-    title: "Instructor workspace"
-    width: 1434
-    height: 992
-    caption: "Instructor view: session requests and evaluations. Fictional demo data."
-    alt: "SmartDrive instructor scheduling dashboard"
-  - url: "/images/smartdrive-admin.jpg"
-    title: "Administration"
-    width: 1434
-    height: 992
-    caption: "Admin view: members, courses, and announcements. Fictional demo data."
-    alt: "SmartDrive administration dashboard"
-
 ---
 ## I went through the process myself.
 
@@ -47,7 +20,7 @@ For my final-year project, I built SmartDrive to explore that possibility.
 
 ## What I built.
 
-The prototype brings together scheduling, learning materials, and fleet management for administrators, instructors, and students.
+The prototype brings together lesson scheduling, learning materials, and course and member administration for administrators, instructors, and students.
 
 The aim was to put those related activities into one system, rather than leaving the process spread across calls and manual records. Accounts use Supabase email authentication, and each role lands on its own dashboard.
 

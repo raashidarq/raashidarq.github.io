@@ -8,31 +8,6 @@ featured: true
 order: 1
 technologies: ["Kotlin / Jetpack Compose", "Room / SQLCipher", "Vosk"]
 category: "Independent product"
-gallery:
-  - url: "/images/keepclose-profile.png"
-    width: 360
-    height: 800
-    title: "A person and their connections"
-    caption: "Development render with a fictional profile: relationship context, interests, and actions for memories and reminders."
-    alt: "KeepClose fictional person profile and relationship path"
-  - url: "/images/keepclose-memory.png"
-    width: 360
-    height: 800
-    title: "Capture a memory"
-    caption: "Development render showing notes, voice and photo attachments, and an optional follow-up reminder."
-    alt: "KeepClose memory editor with fictional records"
-  - url: "/images/keepclose-family-tree.png"
-    width: 360
-    height: 800
-    title: "Explore a family connection"
-    caption: "Development render of the family-tree view using fictional profiles."
-    alt: "KeepClose family tree with two fictional profiles and a relationship connector"
-  - url: "/images/keepclose-export.png"
-    width: 360
-    height: 800
-    title: "Choose what to share"
-    caption: "Development render of selective CSV export: choose people and fields, then preview before sharing."
-    alt: "KeepClose export screen with person and field selection"
 ---
 ## It starts with an awkward moment
 

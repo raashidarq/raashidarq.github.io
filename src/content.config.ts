@@ -19,6 +19,8 @@ const projects = defineCollection({
     productUrl: z.string().url().optional().or(z.literal('')),
     demoUrl: z.string().url().optional().or(z.literal('')),
     youtubeId: z.string().optional(),
+    youtubeTitle: z.string().optional(),
+    youtubeCaption: z.string().optional(),
     thumbnail: z.string().optional(),
     heroImage: z.string().optional(),
     gallery: z

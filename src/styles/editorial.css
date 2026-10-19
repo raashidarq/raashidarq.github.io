@@ -83,3 +83,35 @@
 @media(max-width:640px){.tally-word{font-size:70px}}
 .curated-work .project-card:last-of-type:nth-of-type(even){grid-column:auto}
 .curated-work .project-card:last-of-type:nth-of-type(even)>a{display:block}
+.case-video{margin:48px 0 8px}.case-video .video-frame{border-radius:14px;overflow:hidden;border:1px solid var(--color-border-subtle);background:#000}.case-video figcaption{margin-top:12px;max-width:720px;font-size:14px;line-height:1.7;color:var(--color-fg-muted)}.case-video figcaption .text-link{white-space:nowrap}
+.event-links{display:flex;flex-wrap:wrap;gap:12px 28px}
+/* Product covers use each product page's own typefaces */
+.product-cover.keepclose-cover{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.product-cover.keepclose-cover .keepclose-word{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.055em}
+.product-cover.keepclose-cover .keepclose-word span{font-style:normal;font-weight:800;color:#2b6643}
+.product-cover.cropcare-cover{font-family:'Noto Sans',system-ui,sans-serif}
+.product-cover.cropcare-cover .crop-title{font-family:'Noto Sans Display','Noto Sans',sans-serif;font-weight:800;letter-spacing:-.035em}
+.product-cover.cropcare-cover .serif{font-family:'Noto Sans',sans-serif;font-style:normal;font-weight:500;letter-spacing:-.015em;line-height:1.15;opacity:.9}
+.product-cover.tally-cover{font-family:'Geist',system-ui,sans-serif}
+.product-cover.tally-cover .tally-word{font-family:'Geist',system-ui,sans-serif;font-weight:700;letter-spacing:-.06em}
+.product-cover.smartdrive-cover{font-family:'Archivo',system-ui,sans-serif}
+.product-cover.smartdrive-cover .smart-cover-title,.product-cover.smartdrive-cover .smart-cover-title .serif{font-family:'Archivo',system-ui,sans-serif;font-stretch:125%;font-weight:800;font-style:normal;letter-spacing:-.03em}
+.product-cover.smartdrive-cover .smart-cover-title .serif{color:#b07a00}
+.archive-section{border-top:0;margin-top:clamp(24px,4vw,48px)}.archive-section .archive-row:last-child{border-bottom:0}
+.product-cover.keepclose-cover .keepclose-word{font-size:clamp(52px,6vw,72px);line-height:.92}
+.product-cover.cropcare-cover .crop-title{font-size:clamp(40px,4.6vw,56px)}
+.product-cover.cropcare-cover .serif{font-size:clamp(22px,2.5vw,30px);max-width:60%}
+.product-cover.keepclose-cover .keepclose-word{font-size:clamp(44px,5vw,60px);line-height:.95}
+.product-cover.keepclose-cover .keepclose-word span{display:block;margin-left:0;padding-left:0;text-indent:0}
+.product-cover .cover-top{font-family:'Manrope',system-ui,sans-serif;font-weight:500;font-stretch:100%}
+/* Contact banner: the label spans the section; heading and message share a top line, actions sit under the message */
+.contact-banner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;column-gap:clamp(40px,6vw,96px);row-gap:20px}
+.contact-banner-eyebrow{grid-column:1/-1;margin:0}
+.contact-banner-title{margin:0}
+.contact-banner .contact-banner-body p{margin-top:0;max-width:520px}
+.contact-banner-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:28px}
+@media (max-width:768px){.contact-banner{grid-template-columns:1fr;row-gap:20px}.contact-banner .contact-banner-body p{margin-top:0}}
+.home-project-grid>*,.work-grid>*{min-width:0}
+.home-project-grid .product-cover,.work-grid .product-cover{width:100%}
+.product-cover{overflow:hidden}
+.project-card,.project-card>a{min-width:0;max-width:100%}
