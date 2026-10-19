@@ -7,7 +7,7 @@ import {getCollection} from 'astro:content';
 const projects=(await getCollection('projects')).filter(p=>p.data.featured&&p.data.status==='in-development').sort((a,b)=>a.data.order-b.data.order);
 const notes=(await getCollection('notes')).sort((a,b)=>a.data.order-b.data.order);
 ---
-<BaseLayout title="Raashid Arquil — Independent Developer" description="Independent developer building websites and apps for businesses and people, and making my own products.">
+<BaseLayout title="Raashid Arquil — Independent Developer" description="Independent developer building websites and apps for businesses and people, and making my own products."><script is:inline slot="head">try{if(!sessionStorage.getItem('heroSeen')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('hero-anim');sessionStorage.setItem('heroSeen','1');}}catch(e){}</script>
 <div class="shell">
 <section class="home-intro">
 <div><h1 class="display">Raashid Arquil.<br/><em class="serif">Software engineer.</em></h1><p class="lead">I build web and mobile applications. My own products often start with a frustration I've experienced; I'm also open to freelance projects, starting with understanding yours.</p><div class="hero-actions"><a class="button" href="/contact/">Start a project <span aria-hidden="true">→</span></a><a class="text-link" href="/work/">See what I've built</a></div></div>

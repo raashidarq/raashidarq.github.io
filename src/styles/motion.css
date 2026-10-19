@@ -1,0 +1,69 @@
+/* src/styles/motion.css
+   Restrained site motion: page transitions, a one-time hero entrance, scroll reveals and hover
+   feedback. Only transform/opacity animate. Everything is off under prefers-reduced-motion,
+   and nothing is hidden unless the page script has opted in (html.rv-on / html.hero-anim). */
+
+:root { --ease-out-soft: cubic-bezier(.2, .7, .2, 1); }
+
+/* 1. Page transitions: cross-document view transitions. The header stays put while the
+   page underneath cross-fades and settles. Unsupported browsers just navigate normally. */
+@view-transition { navigation: auto; }
+/* Paint the canvas in the page colour so nothing white can show through a transition. */
+html { background-color: var(--color-bg); }
+.site-header { view-transition-name: site-header; }
+html.vt-theme .site-header { view-transition-name: none; } /* theme switch: header fades with the page */
+/* The old page stays opaque while the new one fades in on top: no half-transparent frame. */
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: vt-in .3s var(--ease-out-soft) both; }
+/* The header doesn't cross-fade between pages; it simply stays. */
+::view-transition-group(site-header) { animation: none; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+@keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
+
+/* 2. Homepage hero entrance, once per visit */
+html.hero-anim .home-intro h1,
+html.hero-anim .home-intro .lead,
+html.hero-anim .home-intro .hero-actions,
+html.hero-anim .home-person { animation: hero-rise .7s var(--ease-out-soft) both; }
+html.hero-anim .home-intro .lead { animation-delay: .09s; }
+html.hero-anim .home-intro .hero-actions { animation-delay: .18s; }
+html.hero-anim .home-person { animation-delay: .26s; }
+@keyframes hero-rise { from { opacity: 0; transform: translateY(16px); } }
+
+/* 3. Scroll reveals (classes added by the page script, only for elements below the fold) */
+html.rv-on .rv { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .6s var(--ease-out-soft); transition-delay: var(--rv-delay, 0s); }
+html.rv-on .rv.in { opacity: 1; transform: none; }
+
+/* 4. Project covers respond on hover */
+.cover-phones img, .tally-window, .screen-composition { transition: transform .55s var(--ease-out-soft); }
+.project-card a:hover .cover-phones img:first-child,
+.project-card a:focus-visible .cover-phones img:first-child { transform: translateY(-20%) rotate(-4deg); }
+.project-card a:hover .cover-phones img:last-child,
+.project-card a:focus-visible .cover-phones img:last-child { transform: translateY(-6%) rotate(4deg); }
+.project-card a:hover .tally-window,
+.project-card a:focus-visible .tally-window { transform: translate(-8px, -8px); }
+.project-card a:hover .screen-composition,
+.project-card a:focus-visible .screen-composition { transform: translateY(-8px); }
+
+/* 5. Small touches: underlines draw in, arrows nudge */
+.text-link { position: relative; }
+.text-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease-out-soft);
+}
+.text-link:hover::after, .text-link:focus-visible::after { transform: scaleX(1); }
+.text-link:hover { border-color: var(--color-border-strong); }
+.arw { display: inline-block; transition: transform .2s var(--ease-out-soft); }
+a:hover .arw, a:focus-visible .arw, button:hover .arw { transform: translateX(3px); }
+a:hover .arw-up, a:focus-visible .arw-up { transform: translate(2px, -2px); }
+.button svg { transition: transform .2s var(--ease-out-soft); }
+.button:hover svg, .button:focus-visible svg { transform: translate(2px, -2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  html.hero-anim .home-intro h1, html.hero-anim .home-intro .lead, html.hero-anim .home-intro .hero-actions, html.hero-anim .home-person { animation: none; }
+  html.rv-on .rv { opacity: 1; transform: none; transition: none; }
+  .cover-phones img, .tally-window, .screen-composition, .text-link::after, .arw, .button svg { transition: none; }
+  .project-card a:hover .tally-window, .project-card a:hover .screen-composition, a:hover .arw, a:hover .arw-up, .button:hover svg { transform: none; }
+}

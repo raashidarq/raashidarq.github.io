@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import '../styles/editorial.css';
 import '../styles/project-media.css';
+import '../styles/motion.css';
 
 interface Props {
   title?: string;
@@ -111,6 +112,8 @@ const jsonLd = {
         document.documentElement.classList.toggle('dark', defaultTheme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches);
       }
     </script>
+    <!-- Page transitions: wait for the main content before showing the new page -->
+    <link rel="expect" href="#main-content" blocking="render" />
     <slot name="head" />
   </head>
   <body class="bg-bg text-fg min-h-screen flex flex-col antialiased selection:bg-accent-muted selection:text-fg relative">
@@ -120,6 +123,48 @@ const jsonLd = {
       <slot />
     </main>
     <BackToTop />
+    <script>
+      // Scroll reveals and arrow nudges. Nothing is hidden unless this runs, and only content
+      // below the fold is revealed, so nothing flashes on load. Off for reduced motion.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Wrap a trailing arrow in links so it can nudge on hover.
+      document.querySelectorAll<HTMLAnchorElement>('main a, footer a').forEach((a) => {
+        const last = a.lastChild;
+        if (last && last.nodeType === Node.TEXT_NODE) {
+          const m = /\s*([→↗])\s*$/.exec(last.textContent || '');
+          if (m) {
+            last.textContent = (last.textContent || '').slice(0, m.index) + ' ';
+            const s = document.createElement('span');
+            s.className = m[1] === '↗' ? 'arw arw-up' : 'arw';
+            s.setAttribute('aria-hidden', 'true');
+            s.textContent = m[1];
+            a.append(s);
+          }
+        }
+      });
+      if (!reduce && 'IntersectionObserver' in window) {
+        const sel = '.section-heading, .section-title, .project-card, .home-note, .event-feature > *, .note-link, .archive-row, .offer, .process-grid > article, .revised-about .article-body > *, .contact-banner, .service-grid > *';
+        const picked: HTMLElement[] = [];
+        document.querySelectorAll<HTMLElement>(sel).forEach((el) => {
+          if (picked.some((p) => p.contains(el))) return;
+          if (el.closest('.product-cover')) return;
+          picked.push(el);
+        });
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        const fold = window.innerHeight * 0.92;
+        picked.forEach((el) => {
+          if (el.getBoundingClientRect().top < fold) return;
+          const sibs = el.parentElement ? Array.from(el.parentElement.children).filter((c) => c.matches(sel)) : [];
+          const i = Math.max(0, sibs.indexOf(el));
+          if (i) el.style.setProperty('--rv-delay', `${Math.min(i, 3) * 80}ms`);
+          el.classList.add('rv');
+          io.observe(el);
+        });
+        document.documentElement.classList.add('rv-on');
+      }
+    </script>
     <Footer />
   </body>
 </html>

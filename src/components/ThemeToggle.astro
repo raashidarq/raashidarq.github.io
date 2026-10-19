@@ -2,5 +2,6 @@
 <script>
 const button=document.querySelector<HTMLButtonElement>('#theme-toggle');
 function update(){const dark=document.documentElement.classList.contains('dark');button?.setAttribute('aria-pressed',String(dark));button?.setAttribute('aria-label',`Switch to ${dark?'light':'dark'} theme`);}
-update();button?.addEventListener('click',()=>{const dark=document.documentElement.classList.toggle('dark');try{localStorage.setItem('theme',dark?'dark':'light');}catch{}update();});
+update();function flip(){const dark=document.documentElement.classList.toggle('dark');try{localStorage.setItem('theme',dark?'dark':'light');}catch{}update();}
+button?.addEventListener('click',()=>{const d=document as Document&{startViewTransition?:(cb:()=>void)=>unknown};if(d.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const root=document.documentElement;root.classList.add('vt-theme');const t=d.startViewTransition(flip) as {finished?:Promise<unknown>};(t?.finished??Promise.resolve()).finally(()=>root.classList.remove('vt-theme'));}else{flip();}});
 </script>
