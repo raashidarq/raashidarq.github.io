@@ -115,3 +115,14 @@
 .home-project-grid .product-cover,.work-grid .product-cover{width:100%}
 .product-cover{overflow:hidden}
 .project-card,.project-card>a{min-width:0;max-width:100%}
+/* About: slim identity sidebar; readable body; background facts in the wide column */
+.revised-about{grid-template-columns:260px minmax(0,1fr);gap:clamp(40px,7vw,96px);align-items:start}
+.revised-about aside{position:sticky;top:110px}
+.revised-about .article-body{max-width:66ch}
+.revised-about .article-body p{font-size:17px;line-height:1.8}
+.about-tagline{line-height:1.6}
+.about-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 40px;margin:8px 0 0;padding-top:20px;border-top:1px solid var(--color-border-subtle)}
+.about-facts dt{margin-bottom:10px}
+.about-facts dd{margin:0;font-size:15px;line-height:1.7;color:var(--color-fg-secondary)}
+@media (max-width:900px){.revised-about{grid-template-columns:200px minmax(0,1fr)}}
+@media (max-width:640px){.revised-about{grid-template-columns:1fr;gap:32px}.revised-about aside{position:static}.revised-about .article-body p{font-size:16px}.about-facts{grid-template-columns:1fr}}
